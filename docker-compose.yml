@@ -1,0 +1,68 @@
+version: '3.8'
+
+services:
+  web_server:
+    container_name: back-apache-php
+    build: ./backend/
+    restart: unless-stopped
+    volumes:
+      - ./backend/php/:/var/www/html/
+    ports:
+      - 80:80
+    networks:
+      - camagru_back_network
+    depends_on:
+      - db
+      - db_manager
+
+  db:
+    container_name: mysql-db
+    image: mysql:9.2.0
+    restart: unless-stopped
+    ports:
+      - 3306:3306
+    volumes:
+      - ./backend/db_volume/:/var/lib/mysql/
+      - ./backend/mysql/:/docker-entrypoint-initdb.d
+    environment:
+      - MYSQL_ROOT_PASSWORD=MonRootyPass
+      - MYSQL_DATABASE=camagru_db
+      - MYSQL_USER=serviceMan
+      - MYSQL_PASSWORD=psw
+    networks:
+      - camagru_back_network
+
+  db_manager:
+    container_name: phpmyadmin
+    image: phpmyadmin:5.2.1
+    restart: always
+    ports:
+      - 8080:80
+    environment:
+      - PMA_HOST=db #Set le container 'db' as Host
+      - PMA_PORT=3306
+    networks:
+      - camagru_back_network
+    depends_on:
+      - db
+
+  front:
+    container_name: front-next.js
+    build: ./frontend/
+    restart: unless-stopped
+    ports:
+      - 3000:3000
+    depends_on:
+      - web_server
+    volumes:
+      # Volume pour le DEV permetant rebuild en temps reel
+      - ./frontend/front-react:/app
+      # Assure l'utilisation des modules installes dans le container
+      - /app/node_modules
+
+networks:
+  camagru_back_network:
+    driver: bridge
+
+volumes:
+  db: # creer un volume named db
