@@ -1,12 +1,14 @@
 version: '3.8'
 
 services:
+
+#  [  Back  ]  # 
   web_server:
-    container_name: back-apache-php
+    # container_name: back-apache-php
     build: ./backend/
     restart: unless-stopped
-    volumes:
-      - ./backend/php/:/var/www/html/
+    # volumes:
+      # - ./backend/php/:/var/www/html/
     ports:
       - 80:80
     networks:
@@ -16,8 +18,8 @@ services:
       - db_manager
 
   db:
-    container_name: mysql-db
-    image: mysql:9.2.0
+    # container_name: mysql-db
+    # image: mysql:9.2.0
     restart: unless-stopped
     ports:
       - 3306:3306
@@ -46,6 +48,7 @@ services:
     depends_on:
       - db
 
+#  [  Front  ]  # 
   front:
     container_name: front-next.js
     build: ./frontend/
