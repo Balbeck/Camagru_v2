@@ -16,10 +16,7 @@ services:
     restart: unless-stopped
     # [ Condition du HealthCheck ! ]
     depends_on:
-      mongo:
-        conndition: service_healthy
-
-
+      - mongo
 
   mongo:
     container_name: mongo_db
@@ -39,15 +36,6 @@ services:
     #   - MYSQL_PASSWORD=psw
     networks:
       - camagru_back_network
-    # [ ping 5 fois la db a interval de 5 secondes pour check quelle est bien up ! ]
-    healthcheck:
-      test: ["CDM-SHELL", "pg_isready -p ${MONGO_PORT} -U ${MONGO_USER} -d ${MONGO_DB}"]
-      interval: 5s
-      timeout: 5s
-      retry: 5
-
-
-
     #  [  Front  ]  # 
   front:
     container_name: front-next.js

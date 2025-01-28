@@ -1,4 +1,4 @@
-FROM node:23.6-alpine3.2.0
+FROM node:23.6-alpine
 WORKDIR /app
 COPY ./package.json .
 COPY ./nodemon.json .
