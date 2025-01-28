@@ -10,7 +10,7 @@ import mongoose from 'mongoose';
 
 import dotenv from 'dotenv';
 dotenv.config();
-const port = process.env.BACKEND_PORT || 8080;
+const port = process.env.BACKEND_PORT;
 
 
 const app = express()
@@ -26,7 +26,7 @@ app.use(bodyParser.json());
 const server = http.createServer(app)
 
 server.listen(port, () => {
-    console.log(" 🐳 Server is running 🌏n http://localhost:${port}/ 🚀")
+    console.log(` 🐳 Back Server is running 🌏n http://localhost:${port}/ 🚀`)
 })
 
 // [  -Init-   Mongodb + mongoose  ]
@@ -35,13 +35,13 @@ const MONGO_URL: string = 'mongodb://mongo:27017/UsersDB';
 mongoose.Promise = global.Promise;
 const connectDb = async (): Promise<void> => {
     try {
-      await mongoose.connect(MONGO_URL);
-      console.log('Connected to MongoDB ! 📚');
+        await mongoose.connect(MONGO_URL);
+        console.log('Connected to MongoDB ! 📚');
     } catch (error) {
-      console.error('Error connecting to MongoDB 🍁: ', error);
+        console.error('Error connecting to MongoDB 🍁: ', error);
     }
-  };
-  mongoose.connection.on('error', (error: Error) => 
+};
+mongoose.connection.on('error', (error: Error) =>
     console.error(error)
 );
 

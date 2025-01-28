@@ -2,12 +2,14 @@ version: '3.8'
 
 services:
 
-#  [  Back  ]  # 
+  #  [  Back  ]  # 
   web_server:
     container_name: back_server
     build: ./backend/node_api/
     restart: unless-stopped
-    # volumes:
+    env_file:
+      - ./.env
+      # volumes:
       # - ./backend/php/:/var/www/html/
     ports:
       - 8080:8080
@@ -18,15 +20,18 @@ services:
       # - db_manager
 
   mongo:
+    container_name: mongo_db
     image: mongo:latest
     restart: unless-stopped
+    env_file:
+      - ./.env
     ports:
       - 27017:27017
     volumes:
       # - ./backend/mongodb/volume:/data/db
-        - mongo-data:/data/db
-      # - ./backend/db_volume/:/var/lib/mysql/
-      # - ./backend/mysql/:/docker-entrypoint-initdb.d
+      - mongo-data:/data/db
+    # - ./backend/db_volume/:/var/lib/mysql/
+    # - ./backend/mysql/:/docker-entrypoint-initdb.d
     # environment:
     #   - MYSQL_ROOT_PASSWORD=MonRootyPass
     #   - MYSQL_DATABASE=camagru_db
@@ -35,21 +40,21 @@ services:
     # networks:
     #   - camagru_back_network
 
-  # db_manager:
-  #   container_name: phpmyadmin
-  #   image: phpmyadmin:5.2.1
-  #   restart: always
-  #   ports:
-  #     - 8080:80
-  #   environment:
-  #     - PMA_HOST=db #Set le container 'db' as Host
-  #     - PMA_PORT=3306
-  #   networks:
-  #     - camagru_back_network
-  #   depends_on:
-  #     - db
+    # db_manager:
+    #   container_name: phpmyadmin
+    #   image: phpmyadmin:5.2.1
+    #   restart: always
+    #   ports:
+    #     - 8080:80
+    #   environment:
+    #     - PMA_HOST=db #Set le container 'db' as Host
+    #     - PMA_PORT=3306
+    #   networks:
+    #     - camagru_back_network
+    #   depends_on:
+    #     - db
 
-#  [  Front  ]  # 
+    #  [  Front  ]  # 
   front:
     container_name: front-next.js
     build: ./frontend/

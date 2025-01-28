@@ -22,7 +22,7 @@ export default function SignUp() {
     }
 
     try {
-      const response = await fetch('http://localhost/api/signup', {
+      const response = await fetch('http://localhost:8080/api/signup', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -34,7 +34,7 @@ export default function SignUp() {
 
       if (response.ok) {
         router.push('/mainIn');
-      } 
+      }
       else {
         setError(data.message || 'An error occurred during sign up');
       }
@@ -49,9 +49,9 @@ export default function SignUp() {
     <div className="max-w-md mx-auto mt-10">
       <h2 className="text-2xl font-bold mb-4 text-center">Sign Up</h2>
       {error && <p className="text-red-500 text-center mb-4">{error}</p>}
-      
+
       <form onSubmit={handleSubmit} className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
-        
+
         <div className="mb-4">
           <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="username">
             Username
@@ -81,7 +81,7 @@ export default function SignUp() {
             required
           />
         </div>
-        
+
         <div className="mb-4">
           <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="password">
             Password
@@ -96,7 +96,7 @@ export default function SignUp() {
             required
           />
         </div>
-        
+
         <div className="mb-6">
           <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="confirm-password">
             Confirm Password
@@ -111,7 +111,7 @@ export default function SignUp() {
             required
           />
         </div>
-        
+
         <div className="flex items-center justify-between">
           <Button type="submit" className="bg-green-500 hover:bg-green-700 text-white">
             Sign Up
