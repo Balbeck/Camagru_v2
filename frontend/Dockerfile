@@ -1,4 +1,5 @@
-FROM node:18
+# FROM node:18
+FROM node:20-alpine
 
 WORKDIR /app 
 
@@ -7,7 +8,7 @@ COPY ./front-react .
 RUN npm install
 RUN npm run build
 
-EXPOSE 3000
+EXPOSE 80
 
 # Dev for auto rebuilt on file change
 CMD [ "npm", "run", "dev" ]

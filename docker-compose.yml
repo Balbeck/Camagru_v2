@@ -6,27 +6,27 @@ services:
   web_server:
     container_name: back_server
     build: ./backend/node_api/
-    restart: unless-stopped
-    env_file:
-      - ./.env
-      # volumes:
-      # - ./backend/php/:/var/www/html/
+    env_file: .env
+    # volumes:
+    # - ./backend/php/:/var/www/html/
     ports:
-      - 8080:8080
-    # networks:
-    #   - camagru_back_network
+      - ${SERVER_PORT}:3000
+    networks:
+      - camagru_back_network
+    restart: unless-stopped
+    # [ Condition du HealthCheck ! ]
     depends_on:
-      - mongo
-      # - db_manager
+      mongo:
+        conndition: service_healthy
+
+
 
   mongo:
     container_name: mongo_db
-    image: mongo:latest
-    restart: unless-stopped
-    env_file:
-      - ./.env
+    image: mongo:8.0
+    env_file: .env
     ports:
-      - 27017:27017
+      - ${MONGO_PORT}:${MONGO_PORT}
     volumes:
       # - ./backend/mongodb/volume:/data/db
       - mongo-data:/data/db
@@ -37,30 +37,25 @@ services:
     #   - MYSQL_DATABASE=camagru_db
     #   - MYSQL_USER=serviceMan
     #   - MYSQL_PASSWORD=psw
-    # networks:
-    #   - camagru_back_network
+    networks:
+      - camagru_back_network
+    # [ ping 5 fois la db a interval de 5 secondes pour check quelle est bien up ! ]
+    healthcheck:
+      test: ["CDM-SHELL", "pg_isready -p ${MONGO_PORT} -U ${MONGO_USER} -d ${MONGO_DB}"]
+      interval: 5s
+      timeout: 5s
+      retry: 5
 
-    # db_manager:
-    #   container_name: phpmyadmin
-    #   image: phpmyadmin:5.2.1
-    #   restart: always
-    #   ports:
-    #     - 8080:80
-    #   environment:
-    #     - PMA_HOST=db #Set le container 'db' as Host
-    #     - PMA_PORT=3306
-    #   networks:
-    #     - camagru_back_network
-    #   depends_on:
-    #     - db
+
 
     #  [  Front  ]  # 
   front:
     container_name: front-next.js
     build: ./frontend/
-    restart: unless-stopped
+    env_file: .env
     ports:
-      - 3000:3000
+      - ${FRONT_PORT}:3000
+    restart: unless-stopped
     depends_on:
       - web_server
     volumes:

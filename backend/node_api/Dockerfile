@@ -1,5 +1,4 @@
-# FROM node:alpine tester avec avantr last stable de node alpine :) 
-FROM node:18
+FROM node:23.6-alpine3.2.0
 WORKDIR /app
 COPY ./package.json .
 COPY ./nodemon.json .
