@@ -8,6 +8,11 @@ import compression from 'compression';
 import cors from 'cors';
 import mongoose from 'mongoose';
 
+import dotenv from 'dotenv';
+dotenv.config();
+const port = process.env.BACKEND_PORT || 8080;
+
+
 const app = express()
 
 app.use(cors({
@@ -20,13 +25,29 @@ app.use(bodyParser.json());
 
 const server = http.createServer(app)
 
-server.listen(8080, () => {
-    console.log(' 🐳 Server is running 🌏n http://localhost:8080/ 🚀')
+server.listen(port, () => {
+    console.log(" 🐳 Server is running 🌏n http://localhost:${port}/ 🚀")
 })
 
-// [  -Init-   Mangodb + mongoose  ]
+// [  -Init-   Mongodb + mongoose  ]
+// const mongoose = require('mongoose');
+const MONGO_URL: string = 'mongodb://mongo:27017/UsersDB';
+mongoose.Promise = global.Promise;
+const connectDb = async (): Promise<void> => {
+    try {
+      await mongoose.connect(MONGO_URL);
+      console.log('Connected to MongoDB ! 📚');
+    } catch (error) {
+      console.error('Error connecting to MongoDB 🍁: ', error);
+    }
+  };
+  mongoose.connection.on('error', (error: Error) => 
+    console.error(error)
+);
+
+export default connectDb;
+
+
 // const MONGO_URL = ''
-// mongoose.Promise = Promise;
-// mongoose.connect(MONGO_URL)
-// mongoose.connection.on('error', (error: Error) => console.log(error));
+// mongoose.connect(MONGO_URL);
 
