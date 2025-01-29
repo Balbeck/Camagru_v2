@@ -6,12 +6,19 @@ import bodyParser from 'body-parser';
 import cookieParser from 'cookie-parser';
 import compression from 'compression';
 import cors from 'cors';
-import mongoose from 'mongoose';
+
+// import mongoose from 'mongoose';
+import { connectMongoDb } from 'db_config/connectMongoDb';
+
+// import Interface for typescript
+import { IUser } from 'schemas/userSchema';
 
 import dotenv from 'dotenv';
 dotenv.config();
 const port: number = parseInt(process.env.BACKEND_PORT);
 
+
+// - - - [ Create App ] - - -
 const app: Express = express();
 
 app.use(cors({
@@ -20,29 +27,7 @@ app.use(cors({
 app.use(compression());
 app.use(cookieParser());
 app.use(bodyParser.json());
-app.use(express.json());        // Middleware
-
-// const server = http.createServer(app)
-// server.listen(port, () => {
-//     console.log(` 🐳 Back Server is running 🌏n http://localhost:${port}/ 🚀`)
-// })
-
-
-// [ Connection to Mongo DB ]
-const connectDB = async (): Promise<void> => {
-    try {
-        await mongoose.connect(process.env.MONGO_URI);
-        console.log(' 📚 Connecté à MongoDB ! 📚 ');
-    } catch (err) {
-        console.error(' 🍁 Erreur de connexion à MongoDB 🍁 : ', err);
-        // process.exit(1);
-    }
-};
-mongoose.connection.on('error', (error: Error) =>
-    console.error(error)
-);
-
-
+app.use(express.json());        
 
 
 
@@ -61,7 +46,7 @@ app.post('/test', (req: Request, res: Response) => {
 // Exemple de route asynchrone
 app.get('/users', async (req: Request, res: Response) => {
     try {
-        const users = await User.find();
+        const users = await User<IUser>.find();
         res.json(users);
     } catch (err) {
         res.status(500).json({ message: 'Erreur lors de la récupération des utilisateurs', error: err });
@@ -73,10 +58,9 @@ app.get('/users', async (req: Request, res: Response) => {
 
 
 
-
 // -- -- --  [  Launch Server  ]  -- -- --
 const startServer = async (): Promise<void> => {
-    await connectDB();
+    await connectMongoDb();
     app.listen(port, () => {
         console.log(` 🐳 Back Server is running 🌏n http://localhost:${port}/ 🚀`);
     });
@@ -86,4 +70,8 @@ startServer().catch((err) => {
     console.error('Erreur lors du démarrage du serveur:', err);
 });
 
-export default connectDB;
+// const server = http.createServer(app)
+// server.listen(port, () => {
+//     console.log(` 🐳 Back Server is running 🌏n http://localhost:${port}/ 🚀`)
+// })
+
