@@ -42,37 +42,9 @@ mongoose.connection.on('error', (error: Error) =>
     console.error(error)
 );
 
-// [  S c h e m a s  ]
-const userSchema = new mongoose.Schema({
-    name: String,
-    email: String,
-    // Ajoutez d'autres champs selon vos besoins
-});
 
-const imageSchema = new mongoose.Schema({
-    url: String,
-    description: String,
-    // Ajoutez d'autres champs selon vos besoins
-});
 
-const commentSchema = new mongoose.Schema({
-    text: String,
-    user: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
-    image: { type: mongoose.Schema.Types.ObjectId, ref: 'Image' },
-    // Ajoutez d'autres champs selon vos besoins
-});
 
-const likeSchema = new mongoose.Schema({
-    user: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
-    image: { type: mongoose.Schema.Types.ObjectId, ref: 'Image' },
-    // Ajoutez d'autres champs selon vos besoins
-});
-
-// [  Création des modèles  ]
-const User = mongoose.model('User', userSchema);
-const Image = mongoose.model('Image', imageSchema);
-const Comment = mongoose.model('Comment', commentSchema);
-const Like = mongoose.model('Like', likeSchema);
 
 
 
@@ -95,6 +67,11 @@ app.get('/users', async (req: Request, res: Response) => {
         res.status(500).json({ message: 'Erreur lors de la récupération des utilisateurs', error: err });
     }
 });
+
+
+
+
+
 
 
 // -- -- --  [  Launch Server  ]  -- -- --
