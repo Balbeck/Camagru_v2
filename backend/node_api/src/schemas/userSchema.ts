@@ -1,6 +1,22 @@
-const mongoose = require('mongoose');
+import mongoose, { Schema, Document } from 'mongoose'
 
-const userSchema = new mongoose.Schema({
+// Ajout d' Interface pour clarete et typage de typescript
+interface IUser extends Document {
+    _id: mongoose.Types.ObjectId;
+    username: string;
+    email: string;
+    password: string;
+    profilePicture: string;
+    bio?: string;
+    createdAt: Date;
+    updatedAt: Date;
+}
+
+const userSchema: Schema = new mongoose.Schema({
+    _id: {
+        type: Schema.Types.ObjectId,
+        auto: true
+    },
     username: { 
         type: String, 
         unique: true,
@@ -33,4 +49,8 @@ const userSchema = new mongoose.Schema({
     },
 });
 
-module.exports.User = mongoose.model('User', userSchema);
+// Modele (Schema)
+const User = mongoose.model<IUser>('User', userSchema);
+export { User, IUser };
+
+// module.exports.User = mongoose.model('User', userSchema);

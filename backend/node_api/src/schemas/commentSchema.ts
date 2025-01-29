@@ -1,6 +1,19 @@
-import mongoose, { Schema } from "mongoose";
+import mongoose, { Schema, Document } from "mongoose";
 
-const commentSchema = new Schema({
+interface IComment extends Document {
+    _id: mongoose.Types.ObjectId;
+    user: mongoose.Types.ObjectId;
+    image: mongoose.Types.ObjectId;
+    text: string;
+    createdAt: Date;
+    updateddAt: Date;
+}
+
+const commentSchema: Schema = new Schema({
+    _id: {
+        type: mongoose.Types.ObjectId,
+        auto: true
+    },
     user: {
         type: Schema.Types.ObjectId,
         ref: 'User',
@@ -25,4 +38,8 @@ const commentSchema = new Schema({
     }
 });
 
-module.exports.Comment = mongoose.model('Comment', commentSchema);
+// Creation Modele pour export
+const Comment = mongoose.model<IComment>('Comment', commentSchema);
+export { Comment, IComment };
+
+// module.exports.Comment = mongoose.model('Comment', commentSchema);
