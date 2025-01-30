@@ -1,9 +1,9 @@
-FROM node:23.6-alpine
+FROM node:22.13.1
 WORKDIR /app
 COPY ./package.json .
 COPY ./nodemon.json .
 COPY ./tsconfig.json .
-# COPY ./package-lock.json .
+RUN rm -rf node_modules package-lock.json
 RUN npm install
 COPY . .
 EXPOSE 8080
