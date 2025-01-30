@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+import mongoose from 'mongoose';
 
 // [ Connection to Mongo DB ]
 const connectMongoDb = async (): Promise<void> => {
@@ -7,12 +7,9 @@ const connectMongoDb = async (): Promise<void> => {
         console.log(' 📚 Connecté à MongoDB ! 📚 ');
     } catch (err) {
         console.error(' 🍁 Erreur de connexion à MongoDB 🍁 : ', err);
-        // process.exit(1);
+        process.exit(1);
     }
 };
-mongoose.connection.on('error', (error: Error) =>
-    console.error(error)
-);
 
-export { connectMongoDb };
-// export default connectMongoDb;
+// export { connectMongoDb };
+export default connectMongoDb;

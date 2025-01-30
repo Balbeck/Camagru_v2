@@ -6,7 +6,7 @@ import compression from 'compression';
 import cors from 'cors';
 
 // import mongoose from 'mongoose';
-import { connectMongoDb } from 'db_config/connectMongoDb';
+import connectMongoDb from './db_config/connectMongoDb';
 
 // import Interface for typescript
 import { IUser } from 'schemas/userSchema';
@@ -27,7 +27,7 @@ app.use(cors({
 app.use(compression());
 app.use(cookieParser());
 app.use(bodyParser.json());
-app.use(express.json());        
+app.use(express.json());
 
 app.use('/user', userRoutes);
 
