@@ -15,3 +15,4 @@ mongoose.connection.on('error', (error: Error) =>
 );
 
 export { connectMongoDb };
+// export default connectMongoDb;

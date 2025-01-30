@@ -1,11 +1,22 @@
-// const User = require('../schemas/userSchema');
-// const bcrypt = require('bcrypt');
-import { User } from '../schemas/userSchema'
+import { User, IUser } from '../schemas/userSchema'
 import bcrypt from 'bcrypt';
 
-
-exports.registerUser = async (userData: any): Promise<User> => {
+export const createUser = async (userData: Partial<IUser>): Promise<IUser> => {
+    // Verif si le User existe deja
+    const existingUser = await User.findOne({ $or: [{email: String}, {username: String}] });
+    if (existingUser) {
+        if (existingUser.email === userData.email) {
+            throw new Error('EMAIL_ALREADY_EXISTS');
+        } else {
+            throw new Error('USERNAME_ALREADY_EXISTS')
+        }
+    }
+    // Hash le password
     const hashedPasword = await bcrypt.hash(userData.password, 10);
-    const user = await new User( { ...userData, password : hashedPasword } );
-    return await user.save();
+    // Creer le new object (Schema) User
+    const newUser = new User({
+        ...userData,
+        password: hashedPasword,
+    });
+    return await newUser.save()
 };

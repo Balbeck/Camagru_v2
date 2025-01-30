@@ -10,6 +10,7 @@ interface IUser extends Document {
     bio?: string;
     createdAt: Date;
     updatedAt: Date;
+    emailConfirmed: Boolean;
 }
 
 const userSchema: Schema = new mongoose.Schema({
@@ -47,6 +48,10 @@ const userSchema: Schema = new mongoose.Schema({
         type: Date, 
         default: Date.now
     },
+    emailConfirmed: {
+        type: Boolean,
+        default: false
+    }
 });
 
 // Modele (Schema)

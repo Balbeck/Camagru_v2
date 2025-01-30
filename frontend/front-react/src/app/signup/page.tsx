@@ -22,7 +22,7 @@ export default function SignUp() {
     }
 
     try {
-      const response = await fetch('http://localhost:3000/test', {
+      const response = await fetch('http://localhost:3000/user/register', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
