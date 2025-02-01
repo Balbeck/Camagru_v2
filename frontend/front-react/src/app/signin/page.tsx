@@ -24,9 +24,12 @@ export default function SignIn() {
       });
 
       const data = await response.json();
+      console.log(` [ 🥝 Sign Up ] data: ${data}`)
+
 
       if (response.ok) {
         localStorage.setItem('jwt', data.jwt);
+        console.log(` [ 🥝 Sign Up ] data.jwt: ${data.jwt}`)
         router.push('/mainIn');
       } else {
         setError(data.message || 'An error occurred during sign in');

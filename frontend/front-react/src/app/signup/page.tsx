@@ -31,8 +31,10 @@ export default function SignUp() {
       });
 
       const data = await response.json();
+      console.log(` [ 🥝 Sign Up ] data: ${data}`)
 
       if (response.ok) {
+        console.log(` [ 🥝 Sign Up ] data.jwt: ${data.jwt}`)
         localStorage.setItem('jwt', data.jwt);
         router.push('/mainIn');
       }
