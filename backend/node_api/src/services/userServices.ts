@@ -32,3 +32,12 @@ export const createUser = async (body: any): Promise<IUser> => {
         throw err;
     }
 };
+
+export const findUserByEmail = async (email: string): Promise<IUser> => {
+        const user = await User.findOne({ email });
+        if (!user) {
+            throw new Error('USER_NOT_FOUND');
+        }
+        return user;
+};
+

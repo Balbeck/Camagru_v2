@@ -15,7 +15,7 @@ export default function SignIn() {
     setError('');
 
     try {
-      const response = await fetch('http://localhost/api/signin', {
+      const response = await fetch('http://localhost/user/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

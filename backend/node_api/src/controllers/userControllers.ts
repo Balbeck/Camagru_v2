@@ -25,6 +25,21 @@ export const register = async (req: Request, res: Response) => {
 
 
 export const login = async (req: Request, res: Response) => {
+    try{
+        const user = await UserService.findUserByEmail(req.body.email);
+        // logic pour renvoyer au front le new user + JWT
+    } catch (error: any) {
+        if (error.message === 'USER_NOT_FOUND') {
+            res.status(404).json({ message: 'User not found' });
+        } else if (error.message === 'INVALID_PASSWORD') {
+            res.status(400).json({ message: 'Invalid password' });
+        } else {
+            res.status(500).json({ message: 'Internal Server Error' });
+        }
+    }
+};
+
+export const forgot_password = async (req: Request, res: Response) => {
 
 };
 
