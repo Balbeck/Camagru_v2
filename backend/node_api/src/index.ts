@@ -18,6 +18,7 @@ const port: number = parseInt(process.env.BACKEND_PORT);
 const app: Express = express();
 
 app.use(cors({
+    origin: 'http://localhost:8080',
     credentials: true,
 }));
 app.use(compression());

@@ -1,5 +1,5 @@
 import { User, IUser } from '../schemas/userSchema'
-import bcrypt, { hash } from 'bcrypt';
+import bcrypt from 'bcrypt';
 
 export const createUser = async (body: any): Promise<IUser> => {
     try {
@@ -34,16 +34,19 @@ export const createUser = async (body: any): Promise<IUser> => {
 };
 
 export const findUserByEmail = async (body: any): Promise<IUser> => {
-        const foundUser = await User.findOne({ email: body.email.trim() });
+        console.log(` 🚀 [ findUserByEmail Srvc ]: body: ${body}`);
+        const foundUser = await User.findOne({ email: body.email });
         if (!foundUser) {
             throw new Error('USER_NOT_FOUND');
         }
-        // Verif password
-        const hashedPassword = await bcrypt.hash(body.password, 10);
-        console.log(` 🚀 newHash: ${hashedPassword} \n 🚀 db-Hash: ${foundUser.password}`);
-        if (hashedPassword !== foundUser.password) {
+        console.log(` 🚀 [ findUserByEmail Srvc ]: UserFound: ${body.email}`);
+        const hashComparison = await bcrypt.compare(body.password, foundUser.password);
+        if (!hashComparison) {
+            console.log(` 🚀 [ findUserByEmail Srvc ]: Hash Comparison ❌ `);
             throw new Error('INVALID_PASSWORD');
         }
+        console.log(` 🚀 [ findUserByEmail Srvc ]: Hash Comparison ✅ `);
+
         return foundUser;
 };
 
