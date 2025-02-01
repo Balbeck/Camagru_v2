@@ -7,8 +7,8 @@ services:
     container_name: back_server
     build: ./backend/node_api/
     env_file: .env
-    # volumes:
-    # - ./backend/php/:/var/www/html/
+    volumes:
+      - ./backend/node_api:/app
     ports:
       - ${SERVER_PORT}:3000
     networks:
@@ -17,6 +17,7 @@ services:
     depends_on:
       - mongo
 
+#  [  D B  ]  # 
   mongo:
     container_name: mongo_db
     image: mongo:8.0
@@ -26,8 +27,6 @@ services:
     volumes:
       # - ./backend/mongodb/volume:/data/db
       - mongo-data:/data/db
-    # - ./backend/db_volume/:/var/lib/mysql/
-    # - ./backend/mysql/:/docker-entrypoint-initdb.d
     networks:
       - camagru_back_network
     restart: always

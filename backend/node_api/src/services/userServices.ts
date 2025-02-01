@@ -1,5 +1,5 @@
 import { User, IUser } from '../schemas/userSchema'
-import bcrypt from 'bcrypt';
+import bcrypt, { hash } from 'bcrypt';
 
 export const createUser = async (body: any): Promise<IUser> => {
     try {
@@ -33,10 +33,17 @@ export const createUser = async (body: any): Promise<IUser> => {
     }
 };
 
-export const findUserByEmail = async (email: string): Promise<IUser> => {
-        const user = await User.findOne({ email });
+export const findUserByEmail = async (body: any): Promise<IUser> => {
+        const password = body.password;
+        const user = await User.findOne({ email: body.email });
         if (!user) {
             throw new Error('USER_NOT_FOUND');
+        }
+        // Verif password
+        const hashedPassword = await bcrypt.hash(user.password, 10);
+        console.log(` 🚀 newHash: ${hashedPassword} \n 🚀 db-Hash: ${user.password}`);
+        if (hashedPassword !== user.password) {
+            throw new Error('INVALID_PASSWORD');
         }
         return user;
 };

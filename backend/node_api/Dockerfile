@@ -7,4 +7,5 @@ RUN rm -rf node_modules package-lock.json
 RUN npm install
 COPY . .
 EXPOSE 8080
+# Modif package.json poru enlever le script start a la fin du Dev
 CMD ["npm", "start"]

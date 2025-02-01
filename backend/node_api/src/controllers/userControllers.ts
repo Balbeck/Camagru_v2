@@ -26,7 +26,9 @@ export const register = async (req: Request, res: Response) => {
 
 export const login = async (req: Request, res: Response) => {
     try{
+        console.log(' 🦄 [ Login Ctrl ] req.body: ', req.body);
         const user = await UserService.findUserByEmail(req.body.email);
+        console.log(` 🦄 [ Login Ctrl ] User Found: ${user.username.toString()} ${user._id.toString()}`);
         // logic pour renvoyer au front le new user + JWT
     } catch (error: any) {
         if (error.message === 'USER_NOT_FOUND') {
@@ -47,6 +49,6 @@ export const logout = async (req: Request, res: Response) => {
 
 };
 
-export const update_settings = async (req: Request, res: Response) => {
+export const update_user_infos = async (req: Request, res: Response) => {
 
 };
