@@ -5,9 +5,9 @@ import * as AuthJwt from '../middlewares/authMiddleware';
 export const register = async (req: Request, res: Response) => {
     try {
 
-        console.log('req.body: ', req.body);
+        console.log(' 🦄 [ register Ctrl ] req.body: ', req.body);
         const newUser = await UserService.createUser(req.body);
-        console.log(` 🦄 newUser Created: ${newUser.username.toString()} ${newUser._id.toString()}`)
+        console.log(` 🦄 [ register Ctrl ] newUser Created: ${newUser.username.toString()} ${newUser._id.toString()}`)
         const jwt = AuthJwt.generateJwt(newUser._id.toString());
         res.status(201).json({ newUser, jwt });
 

@@ -34,17 +34,16 @@ export const createUser = async (body: any): Promise<IUser> => {
 };
 
 export const findUserByEmail = async (body: any): Promise<IUser> => {
-        const password = body.password;
-        const user = await User.findOne({ email: body.email });
-        if (!user) {
+        const foundUser = await User.findOne({ email: body.email.trim() });
+        if (!foundUser) {
             throw new Error('USER_NOT_FOUND');
         }
         // Verif password
-        const hashedPassword = await bcrypt.hash(user.password, 10);
-        console.log(` 🚀 newHash: ${hashedPassword} \n 🚀 db-Hash: ${user.password}`);
-        if (hashedPassword !== user.password) {
+        const hashedPassword = await bcrypt.hash(body.password, 10);
+        console.log(` 🚀 newHash: ${hashedPassword} \n 🚀 db-Hash: ${foundUser.password}`);
+        if (hashedPassword !== foundUser.password) {
             throw new Error('INVALID_PASSWORD');
         }
-        return user;
+        return foundUser;
 };
 
