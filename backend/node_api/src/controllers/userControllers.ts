@@ -1,5 +1,4 @@
 import { Request, Response } from 'express';
-import cookie from 'cookie';
 import * as UserService from '../services/userServices';
 import * as AuthJwt from '../middlewares/authMiddleware';
 
@@ -12,13 +11,7 @@ export const register = async (req: Request, res: Response) => {
         
         const jwt = AuthJwt.generateJwt(newUser._id.toString());
 
-        res.setHeader('Set-Cookie', cookie.serialize('token', jwt, {
-            httpOnly: true,  // Empêche l'accès par JavaScript
-            maxAge: 60 * 60,  // Durée de validité (1 heure ici)
-            path: '/',
-            sameSite: 'strict'  // Sécurise le cookie contre CSRF
-          }));
-        res.status(201).json({ message: 'User created and authentified' });
+        res.status(201).json({ message: 'User created and authentified', jwt: jwt });
 
     } catch (error: any) {
         if (error.message === 'EMAIL_ALREADY_EXISTS') {
@@ -41,13 +34,7 @@ export const login = async (req: Request, res: Response) => {
         
         const jwt = AuthJwt.generateJwt(user._id.toString());
         
-        res.setHeader('Set-Cookie', cookie.serialize('token', jwt, {
-            httpOnly: true,  // Empêche l'accès par JavaScript
-            maxAge: 60 * 60,  // Durée de validité (1 heure ici)
-            path: '/',
-            sameSite: 'strict'  // Sécurise le cookie contre CSRF
-          }));
-        res.status(201).json({ message: 'User authentified' });
+        res.status(201).json({ message: 'User authentified', jwt: jwt });
     
     } catch (error: any) {
         if (error.message === 'USER_NOT_FOUND') {

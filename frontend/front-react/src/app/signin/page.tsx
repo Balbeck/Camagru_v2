@@ -21,12 +21,12 @@ export default function SignIn() {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({ email, password }),
-        credentials: 'include',
       });
 
       const data = await response.json();
 
       if (response.ok) {
+        localStorage.setItem('jwt', data.jwt);
         router.push('/mainIn');
       } else {
         setError(data.message || 'An error occurred during sign in');
