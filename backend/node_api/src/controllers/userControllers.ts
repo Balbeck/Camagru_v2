@@ -5,10 +5,10 @@ import * as AuthJwt from '../middlewares/authMiddleware';
 export const register = async (req: Request, res: Response) => {
     try {
 
-        console.log(' 🦄 [ register Ctrl ] req.body: ', req.body);
+        console.log(' 🦄 [C]*register ] req.body: ', req.body);
         const newUser = await UserService.createUser(req.body);
-        console.log(` 🦄 [ register Ctrl ] newUser Created: ${newUser.username.toString()} ${newUser._id.toString()}`)
-        
+        console.log(` 🦄 [C]*register ] newUser Created: ${newUser.username.toString()} ${newUser._id.toString()}`)
+
         const jwt = AuthJwt.generateJwt(newUser._id.toString());
 
         res.status(201).json({ message: 'User created and authentified', jwt: jwt });
@@ -27,22 +27,22 @@ export const register = async (req: Request, res: Response) => {
 
 
 export const login = async (req: Request, res: Response) => {
-    try{
-        console.log(' 🦄 [ Login Ctrl ] req.body: ', req.body);
-        const user = await UserService.findUserByEmail(req.body);
-        console.log(` 🦄 [ Login Ctrl ] User Found: ${user.username.toString()} ${user._id.toString()}`);
-        
+    try {
+        console.log(' 🦄 [C]*Login ] req.body: ', req.body);
+        const user = await UserService.logInUser(req.body);
+        console.log(` 🦄 [C]*Login ] User Found: ${user.username.toString()} ${user._id.toString()}`);
+
         const jwt = AuthJwt.generateJwt(user._id.toString());
-        
+
         res.status(201).json({ message: 'User authentified', jwt: jwt });
-    
+
     } catch (error: any) {
         if (error.message === 'USER_NOT_FOUND') {
             res.status(404).json({ message: 'User not found' });
         } else if (error.message === 'INVALID_PASSWORD') {
-            res.status(400).json({ message: 'Invalid password' });
+            res.status(404).json({ message: 'Invalid password' });
         } else {
-            console.log(' 🦄 [ Login Ctrl ] error: ', error);
+            console.log(' 🦄 [C]*Login ] error: ', error);
             res.status(500).json({ message: error.message });
         }
     }

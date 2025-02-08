@@ -8,7 +8,7 @@ COPY ./front-react .
 RUN npm install
 RUN npm run build
 
-EXPOSE 80
+EXPOSE 8080
 
 # Dev for auto rebuilt on file change
 CMD [ "npm", "run", "dev" ]
