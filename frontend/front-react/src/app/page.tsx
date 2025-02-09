@@ -1,3 +1,23 @@
+import Button from '@/components/Button';
+
+export default function Home() {
+  return (
+    <div className="text-center">
+      <p className="text-xl mb-8"> Hell🌏  W🌳r🌱d !</p>
+      <div className="flex justify-center space-x-4">
+        <Button href="/signup" className="bg-blue-500 hover:bg-blue-600 text-white">
+          Sign Up
+        </Button>
+        <Button href="/signin" className="bg-green-500 hover:bg-green-600 text-white">
+          Sign In
+        </Button>
+      </div>
+    </div>
+  );
+}
+
+
+
 // import Image from "next/image";
 
 // export default function Home() {
@@ -98,21 +118,3 @@
 //     </div>
 //   );
 // }
-
-import Button from '@/components/Button';
-
-export default function Home() {
-  return (
-    <div className="text-center">
-      <p className="text-xl mb-8">Voici le Main pour le moment</p>
-      <div className="flex justify-center space-x-4">
-        <Button href="/signup" className="bg-blue-500 hover:bg-blue-600 text-white">
-          Sign Up
-        </Button>
-        <Button href="/signin" className="bg-green-500 hover:bg-green-600 text-white">
-          Sign In
-        </Button>
-      </div>
-    </div>
-  );
-}

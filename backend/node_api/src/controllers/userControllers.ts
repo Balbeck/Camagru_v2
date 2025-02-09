@@ -2,16 +2,24 @@ import { Request, Response } from 'express';
 import * as UserService from '../services/userServices';
 import * as AuthJwt from '../middlewares/authMiddleware';
 
-export const register = async (req: Request, res: Response) => {
+const tokenName: string = "Cama";
+
+export const register = async (req: Request, res: Response): Promise<void> => {
     try {
 
         console.log(' 🦄 [C]*register ] req.body: ', req.body);
         const newUser = await UserService.createUser(req.body);
         console.log(` 🦄 [C]*register ] newUser Created: ${newUser.username.toString()} ${newUser._id.toString()}`)
 
-        const jwt = AuthJwt.generateJwt(newUser._id.toString());
+        const token = AuthJwt.generateJwt(newUser._id.toString());
+        res.cookie(tokenName, token, {
+            httpOnly: true,
+            sameSite: "strict",
+            secure: false,
+            maxAge: 24 * 60 * 60 * 1000, // 1j
+        });
 
-        res.status(201).json({ message: 'User created and authentified', jwt: jwt });
+        res.status(201).json({ message: 'User created and authentified', jwt: token });
 
     } catch (error: any) {
         if (error.message === 'EMAIL_ALREADY_EXISTS') {
@@ -26,15 +34,21 @@ export const register = async (req: Request, res: Response) => {
 
 
 
-export const login = async (req: Request, res: Response) => {
+export const login = async (req: Request, res: Response): Promise<void> => {
     try {
         console.log(' 🦄 [C]*Login ] req.body: ', req.body);
         const user = await UserService.logInUser(req.body);
         console.log(` 🦄 [C]*Login ] User Found: ${user.username.toString()} ${user._id.toString()}`);
 
-        const jwt = AuthJwt.generateJwt(user._id.toString());
+        const token = AuthJwt.generateJwt(user._id.toString());
+        res.cookie(tokenName, token, {
+            httpOnly: true,
+            sameSite: "strict",
+            secure: false,
+            maxAge: 24 * 60 * 60 * 1000, // 1j
+        });
 
-        res.status(201).json({ message: 'User authentified', jwt: jwt });
+        res.status(201).json({ message: 'User authentified', jwt: token });
 
     } catch (error: any) {
         if (error.message === 'USER_NOT_FOUND') {
@@ -48,13 +62,21 @@ export const login = async (req: Request, res: Response) => {
     }
 };
 
+
+
+export const logout = async (req: Request, res: Response): Promise<void> => {
+    res.clearCookie(tokenName);
+    res.status(201);
+    res.json({ message: "Déconnexion réussie !" });
+};
+
+
+
 export const forgot_password = async (req: Request, res: Response) => {
 
 };
 
-export const logout = async (req: Request, res: Response) => {
 
-};
 
 export const update_user_infos = async (req: Request, res: Response) => {
 

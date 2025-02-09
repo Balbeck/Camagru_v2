@@ -28,6 +28,7 @@ export default function SignUp() {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({ username, email, password }),
+        credentials: 'include',
       });
 
       const data = await response.json();
@@ -35,7 +36,7 @@ export default function SignUp() {
 
       if (response.ok) {
         console.log(` [ 🥝 Sign Up ] data.jwt: ${data.jwt}`)
-        localStorage.setItem('jwt', data.jwt);
+        // localStorage.setItem('jwt', data.jwt);
         router.push('/mainIn');
       }
       else {

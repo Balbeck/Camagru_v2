@@ -21,14 +21,15 @@ export default function SignIn() {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({ email, password }),
+        credentials: 'include',
       });
 
       const data = await response.json();
-      console.log(` [ 🥝 Sign Up ] data: ${data}`)
+      console.log(` [ 🥝 Sign Up ] response.json(): ${data}`)
 
 
       if (response.ok) {
-        localStorage.setItem('jwt', data.jwt);
+        // localStorage.setItem('jwt', data.jwt);
         console.log(` [ 🥝 Sign Up ] data.jwt: ${data.jwt}`)
         router.push('/mainIn');
       } else {
