@@ -72,6 +72,22 @@ export const logout = async (req: Request, res: Response): Promise<void> => {
 
 
 
+export const get_me = async (req: Request, res: Response): Promise<void> => {
+    try {
+        console.log(' 🪆 [C]*getMe ] req.user: ', req.user);
+        const foundUser = await UserService.getUser_by_id(req.user.id);
+        console.log(' 🪆 [C]*getMe ] foundUser: ', foundUser);
+        if (!foundUser) {
+            res.status(404).json({ message: "Utilisateur non trouvé" });
+        }
+        res.status(201).json(foundUser);
+
+    } catch (error) {
+        res.status(500).json({ message: "Erreur serveur" });
+    }
+};
+
+
 export const forgot_password = async (req: Request, res: Response) => {
 
 };
@@ -79,5 +95,10 @@ export const forgot_password = async (req: Request, res: Response) => {
 
 
 export const update_infos = async (req: Request, res: Response) => {
-
+    try {
+        console.log(' 🌱 [C]*Up_Infos ] req.body: ', req.body);
+        console.log(' 🌱 [C]*Up_Infos ] req.user: ', req.user);
+    } catch (error) {
+        res.status(500).json({ message: "Erreur serveur" });
+    }
 };

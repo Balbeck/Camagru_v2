@@ -56,3 +56,6 @@ export const logInUser = async (body: any): Promise<IUser> => {
     return foundUser;
 };
 
+export const getUser_by_id = async (id: string): Promise<IUser> => {
+    return (await User.findById(id).select("username bio profilePicture"));
+};
