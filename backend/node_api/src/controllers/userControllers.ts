@@ -78,6 +78,6 @@ export const forgot_password = async (req: Request, res: Response) => {
 
 
 
-export const update_user_infos = async (req: Request, res: Response) => {
+export const update_infos = async (req: Request, res: Response) => {
 
 };

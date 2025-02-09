@@ -9,7 +9,7 @@ router.post('/login', UserController.login);
 
 router.post('/logout', verifyToken, UserController.logout);
 
-router.post('/forgotPassword', UserController.forgot_password);
-router.post('/updateUserInfos', UserController.update_user_infos);
+router.post('/forgotPassword', verifyToken, UserController.forgot_password);
+router.post('/updateInfos', verifyToken, UserController.update_infos);
 
 export default router;
