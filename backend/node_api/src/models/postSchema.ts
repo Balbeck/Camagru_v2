@@ -63,8 +63,13 @@ export const createPost = async (userId: mongoose.Types.ObjectId, imageUrl: stri
     return await newPost.save();
 };
 
-export const getLast20Posts = async (): Promise<IPost[]> => {
-    const limit: number = 20;
+export const getPostByPostId = async (postId: mongoose.Types.ObjectId): Promise<IPost | null> => {
+    return await
+        Post.findById(postId).exec();
+};
+
+export const getLastNPosts = async (n: number): Promise<IPost[]> => {
+    const limit: number = n;
     return await
         Post.find()
             .sort({ createdAt: -1 })
@@ -78,6 +83,12 @@ export const getUserPosts = async (userId: mongoose.Types.ObjectId): Promise<IPo
             .sort({ createdAt: -1 })
             .exec();
 
+};
+
+export const updatePostByPostId = async (postId: mongoose.Types.ObjectId, updates: Partial<IPost>): Promise<IPost | null> => {
+    updates.updatedAt = new Date();
+    return await
+        Post.findByIdAndUpdate(postId, updates, { new: true }).exec();
 };
 
 export const deletePost = async (postId: mongoose.Types.ObjectId) => {
