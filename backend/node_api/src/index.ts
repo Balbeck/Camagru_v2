@@ -6,17 +6,20 @@ import compression from 'compression';
 import cors from 'cors';
 
 import connectMongoDb from './db_config/connectMongoDb';
+
 import userRoutes from './routes/userRoutes';
+import postRoutes from 'routes/postRoutes';
 
 import dotenv from 'dotenv';
 dotenv.config();
 const port: number = parseInt(process.env.BACKEND_PORT);
 
 
-
 // - - - [ Create App ] - - -
 const app: Express = express();
 
+
+// - - - [ App Configuration ] - - -
 app.use(cors({
     origin: 'http://localhost:8080',
     credentials: true,
@@ -26,8 +29,10 @@ app.use(cookieParser());
 app.use(bodyParser.json());
 app.use(express.json());
 
+
 // - - - [ Routes ] - - -
 app.use('/user', userRoutes);
+app.use('/post', postRoutes);
 
 
 
@@ -40,5 +45,5 @@ const startServer = async (): Promise<void> => {
 };
 
 startServer().catch((err) => {
-    console.error('Erreur lors du démarrage du serveur:', err);
+    console.error(' [ ❌ ] Erreur lors du démarrage du serveur: -> \n', err);
 });

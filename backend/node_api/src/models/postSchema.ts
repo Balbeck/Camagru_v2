@@ -51,7 +51,7 @@ export { Post, IPost };
 
 
 // - - -[ *  POST  *  -  Related Fcts with DB ]- - -
-export const createPost = async (userId: mongoose.Types.ObjectId, imageUrl: string, title?: string): Promise<IPost> => {
+export const createNewPost = async (userId: mongoose.Types.ObjectId, imageUrl: string, title?: string): Promise<IPost> => {
     const newPost: IPost = new Post({
         userId,
         imageUrl,
