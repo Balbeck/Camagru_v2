@@ -71,21 +71,20 @@ export const logout = async (req: Request, res: Response): Promise<void> => {
 };
 
 
-//  Probleme typage et recuperation req.user.id Vs mongoose.Types.objectId
-// export const get_me = async (req: Request, res: Response): Promise<void> => {
-//     try {
-//         console.log(' 🪆 [C]*getMe ] req.user: ', req.user);
-//         const foundUser = await UserService.getUserById(req.user.id);
-//         console.log(' 🪆 [C]*getMe ] foundUser: ', foundUser);
-//         if (!foundUser) {
-//             res.status(404).json({ message: "Utilisateur non trouvé" });
-//         }
-//         res.status(201).json(foundUser);
+export const get_me = async (req: Request, res: Response): Promise<void> => {
+    try {
+        console.log(' 🪆 [C]*getMe ] req.user: ', req.user);
+        const foundUser = await UserService.getUserById(req.user.id);
+        console.log(' 🪆 [C]*getMe ] foundUser: ', foundUser);
+        if (!foundUser) {
+            res.status(404).json({ message: "Utilisateur non trouvé" });
+        }
+        res.status(201).json(foundUser);
 
-//     } catch (error) {
-//         res.status(500).json({ message: "Erreur serveur" });
-//     }
-// };
+    } catch (error) {
+        res.status(500).json({ message: "Erreur serveur" });
+    }
+};
 
 
 export const forgot_password = async (req: Request, res: Response) => {

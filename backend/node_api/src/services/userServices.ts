@@ -36,6 +36,7 @@ export const createUser = async (body: any): Promise<IUser> => {
     }
 };
 
+
 export const logInUser = async (body: any): Promise<IUser> => {
     try {
         // - -[ * User * Verifications ]- -
@@ -61,67 +62,15 @@ export const logInUser = async (body: any): Promise<IUser> => {
     }
 };
 
-// export const getUserById = async (userId) => {
-//     return await findUserById(userId);
-// };
 
+export const getUserById = async (userId_string: string): Promise<IUser> => {
+    try {
+        const userId = new mongoose.Types.ObjectId(userId_string);
+        const user: IUser = await findUserById(userId);
 
+        return user;
 
-// export const createUser = async (body: any): Promise<IUser> => {
-//     try {
-//         const existingUser = await User.findOne({
-//             $or: [{ email: body.email }, { username: body.username }]
-//         });
-//         if (existingUser) {
-//             if (existingUser.email === body.email) {
-//                 throw new Error('EMAIL_ALREADY_EXISTS');
-//             } else {
-//                 throw new Error('USERNAME_ALREADY_EXISTS')
-//             }
-//         }
-//         console.log(` 🥝 [S]*createU ] User: ${body} Doesnt already exist`)
-
-//         const pass: string = body.password;
-//         console.log(` 🥝 [S]*createU ] body.password: ${pass}`)
-//         const hashedPasword: string = await bcrypt.hash(pass, 10);
-//         // const hashedPasword = await bcrypt.hash(userData.password, 10);
-
-//         // Creer le new object (Schema) User
-//         const newUser = new User({
-//             ...body,
-//             password: hashedPasword,
-//         });
-//         console.log(` 🥝 [S]*createU ] newUser to Create: ${newUser}`);
-
-//         const savedUser = await newUser.save();
-//         console.log(" 🥝 [S]*createU ] ✅ User cree avec succes :", savedUser);
-//         return savedUser;
-
-//     } catch (err: any) {
-//         console.error("❌ Error User Creation :", err.message);
-//         throw err;
-//     }
-
-// };
-
-// export const logInUser = async (body: any): Promise<IUser> => {
-//     console.log(` 🚀 [S]*logInU ] body: ${body}`);
-//     const foundUser = await User.findOne({ email: body.email });
-//     if (!foundUser) {
-//         throw new Error('USER_NOT_FOUND');
-//     }
-//     console.log(` 🚀 [S]*logInU ] UserFound: ${body.email}`);
-
-//     const hashComparison = await bcrypt.compare(body.password, foundUser.passwordHash);
-//     if (!hashComparison) {
-//         console.log(` 🚀 [S]*logInU ] Hash Comparison ❌ `);
-//         throw new Error('INVALID_PASSWORD');
-//     }
-//     console.log(` 🚀 [S]*logInU ] Hash Comparison ✅ `);
-
-//     return foundUser;
-// };
-
-// export const getUser_by_id = async (id: string): Promise<IUser> => {
-//     return (await User.findById(id).select("username bio profilePicture"));
-// };
+    } catch (error) {
+        throw error;
+    }
+};
