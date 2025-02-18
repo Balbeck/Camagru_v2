@@ -1,5 +1,5 @@
 import bcrypt from 'bcryptjs';
-import { findUserById, IUser } from '../models/userSchema'
+import { confirmUserEmailbyUserId, deleteUserByUserId, findUserById, IUser, updateUserById } from '../models/userSchema'
 import { createNewUser, findUserByEmail, findUserByUsername } from '../models/userSchema';
 import mongoose from 'mongoose';
 
@@ -74,6 +74,54 @@ export const getUserById = async (userId_string: string): Promise<IUser> => {
         const user: IUser = await findUserById(userId);
 
         return user;
+
+    } catch (error) {
+        throw error;
+    }
+};
+
+export const updateUser = async (userId_string: string, updates: Partial<IUser>): Promise<IUser> => {
+    try {
+        if (!mongoose.Types.ObjectId.isValid(userId_string)) {
+            throw new Error('INVALID_USER_ID');
+        }
+
+        const userId = new mongoose.Types.ObjectId(userId_string);
+        const updatedUser = await updateUserById(userId, updates);
+
+        return updatedUser;
+
+    } catch (error) {
+        throw error;
+    }
+};
+
+export const deleteUser = async (userId_string: string): Promise<IUser> => {
+    try {
+        if (!mongoose.Types.ObjectId.isValid(userId_string)) {
+            throw new Error('INVALID_USER_ID');
+        }
+
+        const userId = new mongoose.Types.ObjectId(userId_string);
+        const deletedUser = await deleteUserByUserId(userId);
+
+        return deletedUser;
+
+    } catch (error) {
+        throw error;
+    }
+};
+
+export const confirmUserEmail = async (userId_string: string): Promise<IUser> => {
+    try {
+        if (!mongoose.Types.ObjectId.isValid(userId_string)) {
+            throw new Error('INVALID_USER_ID');
+        }
+
+        const userId = new mongoose.Types.ObjectId(userId_string);
+        const confirmedUser = await confirmUserEmailbyUserId(userId);
+
+        return confirmedUser;
 
     } catch (error) {
         throw error;

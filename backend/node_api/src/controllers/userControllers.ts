@@ -66,12 +66,14 @@ export const login = async (req: Request, res: Response): Promise<void> => {
 
 export const logout = async (req: Request, res: Response): Promise<void> => {
     res.clearCookie(tokenName);
-    res.status(201);
-    res.json({ message: "Déconnexion réussie !" });
+    res.status(201).json({ message: "Déconnexion réussie !" });
+    // res.clearCookie(tokenName);
+    // res.status(201);
+    // res.json({ message: "Déconnexion réussie !" });
 };
 
 
-export const get_me = async (req: Request, res: Response): Promise<void> => {
+export const getMe = async (req: Request, res: Response): Promise<void> => {
     try {
         console.log(' 🪆 [C]*getMe ] req.user: ', req.user);
         const foundUser = await UserService.getUserById(req.user.id);
@@ -87,17 +89,45 @@ export const get_me = async (req: Request, res: Response): Promise<void> => {
 };
 
 
-export const forgot_password = async (req: Request, res: Response) => {
+export const updateUser = async (req: Request, res: Response): Promise<void> => {
+    try {
+        console.log(' 🌱 [C]*updateUser ] req.body: ', req.body);
+        const updatedUser = await UserService.updateUser(req.user.id, req.body);
+        console.log(' 🌱 [C]*updateUser ] updatedUser: ', updatedUser);
+        res.status(200).json(updatedUser);
 
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
 };
 
 
-
-export const update_infos = async (req: Request, res: Response) => {
+export const deleteUser = async (req: Request, res: Response): Promise<void> => {
     try {
-        console.log(' 🌱 [C]*Up_Infos ] req.body: ', req.body);
-        console.log(' 🌱 [C]*Up_Infos ] req.user: ', req.user);
+        console.log(' 🪄 [C]*deleteUser ] req.user: ', req.user);
+        const deletedUser = await UserService.deleteUser(req.user.id);
+        console.log(' 🪄 [C]*deleteUser ] deletedUser: ', deletedUser);
+        res.status(200).json({ message: 'User deleted successfully' });
+
     } catch (error) {
-        res.status(500).json({ message: "Erreur serveur" });
+        res.status(500).json({ message: error.message });
     }
+};
+
+
+export const confirmEmail = async (req: Request, res: Response): Promise<void> => {
+    try {
+        console.log(' 🐰 [C]*confirmEmail ] req.user: ', req.user);
+        const confirmedUser = await UserService.confirmUserEmail(req.user.id);
+        console.log(' 🐰 [C]*confirmEmail ] confirmedUser: ', confirmedUser);
+        res.status(200).json({ message: 'Email confirmed successfully' });
+
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
+
+export const forgottenPassword = async (req: Request, res: Response) => {
+
 };

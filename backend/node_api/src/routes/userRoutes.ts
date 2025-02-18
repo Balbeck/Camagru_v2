@@ -6,11 +6,12 @@ const router: Router = express.Router()
 
 router.post('/register', UserController.register);
 router.post('/login', UserController.login);
-
 router.post('/logout', verifyToken, UserController.logout);
-router.get('/me', verifyToken, UserController.get_me);
-router.post('/updateInfos', verifyToken, UserController.update_infos);
+router.get('/me', verifyToken, UserController.getMe);
+router.post('/updateUser', verifyToken, UserController.updateUser);
+router.delete('/delete', verifyToken, UserController.deleteUser);
 
-router.post('/forgotPassword', verifyToken, UserController.forgot_password);
+router.post('/confirmEmail', verifyToken, UserController.confirmEmail);
+router.post('/forgotPassword', verifyToken, UserController.forgottenPassword);
 
 export default router;
