@@ -65,6 +65,11 @@ export const logInUser = async (body: any): Promise<IUser> => {
 
 export const getUserById = async (userId_string: string): Promise<IUser> => {
     try {
+        // Vérifier si l'ID est valide
+        if (!mongoose.Types.ObjectId.isValid(userId_string)) {
+            throw new Error('INVALID_USER_ID');
+        }
+
         const userId = new mongoose.Types.ObjectId(userId_string);
         const user: IUser = await findUserById(userId);
 

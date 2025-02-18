@@ -82,7 +82,7 @@ export const get_me = async (req: Request, res: Response): Promise<void> => {
         res.status(201).json(foundUser);
 
     } catch (error) {
-        res.status(500).json({ message: "Erreur serveur" });
+        res.status(500).json({ message: error.message });
     }
 };
 
