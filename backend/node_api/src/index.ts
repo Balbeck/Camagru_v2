@@ -8,7 +8,8 @@ import cors from 'cors';
 import connectMongoDb from './db_config/connectMongoDb';
 
 import userRoutes from './routes/userRoutes';
-import postRoutes from 'routes/postRoutes';
+import postRoutes from './routes/postRoutes';
+import likeRoutes from './routes/likeRoutes';
 
 import dotenv from 'dotenv';
 dotenv.config();
@@ -33,6 +34,7 @@ app.use(express.json());
 // - - - [ Routes ] - - -
 app.use('/user', userRoutes);
 app.use('/post', postRoutes);
+app.use('/like', likeRoutes);
 
 
 
