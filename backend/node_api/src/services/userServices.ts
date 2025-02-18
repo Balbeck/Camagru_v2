@@ -1,4 +1,4 @@
-import { User, IUser } from '../schemas/userSchema'
+import { User, IUser } from '../models/userSchema'
 import bcrypt from 'bcryptjs';
 
 export const createUser = async (body: any): Promise<IUser> => {
@@ -46,7 +46,7 @@ export const logInUser = async (body: any): Promise<IUser> => {
     }
     console.log(` 🚀 [S]*logInU ] UserFound: ${body.email}`);
 
-    const hashComparison = await bcrypt.compare(body.password, foundUser.password);
+    const hashComparison = await bcrypt.compare(body.password, foundUser.passwordHash);
     if (!hashComparison) {
         console.log(` 🚀 [S]*logInU ] Hash Comparison ❌ `);
         throw new Error('INVALID_PASSWORD');
