@@ -115,19 +115,19 @@ export const deleteUser = async (req: Request, res: Response): Promise<void> => 
 };
 
 
-export const confirmEmail = async (req: Request, res: Response): Promise<void> => {
-    try {
-        console.log(' 🐰 [C]*confirmEmail ] req.user: ', req.user);
-        const confirmedUser = await UserService.confirmUserEmail(req.user.id);
-        console.log(' 🐰 [C]*confirmEmail ] confirmedUser: ', confirmedUser);
-        res.status(200).json({ message: 'Email confirmed successfully' });
+// export const confirmEmail = async (req: Request, res: Response): Promise<void> => {
+//     try {
+//         console.log(' 🐰 [C]*confirmEmail ] req.user: ', req.user);
+//         const confirmedUser = await UserService.confirmUserEmail(req.user.id);
+//         console.log(' 🐰 [C]*confirmEmail ] confirmedUser: ', confirmedUser);
+//         res.status(200).json({ message: 'Email confirmed successfully' });
 
-    } catch (error) {
-        res.status(500).json({ message: error.message });
-    }
-};
+//     } catch (error) {
+//         res.status(500).json({ message: error.message });
+//     }
+// };
 
 
-export const forgottenPassword = async (req: Request, res: Response) => {
+// export const forgottenPassword = async (req: Request, res: Response) => {
 
-};
+// };

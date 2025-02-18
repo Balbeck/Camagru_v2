@@ -1,5 +1,5 @@
 import bcrypt from 'bcryptjs';
-import { confirmUserEmailbyUserId, deleteUserByUserId, findUserById, IUser, updateUserById } from '../models/userSchema'
+import { deleteUserByUserId, findUserById, IUser, updateUserById } from '../models/userSchema'
 import { createNewUser, findUserByEmail, findUserByUsername } from '../models/userSchema';
 import mongoose from 'mongoose';
 
@@ -112,18 +112,18 @@ export const deleteUser = async (userId_string: string): Promise<IUser> => {
     }
 };
 
-export const confirmUserEmail = async (userId_string: string): Promise<IUser> => {
-    try {
-        if (!mongoose.Types.ObjectId.isValid(userId_string)) {
-            throw new Error('INVALID_USER_ID');
-        }
+// export const confirmUserEmail = async (userId_string: string): Promise<IUser> => {
+//     try {
+//         if (!mongoose.Types.ObjectId.isValid(userId_string)) {
+//             throw new Error('INVALID_USER_ID');
+//         }
 
-        const userId = new mongoose.Types.ObjectId(userId_string);
-        const confirmedUser = await confirmUserEmailbyUserId(userId);
+//         const userId = new mongoose.Types.ObjectId(userId_string);
+//         const confirmedUser = await confirmUserEmailStatusbyUserId(userId);
 
-        return confirmedUser;
+//         return confirmedUser;
 
-    } catch (error) {
-        throw error;
-    }
-};
+//     } catch (error) {
+//         throw error;
+//     }
+// };

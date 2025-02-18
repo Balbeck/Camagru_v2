@@ -11,7 +11,7 @@ router.get('/me', verifyToken, UserController.getMe);
 router.post('/updateUser', verifyToken, UserController.updateUser);
 router.delete('/delete', verifyToken, UserController.deleteUser);
 
-router.post('/confirmEmail', verifyToken, UserController.confirmEmail);
-router.post('/forgotPassword', verifyToken, UserController.forgottenPassword);
+// router.post('/confirmEmail', verifyToken, UserController.confirmEmail);
+// router.post('/forgotPassword', verifyToken, UserController.forgottenPassword);
 
 export default router;
