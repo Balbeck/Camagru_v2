@@ -6,7 +6,7 @@ interface IComment extends Document {
     postId: mongoose.Types.ObjectId;
     comment: string;
     createdAt: Date;
-    updateddAt: Date;
+    updatedAt: Date;
 }
 
 const commentSchema: Schema = new Schema({
@@ -56,6 +56,11 @@ export const createNewComment = async (userId: mongoose.Types.ObjectId, postId: 
     return await newComment.save();
 };
 
+export const findCommentByCommentId = async (commentId: mongoose.Types.ObjectId): Promise<IComment | null> => {
+    return await
+        Comment.findById(commentId).exec();
+};
+
 export const findAllCommentsByPostId = async (postId: mongoose.Types.ObjectId): Promise<IComment[] | null> => {
     return await
         Comment.find({ postId: postId })
@@ -64,7 +69,7 @@ export const findAllCommentsByPostId = async (postId: mongoose.Types.ObjectId): 
 };
 
 export const updateCommentByCommentId = async (commentId: mongoose.Types.ObjectId, updates: Partial<IComment>): Promise<IComment | null> => {
-    updates.updateddAt = new Date();
+    updates.updatedAt = new Date();
     return await
         Comment.findByIdAndUpdate(commentId, updates, { new: true }).exec();
 
