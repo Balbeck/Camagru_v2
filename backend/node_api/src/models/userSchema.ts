@@ -92,6 +92,7 @@ export const findUserByUsername = async (username: string): Promise<IUser | null
 
 export const updateUserById = async (userId: mongoose.Types.ObjectId, updates: Partial<IUser>): Promise<IUser | null> => {
     updates.updatedAt = new Date();
+    console.log(' 📙 [M]*updateUserById ] updates: ', updates);
     return await
         User.findByIdAndUpdate(userId, updates, { new: true }).exec();
 };

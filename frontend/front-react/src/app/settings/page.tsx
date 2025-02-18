@@ -67,7 +67,7 @@ export default function SettingsPage() {
 		}
 
 		try {
-			const response = await fetch("http://localhost:3000/user/updateInfos", {
+			const response = await fetch("http://localhost:3000/user/updateUser", {
 				method: "POST",
 				credentials: "include",
 				body: formData,

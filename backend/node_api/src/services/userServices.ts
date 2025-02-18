@@ -88,6 +88,7 @@ export const updateUser = async (userId_string: string, updates: Partial<IUser>)
 
         const userId = new mongoose.Types.ObjectId(userId_string);
         const updatedUser = await updateUserById(userId, updates);
+        console.log(' 📗 [S]*updateUser ] updatedUser: ', updatedUser);
 
         return updatedUser;
 
