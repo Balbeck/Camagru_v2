@@ -1,9 +1,11 @@
 'use client';
 
 import { useRouter } from "next/navigation";
+import { useAuth } from '@/context/AuthContext';
 
 const LogoutButton = () => {
 	const router = useRouter();
+	const { logout } = useAuth();
 
 	const handleLogout = async () => {
 		try {
@@ -13,7 +15,8 @@ const LogoutButton = () => {
 			});
 
 			if (res.ok) {
-				router.push("/"); // Redirection vers la page principale
+				logout();
+				router.replace("/");
 			} else {
 				console.error("Erreur lors de la déconnexion");
 			}

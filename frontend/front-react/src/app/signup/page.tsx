@@ -36,7 +36,6 @@ export default function SignUp() {
 
       if (response.ok) {
         console.log(` [ 🥝 Sign Up ] data.jwt: ${data.jwt}`)
-        // localStorage.setItem('jwt', data.jwt);
         router.push('/theGallery');
       }
       else {
