@@ -10,6 +10,7 @@ import connectMongoDb from './db_config/connectMongoDb';
 import userRoutes from './routes/userRoutes';
 import postRoutes from './routes/postRoutes';
 import likeRoutes from './routes/likeRoutes';
+import commentRoutes from './routes/commentRoutes';
 
 import dotenv from 'dotenv';
 dotenv.config();
@@ -35,6 +36,7 @@ app.use(express.json());
 app.use('/user', userRoutes);
 app.use('/post', postRoutes);
 app.use('/like', likeRoutes);
+app.use('/comment', commentRoutes);
 
 
 

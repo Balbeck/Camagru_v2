@@ -7,10 +7,10 @@ import * as PostController from "../controllers/postControllers";
 const router: Router = express.Router()
 
 router.post('/createPost', verifyToken, PostController.createPost);
-// router.post('/getPost', verifyToken, PostController.getPost);
-// router.post('/getLastNPosts', verifyToken, PostController.getLastNPosts);
-// router.post('/userPosts', verifyToken, PostController.userPosts);
+// router.get('/getPost', verifyToken, PostController.getPost);
+// router.get('/getLastNPosts', verifyToken, PostController.getLastNPosts);
+// router.get('/getUserPosts', verifyToken, PostController.getUserPosts);
 // router.post('/updatePost', verifyToken, PostController.updatePost);
-router.post('/deletePost', verifyToken, PostController.deletePost);
+router.delete('/deletePost', verifyToken, PostController.deletePost);
 
 export default router;

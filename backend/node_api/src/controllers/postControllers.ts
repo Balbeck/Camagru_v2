@@ -1,8 +1,6 @@
 import { Request, Response } from 'express';
-
 import * as PostService from '../services/postServices';
 
-const tokenName: string = "Cama";
 
 export const createPost = async (req: Request, res: Response): Promise<void> => {
 	try {
