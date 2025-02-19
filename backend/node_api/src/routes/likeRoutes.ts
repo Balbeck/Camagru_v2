@@ -7,8 +7,8 @@ import * as LikeController from "../controllers/likeControllers";
 const router: Router = express.Router()
 
 
-router.post('/addLike', verifyToken, LikeController.addNewLike);
-router.post('/removeLike', verifyToken, LikeController.removeALike);
-router.post('/getLikeCount', verifyToken, LikeController.likeCount);
+router.post('/add', verifyToken, LikeController.addNewLike);
+router.post('/remove', verifyToken, LikeController.removeALike);
+router.post('/getCount', verifyToken, LikeController.likeCount);
 
 export default router;

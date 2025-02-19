@@ -1,7 +1,5 @@
 import { Request, Response } from 'express';
 
-import * as AuthJwt from '../middlewares/authMiddleware';
-import * as UserService from '../services/userServices';
 import * as PostService from '../services/postServices';
 
 const tokenName: string = "Cama";

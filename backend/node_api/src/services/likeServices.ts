@@ -1,4 +1,4 @@
-import { IPost, addLike, removeLike } from "models/postSchema";
+import { IPost, addLike, removeLike } from "../models/postSchema";
 import mongoose from "mongoose";
 
 

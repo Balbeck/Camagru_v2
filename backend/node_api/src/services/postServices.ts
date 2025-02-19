@@ -1,5 +1,5 @@
-import { IPost, createNewPost } from "models/postSchema";
-import { IUser } from "models/userSchema";
+import { IPost, createNewPost } from "../models/postSchema";
+import { IUser } from "../models/userSchema";
 
 import * as UserService from '../services/userServices';
 
