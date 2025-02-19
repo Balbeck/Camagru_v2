@@ -59,18 +59,21 @@ export default function SettingsPage() {
 		event.preventDefault();
 		setError("");
 
-		const formData = new FormData();
-		formData.append("username", username);
-		formData.append("bio", bio);
-		if (profilePicture) {
-			formData.append("profilePicture", profilePicture);
-		}
+		// Serialize form data into JSON
+		const formData = {
+			username,
+			bio,
+			profilePicture: profilePicture ? URL.createObjectURL(profilePicture) : null,
+		};
 
 		try {
 			const response = await fetch("http://localhost:3000/user/updateUser", {
 				method: "POST",
 				credentials: "include",
-				body: formData,
+				headers: {
+					"Content-Type": "application/json",
+				},
+				body: JSON.stringify(formData),
 			});
 
 			if (!response.ok) throw new Error("Erreur lors de la mise à jour");
