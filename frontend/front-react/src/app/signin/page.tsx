@@ -31,7 +31,7 @@ export default function SignIn() {
       if (response.ok) {
         // localStorage.setItem('jwt', data.jwt);
         console.log(` [ 🥝 Sign Up ] data.jwt: ${data.jwt}`)
-        router.push('/mainIn');
+        router.push('/theGallery');
       } else {
         setError(data.message || 'An error occurred during sign in');
       }
