@@ -7,14 +7,10 @@ import * as PostController from "../controllers/postControllers";
 const router: Router = express.Router()
 
 router.post('/createPost', verifyToken, PostController.createPost);
-// router.post('/getPost', verifyToken, PostController.createPost);
-// router.post('/getLastNPosts', verifyToken, PostController.createPost);
-// router.post('/userPosts', verifyToken, PostController.createPost);
-// router.post('/updatePost', verifyToken, PostController.createPost);
-// router.post('/deletePost', verifyToken, PostController.createPost);
-
-// router.post('/addLike', verifyToken, PostController.createPost);
-// router.post('/removeLike', verifyToken, PostController.createPost);
-// router.post('/getLikeCount', verifyToken, PostController.createPost);
+// router.post('/getPost', verifyToken, PostController.getPost);
+// router.post('/getLastNPosts', verifyToken, PostController.getLastNPosts);
+// router.post('/userPosts', verifyToken, PostController.userPosts);
+// router.post('/updatePost', verifyToken, PostController.updatePost);
+router.post('/deletePost', verifyToken, PostController.deletePost);
 
 export default router;

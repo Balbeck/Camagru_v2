@@ -19,3 +19,14 @@ export const createPost = async (req: Request, res: Response): Promise<void> => 
 		res.status(500).json({ message: error.message });
 	}
 };
+
+export const deletePost = async (req: Request, res: Response): Promise<void> => {
+	try {
+		console.log(' 🖼️ [C]*deletePost ] req.body: ', req.body, '\nreq.user.id: ', req.user.id);
+		const deletedUser = await PostService.deleteAPost(req.body.postId);
+		res.status(200).json({ message: 'Post successfully deleted' });
+
+	} catch (error: any) {
+		res.status(500).json({ message: error.message });
+	}
+};
