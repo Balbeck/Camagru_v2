@@ -109,7 +109,11 @@ export const removeLike = async (postId: mongoose.Types.ObjectId, userId: mongoo
             .exec();
 };
 
-export const getLikeCount = async (postId: mongoose.Types.ObjectId): Promise<number> => {
-    const post = await Post.findById(postId, 'likes').exec();
+export const getLikeCount = async (postIdString: string): Promise<number> => {
+    if (!mongoose.Types.ObjectId.isValid(postIdString)) {
+        throw new Error('INVALID_POST_ID');
+    }
+    const postId = new mongoose.Types.ObjectId(postIdString);
+    const post: IPost = await Post.findById(postId, 'likes').exec();
     return post ? post.likes.length : 0;
 };
