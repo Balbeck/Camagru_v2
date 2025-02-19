@@ -1,11 +1,3 @@
-// export default function MainPage() {
-//     return (
-//         <div>
-//             <h1>Main Page</h1>
-//         </div>
-//     );
-// }
-
 import React from 'react';
 import PostComponent from '@/components/PostComponent';
 

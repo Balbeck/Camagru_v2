@@ -33,9 +33,33 @@
 //   );
 // }
 
+// import './globals.css';
+// import { Metadata } from 'next';
+// import Layout from '@/components/Layout';
+
+// export const metadata: Metadata = {
+//   title: 'CAMAGRU',
+//   description: 'Une application de partage de photos stylisées',
+// };
+
+// export default function RootLayout({
+//   children,
+// }: {
+//   children: React.ReactNode;
+// }) {
+//   return (
+//     <html lang="fr">
+//       <body>
+//         <Layout>{children}</Layout>
+//       </body>
+//     </html>
+//   );
+// }
+
+// import '@/styles/globals.css';
 import './globals.css';
 import { Metadata } from 'next';
-import Layout from '@/components/Layout';
+import { AuthProvider } from '@/context/AuthContext';
 
 export const metadata: Metadata = {
   title: 'CAMAGRU',
@@ -50,8 +74,11 @@ export default function RootLayout({
   return (
     <html lang="fr">
       <body>
-        <Layout>{children}</Layout>
+        <AuthProvider>
+          {children}
+        </AuthProvider>
       </body>
     </html>
   );
 }
+

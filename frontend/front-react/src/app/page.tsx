@@ -1,20 +1,52 @@
+'use client';
+
+import React from 'react';
 import Button from '@/components/Button';
+import { useAuth } from '@/context/AuthContext';
 
 export default function Home() {
+  const { isAuthenticated } = useAuth();
+
   return (
     <div className="text-center">
-      <p className="text-xl mb-8"> Hell🌏  W🌳r🌱d !</p>
-      <div className="flex justify-center space-x-4">
-        <Button href="/signup" className="bg-blue-500 hover:bg-blue-600 text-white">
-          Sign Up
-        </Button>
-        <Button href="/signin" className="bg-green-500 hover:bg-green-600 text-white">
-          Sign In
-        </Button>
-      </div>
+      {isAuthenticated ? (
+        <p className="text-xl mb-8">Bienvenue sur CAM📸GRU !</p>
+      ) : (
+        <>
+          <p className="text-xl mb-8"> Hell🌏  W🌳r🌱d !</p>
+          <div className="flex justify-center space-x-4">
+            <Button href="/signup" className="bg-blue-500 hover:bg-blue-600 text-white">
+              Sign Up
+            </Button>
+            <Button href="/signin" className="bg-green-500 hover:bg-green-600 text-white">
+              Sign In
+            </Button>
+          </div>
+        </>
+      )}
     </div>
   );
 }
+
+
+
+// import Button from '@/components/Button';
+
+// export default function Home() {
+//   return (
+//     <div className="text-center">
+//       <p className="text-xl mb-8"> Hell🌏  W🌳r🌱d !</p>
+//       <div className="flex justify-center space-x-4">
+//         <Button href="/signup" className="bg-blue-500 hover:bg-blue-600 text-white">
+//           Sign Up
+//         </Button>
+//         <Button href="/signin" className="bg-green-500 hover:bg-green-600 text-white">
+//           Sign In
+//         </Button>
+//       </div>
+//     </div>
+//   );
+// }
 
 
 
