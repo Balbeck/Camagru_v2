@@ -76,15 +76,19 @@ export default function SettingsPage() {
 				body: JSON.stringify(formData),
 			});
 
-			if (!response.ok) throw new Error("Erreur lors de la mise à jour");
-
-			alert("Profil mis à jour avec succès !");
+			if (!response.ok) {
+				throw new Error("Erreur lors de la mise à jour");
+			} else {
+				alert("Profil mis à jour avec succès !");
+			}
 		} catch (err) {
 			setError(`Échec de la mise à jour: ${err}`);
 		}
 	};
 
-	if (error) return <p className="text-red-500 text-center">{error}</p>;
+	if (error) {
+		return <p className="text-red-500 text-center">{error}</p>;
+	}
 
 	return (
 		<div className="max-w-lg mx-auto p-6 bg-white shadow-lg rounded-lg">
@@ -103,14 +107,14 @@ export default function SettingsPage() {
 						/>
 					) : (
 						<Image
-							src="/images/default_profile_picture.jpg"
+							src="/default_profile_picture.jpg"
 							alt="Default Profile"
 							width={128}
 							height={128}
 							className="rounded-full object-cover border border-gray-300"
 						/>
 					)}
-					<input type="file" accept="image/*" onChange={handleFileChange} className="mt-2" />
+					<input type="file" accept="/*" onChange={handleFileChange} className="mt-2" />
 				</div>
 
 				{/* Username */}
