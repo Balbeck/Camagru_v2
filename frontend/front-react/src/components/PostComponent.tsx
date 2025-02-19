@@ -1,9 +1,8 @@
 import React from 'react';
-import Image from 'next/image';
-
 import PostHeader from './PostHeader';
 import LikeButton from './LikeButton';
 import Comment from './Comment';
+import Image from 'next/image';
 
 interface PostProps {
 	title: string;
@@ -12,7 +11,7 @@ interface PostProps {
 	lastComment: string;
 }
 
-const Post: React.FC<PostProps> = ({ title, photoUrl, likes, lastComment }) => {
+const PostComponent: React.FC<PostProps> = ({ title, photoUrl, likes, lastComment }) => {
 	return (
 		<div className="bg-white shadow-md rounded-lg overflow-hidden mb-6">
 			<PostHeader title={title} photoUrl={photoUrl} />
@@ -25,10 +24,10 @@ const Post: React.FC<PostProps> = ({ title, photoUrl, likes, lastComment }) => {
 			/>
 			<div className="p-4">
 				<LikeButton likes={likes} />
-				<Comment comment={lastComment.replace(/"/g, '&quot;')} />
+				<Comment comment={lastComment} />
 			</div>
 		</div>
 	);
 };
 
-export default Post;
+export default PostComponent;

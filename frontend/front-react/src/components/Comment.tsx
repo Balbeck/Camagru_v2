@@ -7,7 +7,7 @@ interface CommentProps {
 const Comment: React.FC<CommentProps> = ({ comment }) => {
 	return (
 		<div className="text-gray-600 text-sm">
-			<p>"{comment}"</p>
+			<p>{comment}</p>
 		</div>
 	);
 };
