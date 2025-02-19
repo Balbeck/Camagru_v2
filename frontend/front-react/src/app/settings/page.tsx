@@ -15,8 +15,8 @@ export default function SettingsPage() {
 	const [bio, setBio] = useState("");
 	const [profilePicture, setProfilePicture] = useState<File | null>(null);
 	const [preview, setPreview] = useState<string | null>(null);
-	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState("");
+	const router = useRouter();
 
 	useEffect(() => {
 		const fetchUserData = async () => {
@@ -38,18 +38,14 @@ export default function SettingsPage() {
 					: `/uploads/${data.profilePicture}`;
 
 				setPreview(profileUrl);
-			} catch (err) {
-				// setError(`Impossible de charger les données utilisateur: ${err}`);
-				const router = useRouter();
+			} catch {
 				alert('Impossible de charger les données utilisateur');
 				router.push("/");
-			} // finally {
-			// 	setLoading(false);
-			// }
+			}
 		};
 
 		fetchUserData();
-	}, []);
+	}, [router]);
 
 	const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
 		const file = event.target.files?.[0];
@@ -85,7 +81,6 @@ export default function SettingsPage() {
 		}
 	};
 
-	if (loading) return <p className="text-gray-500 text-center">Chargement...</p>;
 	if (error) return <p className="text-red-500 text-center">{error}</p>;
 
 	return (

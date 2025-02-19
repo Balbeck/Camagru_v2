@@ -13,7 +13,7 @@ export const createPost = async (body: any, userIdString: string): Promise<IPost
 	const imageUrl: string = body.imageUrl;
 	const title: string = body.title;
 
-	const newPost = await createNewPost(userId, imageUrl, title);
+	const newPost: IPost = await createNewPost(userId, imageUrl, title);
 
 	return newPost;
 };

@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 
 import * as LikeService from '../services/likeServices';
-import { IPost, addLike } from 'models/postSchema';
+import { IPost } from 'models/postSchema';
 
 // [ Ajouter Les StatusCode retour 200, 201, 400, 401, 404, 500, ... ]
 
