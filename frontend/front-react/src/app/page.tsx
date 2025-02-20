@@ -14,6 +14,7 @@ const Home: React.FC = () => {
   useEffect(() => {
     checkAuth();
     if (isAuthenticated) {
+      console.log('🌱 redirect depuis [ / ] to /theGallery ');
       router.replace('/theGallery');
     }
   }, [isAuthenticated, router]);

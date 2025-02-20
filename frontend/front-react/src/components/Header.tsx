@@ -16,6 +16,7 @@ export default function Header() {
 
   useEffect(() => {
     if (!isAuthenticated) {
+      console.log('🌱 redirect depuis [ Header ] to / ');
       router.push('/');
     }
   }, [isAuthenticated, router]); // ✅ Se déclenche quand `isAuthenticated` change
