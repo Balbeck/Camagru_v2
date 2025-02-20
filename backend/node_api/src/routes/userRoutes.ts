@@ -12,6 +12,10 @@ router.post('/logout', verifyToken, UserController.logout);
 router.get('/me', verifyToken, UserController.getMe);
 router.post('/updateUser', verifyToken, UserController.updateUser);
 router.delete('/delete', verifyToken, UserController.deleteUser);
+router.get('/checkAuth', verifyToken, (req, res) => {
+	res.json({ authenticated: true });
+});
+
 
 // router.post('/confirmEmail', verifyToken, UserController.confirmEmail);
 // router.post('/forgotPassword', verifyToken, UserController.forgottenPassword);

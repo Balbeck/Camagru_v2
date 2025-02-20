@@ -35,7 +35,7 @@ export default function SettingsPage() {
 				// Vérifier si l'URL de profilePicture est complète ou relative
 				const profileUrl = data.profilePicture?.startsWith("http")
 					? data.profilePicture
-					: `/uploads/${data.profilePicture}`;
+					: `/${data.profilePicture}`;
 
 				setPreview(profileUrl);
 			} catch {

@@ -2,7 +2,10 @@
 
 import { useState, FormEvent } from 'react';
 import { useRouter } from 'next/navigation';
+
+import { useAuth } from '@/context/AuthContext';
 import Button from '@/components/Button';
+
 
 export default function SignUp() {
   const [username, setUsername] = useState('');
@@ -11,6 +14,7 @@ export default function SignUp() {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState('');
   const router = useRouter();
+  const { login, logout } = useAuth();
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -36,9 +40,11 @@ export default function SignUp() {
 
       if (response.ok) {
         console.log(` [ 🥝 Sign Up ] data.jwt: ${data.jwt}`)
+        login();
         router.push('/theGallery');
       }
       else {
+        logout();
         setError(data.message || 'An error occurred during sign up');
       }
 

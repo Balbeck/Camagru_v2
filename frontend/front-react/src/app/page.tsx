@@ -7,11 +7,12 @@ import PostComponent from '@/components/PostComponent';
 
 
 const Home: React.FC = () => {
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, checkAuth } = useAuth();
   const router = useRouter();
 
   // 🚀 Redirection automatique si l'utilisateur est authentifié
   useEffect(() => {
+    checkAuth();
     if (isAuthenticated) {
       router.replace('/theGallery');
     }
