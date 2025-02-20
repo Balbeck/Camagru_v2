@@ -10,13 +10,17 @@ import { useRouter } from 'next/navigation';
 export default function Header() {
   const { isAuthenticated, checkAuth } = useAuth();
   const router = useRouter();
-  useEffect(() => {
-    checkAuth(); // ✅ Appelle `checkAuth()` une seule fois après le rendu initial
-  }, []);
+  // useEffect(() => {
+  //   const check = async () => {
+  //     console.log('🪆 [ Header ] checkAuth');
+  //     await checkAuth(); // ✅ Appelle `checkAuth()` une seule fois après le rendu initial
+  //   };
+  //   check();
+  // }, []);
 
   useEffect(() => {
     if (!isAuthenticated) {
-      console.log('🌱 redirect depuis [ Header ] to / ');
+      console.log('🪆 [ Header ] redirect to / (auth: false)');
       router.push('/');
     }
   }, [isAuthenticated, router]); // ✅ Se déclenche quand `isAuthenticated` change

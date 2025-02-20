@@ -23,7 +23,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
 
 	useEffect(() => {
-		console.log(' 🌞 Check Authentification [ On Effect ]')
+		console.log(' 🌞 [ Check Authentification ] - On Effect')
 		const checkAuthentification = async () => {
 			try {
 				const response = await fetch('http://localhost:3000/user/checkAuth', {
@@ -32,17 +32,17 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 				});
 
 				if (response.ok) {
+					console.log(' 🌞 [ Check Authentification ] - response.ok ✅ ')
 					setIsAuthenticated(true);
 					setLoading(false);
 				} else {
+					console.log(' 🌞 [ Check Authentification ] - !response.ok ❌')
 					setIsAuthenticated(false);
 					setLoading(false);
 				}
 			} catch (error) {
 				console.error('Erreur lors de la vérification du token:', error);
 				setIsAuthenticated(false);
-				setLoading(false);
-			} finally {
 				setLoading(false);
 			}
 		};
@@ -52,7 +52,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
 
 	const checkAuth = async () => {
-		console.log(' 🥭 Check Auth [ on Call ]')
+		console.log(' 🥭 [ checAuth ] - On Call ')
 		try {
 			const response = await fetch('http://localhost:3000/user/checkAuth', {
 				method: 'GET',
@@ -60,15 +60,18 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 			});
 
 			if (response.ok) {
+				console.log(' 🥭 [ checAuth ] - response.ok ✅ ')
 				setIsAuthenticated(true);
+				return true;
 			} else {
+				console.log(' 🥭 [ checAuth ] - !response.ok ❌ ')
 				setIsAuthenticated(false);
+				return false;
 			}
 		} catch (error) {
 			console.error('Erreur lors de la vérification du token:', error);
 			setIsAuthenticated(false);
-		} finally {
-			setLoading(false);
+			return false;
 		}
 	};
 

@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import Image from "next/image";
+import Image from "next/legacy/image";
 import { useRouter } from "next/navigation";
 
 interface User {
@@ -21,25 +21,29 @@ export default function SettingsPage() {
 	useEffect(() => {
 		const fetchUserData = async () => {
 			try {
+				console.log('🗂️ [ Settings ] useEffect() - fetch /user/me');
 				const response = await fetch("http://localhost:3000/user/me", {
 					method: "GET",
 					credentials: "include",
 				});
 
-				if (!response.ok) throw new Error("Erreur lors du chargement des infos");
-
+				if (!response.ok) {
+					console.log('🗂️ [ Settings ] - fetch /user/me ❌');
+					throw new Error("Erreur lors du chargement des infos");
+				}
+				console.log('🗂️ [ Settings ] - fetch /user/me ✅');
 				const data: User = await response.json();
 				setUsername(data.username);
 				setBio(data.bio || "");
-
 				// Vérifier si l'URL de profilePicture est complète ou relative
 				const profileUrl = data.profilePicture?.startsWith("http")
 					? data.profilePicture
 					: `/${data.profilePicture}`;
-
 				setPreview(profileUrl);
+
 			} catch {
 				alert('Impossible de charger les données utilisateur');
+				console.log('🗂️ [ Settings ] catch - redirect to [ Home ]')
 				router.push("/");
 			}
 		};

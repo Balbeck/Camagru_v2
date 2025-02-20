@@ -7,14 +7,15 @@ import PostComponent from '@/components/PostComponent';
 
 
 const Home: React.FC = () => {
-  const { isAuthenticated, checkAuth } = useAuth();
   const router = useRouter();
+  const { isAuthenticated, checkAuth } = useAuth();
 
   // 🚀 Redirection automatique si l'utilisateur est authentifié
   useEffect(() => {
-    checkAuth();
+    // console.log('🌱 [ HomePage ] chechAuth');
+    // checkAuth();
     if (isAuthenticated) {
-      console.log('🌱 redirect depuis [ / ] to /theGallery ');
+      console.log('🌱 [ Home ] redirect to /theGallery (auth: false)');
       router.replace('/theGallery');
     }
   }, [isAuthenticated, router]);
