@@ -3,7 +3,10 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
-import PostComponent from '@/components/PostComponent';
+import Image from "next/legacy/image";
+// import PostComponent from '@/components/PostComponent';
+
+
 
 // 📸 Liste des posts (mock)
 const posts = [
@@ -62,11 +65,20 @@ const Home: React.FC = () => {
 
         {/* Image du post */}
         <div className="relative w-full h-3/4">
-          <img
+          {/* <img
             src={posts[currentIndex].photoUrl}
             alt={posts[currentIndex].title}
             className="w-full h-full object-cover"
+          /> */}
+
+          <Image
+            src={posts[currentIndex].photoUrl}
+            alt={posts[currentIndex].title}
+            layout="fill"
+            objectFit="cover"
+            quality={75}
           />
+
 
           {/* Like en bas à gauche SUR la photo */}
           <div className="absolute bottom-2 left-2 bg-black/60 text-white px-2 py-1 rounded-md text-sm">

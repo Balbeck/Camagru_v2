@@ -177,12 +177,21 @@ const PhotoBoothPage: React.FC = () => {
 							Choose File
 						</Button>
 					</label>
-					<Button
-						className="bg-green-500 hover:bg-green-600 text-white rounded-full py-2 px-6 transition-all duration-200"
-						onClick={handleUpload}
-					>
-						Upload Image
-					</Button>
+					{
+						selectedImage ? (
+							<Button
+								className="bg-green-500 hover:bg-green-600 text-white rounded-full py-2 px-6 transition-all duration-200"
+								onClick={handleUpload}
+							>
+								Upload Image
+							</Button>
+						)
+							: (<Button
+								className="bg-green-500 hover:bg-green-600 text-white rounded-full py-2 px-6 transition-all duration-200"
+							>
+								Upload Image
+							</Button>)
+					}
 				</div>
 			</div>
 		</div>

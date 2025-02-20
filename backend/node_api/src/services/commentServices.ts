@@ -19,10 +19,12 @@ export const createComment = async (postIdString: string, userIdString: string, 
 		const postId = new mongoose.Types.ObjectId(postIdString);
 		const userId = new mongoose.Types.ObjectId(userIdString);
 		const newComment = await createNewComment(userId, postId, comment);
+		console.log('💬 [S] New Comment Created !');
 
 		return newComment;
 
 	} catch (error) {
+		console.log('💬 [S] createComment ❌ Error: \n', error);
 		throw error;
 	}
 };
