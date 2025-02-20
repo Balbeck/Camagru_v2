@@ -9,7 +9,6 @@ interface AuthContextType {
 	loading: boolean;
 	login: () => void;
 	logout: () => void;
-	checkAuth: () => void;
 }
 
 const tokenName = 'Cama';
@@ -19,8 +18,6 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
 	const [isAuthenticated, setIsAuthenticated] = useState(false);
 	const [loading, setLoading] = useState(true);
-
-
 
 	useEffect(() => {
 		console.log(' 🌞 [ Check Authentification ] - On Effect')
@@ -51,30 +48,6 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 	}, []);
 
 
-	const checkAuth = async () => {
-		console.log(' 🥭 [ checAuth ] - On Call ')
-		try {
-			const response = await fetch('http://localhost:3000/user/checkAuth', {
-				method: 'GET',
-				credentials: 'include', // 🔥 IMPORTANT : envoie les cookies
-			});
-
-			if (response.ok) {
-				console.log(' 🥭 [ checAuth ] - response.ok ✅ ')
-				setIsAuthenticated(true);
-				return true;
-			} else {
-				console.log(' 🥭 [ checAuth ] - !response.ok ❌ ')
-				setIsAuthenticated(false);
-				return false;
-			}
-		} catch (error) {
-			console.error('Erreur lors de la vérification du token:', error);
-			setIsAuthenticated(false);
-			return false;
-		}
-	};
-
 	const login = () => {
 		setIsAuthenticated(true);
 	};
@@ -87,7 +60,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
 
 	return (
-		<AuthContext.Provider value={{ isAuthenticated, loading, login, logout, checkAuth }}>
+		<AuthContext.Provider value={{ isAuthenticated, loading, login, logout }}>
 			{children}
 		</AuthContext.Provider>
 	);

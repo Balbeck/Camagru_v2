@@ -8,22 +8,8 @@ import { useRouter } from 'next/navigation';
 
 
 export default function Header() {
-  const { isAuthenticated, checkAuth } = useAuth();
+  const { isAuthenticated } = useAuth();
   const router = useRouter();
-  // useEffect(() => {
-  //   const check = async () => {
-  //     console.log('🪆 [ Header ] checkAuth');
-  //     await checkAuth(); // ✅ Appelle `checkAuth()` une seule fois après le rendu initial
-  //   };
-  //   check();
-  // }, []);
-
-  useEffect(() => {
-    if (!isAuthenticated) {
-      console.log('🪆 [ Header ] redirect to / (auth: false)');
-      router.push('/');
-    }
-  }, [isAuthenticated, router]); // ✅ Se déclenche quand `isAuthenticated` change
   return (
     <header className="bg-gradient-to-r from-purple-500 to-pink-500 p-4">
       <div className="flex justify-between items-center">
