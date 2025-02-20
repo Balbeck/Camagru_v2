@@ -1,15 +1,13 @@
 'use client';
 
-import React, { useEffect } from 'react';
+import React from 'react';
 import Button from '@/components/Button';
 import LogoutButton from './LogoutButton';
 import { useAuth } from '@/context/AuthContext';
-import { useRouter } from 'next/navigation';
 
 
 export default function Header() {
   const { isAuthenticated } = useAuth();
-  const router = useRouter();
   return (
     <header className="bg-gradient-to-r from-purple-500 to-pink-500 p-4">
       <div className="flex justify-between items-center">
