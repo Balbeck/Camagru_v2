@@ -16,7 +16,9 @@ const LogoutButton = () => {
 
 			if (res.ok) {
 				logout();
-				router.replace("/");
+				console.log('🧐 [ LogOut ] redirect to [ Home ]')
+				router.push("/");
+				// router.replace("/");
 			} else {
 				console.error("Erreur lors de la déconnexion");
 			}

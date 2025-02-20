@@ -16,12 +16,14 @@ const posts = [
 ];
 
 const Home: React.FC = () => {
-  const { isAuthenticated } = useAuth();
   const router = useRouter();
+  const { isAuthenticated } = useAuth();
 
   // 🚀 Redirection automatique si l'utilisateur est authentifié
   if (isAuthenticated) {
-    router.replace('/theGallery');
+    console.log('🌳 [ Home ] redirect to [ theGallery ] (auth: True !)');
+    router.push('/theGallery');
+    // router.replace('/theGallery');
   }
 
   // 🌀 États pour gérer le carrousel (index du post affiché)
