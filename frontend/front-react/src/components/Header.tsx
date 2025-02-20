@@ -102,7 +102,7 @@ export default function Header() {
             >
               Photo Booth
             </Button>
-            <LogoutButton className="bg-red-500 hover:bg-red-600 text-white rounded-full py-2 px-6 transition-all duration-200" />
+            <LogoutButton />
           </div>
         ) : (
           <div className="flex space-x-4">
