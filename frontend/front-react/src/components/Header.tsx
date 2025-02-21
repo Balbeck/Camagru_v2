@@ -28,25 +28,44 @@ export default function Header() {
         </h1>
         {isAuthenticated ? (
           <div className="flex space-x-4">
+
             <Button
-              href="/settings"
+              href="/uploadImage"
               className="bg-blue-500 hover:bg-blue-600 text-white rounded-full py-2 px-6 transition-all duration-200"
             >
-              My Page
+              🧑‍🎨 Upload Image
             </Button>
+
+            <Button
+              href="/myGalerie"
+              className="bg-blue-500 hover:bg-blue-600 text-white rounded-full py-2 px-6 transition-all duration-200"
+            >
+              🪆 My Galerie
+            </Button>
+
             <Button
               href="/theGallery"
               className="bg-blue-500 hover:bg-blue-600 text-white rounded-full py-2 px-6 transition-all duration-200"
             >
-              The Galerie
+              🌏 The Galerie
             </Button>
+            {/* 
             <Button
               href="/photoBooth"
               className="bg-blue-500 hover:bg-blue-600 text-white rounded-full py-2 px-6 transition-all duration-200"
             >
-              Photo Booth
+              📸 Photo Booth
+            </Button> */}
+
+            <Button
+              href="/settings"
+              className="bg-blue-500 hover:bg-blue-600 text-white rounded-full py-2 px-6 transition-all duration-200"
+            >
+              ⚙️ Settings
             </Button>
+
             <LogoutButton />
+
           </div>
         ) : (
           <div className="flex space-x-4">

@@ -73,7 +73,7 @@ export const getUserById = async (userId_string: string): Promise<IUser> => {
 
         const userId = new mongoose.Types.ObjectId(userId_string);
         const user: IUser = await findUserById(userId);
-        console.log(' 📗 [S]*getUserById ] user._id: ', user._id);
+        console.log(' 📗 [S]*getUserById ] userFound ✅ id: ', user._id);
 
         return user;
 

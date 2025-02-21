@@ -20,7 +20,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 	const [loading, setLoading] = useState(true);
 
 	useEffect(() => {
-		console.log(' 🌞 [ Check Authentification ] - On Effect')
+		console.log(' 🌞 [ Check Authentification ] - On Effect...')
 		const checkAuthentification = async () => {
 			try {
 				const response = await fetch('http://localhost:3000/user/checkAuth', {

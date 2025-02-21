@@ -60,6 +60,7 @@ export const createNewPost = async (userId: mongoose.Types.ObjectId, imageUrl: s
         updatedAt: new Date(),
         likes: []
     });
+    console.log(' 🖼️ [Model]*create newPost ...]');
     return await newPost.save();
 };
 
