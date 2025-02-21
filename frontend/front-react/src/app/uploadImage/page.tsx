@@ -1,11 +1,16 @@
 'use client';
 
 import React, { useState } from "react";
+import { useRouter } from 'next/navigation';
+
 import Image from "next/legacy/image";
 import Button from "@/components/Button";
 
 
+
 const UploadImagePage: React.FC = () => {
+
+	const router = useRouter();
 
 	const [selectedImage, setSelectedImage] = useState<File | null>(null);
 	const [previewUrl, setPreviewUrl] = useState<string | null>(null);
@@ -40,6 +45,7 @@ const UploadImagePage: React.FC = () => {
 
 				if (response.ok) {
 					console.log('Image uploaded successfully');
+					router.push('myGalerie');
 				} else {
 					console.error('Failed to upload image');
 				}
