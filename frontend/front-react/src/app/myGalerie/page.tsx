@@ -126,8 +126,11 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import Image from "next/legacy/image";
+
 import Button from '@/components/Button';
+
 
 interface IPost {
 	_id: string;
@@ -139,6 +142,9 @@ interface IPost {
 }
 
 const MyGalerie: React.FC = () => {
+
+	const router = useRouter();
+
 	const [posts, setPosts] = useState<IPost[]>([]);
 	const [currentIndex, setCurrentIndex] = useState(0);
 
@@ -193,6 +199,7 @@ const MyGalerie: React.FC = () => {
 			if (response.ok) {
 				setPosts((prevPosts) => prevPosts.filter((post) => post._id !== postId));
 				console.log('Post deleted successfully');
+				router.push('/myGalerie')
 			} else {
 				console.error('Failed to delete post');
 			}
