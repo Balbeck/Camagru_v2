@@ -105,7 +105,7 @@ const MyGalerie: React.FC = () => {
 
 			{/* Miniatures des photos */}
 			<div className="flex flex-wrap justify-center gap-4 mt-8">
-				{posts.map((post, index) => (
+				{posts.map((post) => (
 					<div key={post._id} className="relative w-[100px] h-[100px] overflow-hidden rounded-lg shadow-md">
 						<Image
 							src={post.imageUrl}
