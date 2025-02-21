@@ -11,7 +11,7 @@ import userRoutes from './routes/userRoutes';
 import postRoutes from './routes/postRoutes';
 import likeRoutes from './routes/likeRoutes';
 import commentRoutes from './routes/commentRoutes';
-import imageRoutes from 'routes/imageRoutes';
+import imageRoutes from './routes/imageRoutes';
 
 import dotenv from 'dotenv';
 dotenv.config();
