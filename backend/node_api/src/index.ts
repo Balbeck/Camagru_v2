@@ -11,6 +11,7 @@ import userRoutes from './routes/userRoutes';
 import postRoutes from './routes/postRoutes';
 import likeRoutes from './routes/likeRoutes';
 import commentRoutes from './routes/commentRoutes';
+import imageRoutes from 'routes/imageRoutes';
 
 import dotenv from 'dotenv';
 dotenv.config();
@@ -37,7 +38,7 @@ app.use('/user', userRoutes);
 app.use('/post', postRoutes);
 app.use('/like', likeRoutes);
 app.use('/comment', commentRoutes);
-
+app.use('/image', imageRoutes);
 
 
 // -- -- --  [  Launch Server  ]  -- -- --

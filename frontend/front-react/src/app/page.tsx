@@ -25,8 +25,8 @@ const Home: React.FC = () => {
   // 🚀 Redirection automatique si l'utilisateur est authentifié
   if (isAuthenticated) {
     console.log('🌳 [ Home ] redirect to [ theGallery ] (auth: True !)');
-    router.push('/theGallery');
-    // router.replace('/theGallery');
+    router.push('/theWorld');
+    // router.replace('/theWorld');
   }
 
   // 🌀 États pour gérer le carrousel (index du post affiché)

@@ -42,7 +42,7 @@ export default function SignUp() {
         // console.log(` [ 🥝 Sign Up ] data.jwt: ${data.jwt}`)
         login();
         console.log('🥝 [ SignUp ] redirect to [ theGallery ] - (register ✅ !)');
-        router.push('/theGallery');
+        router.push('/theWorld');
       }
       else {
         logout();

@@ -2,7 +2,7 @@ import React from 'react';
 import PostComponent from '@/components/PostComponent';
 
 
-const GalleryPage: React.FC = () => {
+const TheWorldPage: React.FC = () => {
     // Exemple de données de posts
     const posts = [
         {
@@ -68,4 +68,4 @@ const GalleryPage: React.FC = () => {
     );
 };
 
-export default GalleryPage;
+export default TheWorldPage;

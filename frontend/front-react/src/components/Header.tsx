@@ -44,7 +44,7 @@ export default function Header() {
             </Button>
 
             <Button
-              href="/theGallery"
+              href="/theWorld"
               className="bg-blue-500 hover:bg-blue-600 text-white rounded-full py-2 px-6 transition-all duration-200"
             >
               🌏 The Galerie

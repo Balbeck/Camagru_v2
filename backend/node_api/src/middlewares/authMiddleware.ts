@@ -18,7 +18,7 @@ export const generateJwt = (_id: string): string => {
 // Middleware pour vérifier le token JWT
 export const verifyToken = (req: Request, res: Response, next: NextFunction): void => {
     const token = req.cookies?.Cama || req.headers.authorization?.split(" ")[1];  // Vérifie le token dans les cookies ou les headers
-    console.log(' 🦧 [A]*verifyJwt ] token: ', token);
+    // console.log(' 🦧 [A]*verifyJwt ] token: ', token);
     if (!token) {
         console.log(' 🦧 [A]*verifyJwt ] No Token ❌ ');
         res.status(401).json({ message: "Access Denied, No Token" });
@@ -31,6 +31,7 @@ export const verifyToken = (req: Request, res: Response, next: NextFunction): vo
         console.log(' 🦧 [A]*verifyJwt ] ✅ req.user: ', req.user);
         next();
     } catch (error) {
+        console.log(' 🦧 [A]*verifyJwt ] Invalid Credentials! ❌ ');
         res.status(401).json({ message: "Invalid Credentials!" });
     }
 };

@@ -31,7 +31,7 @@ export default function SignIn() {
       if (response.ok) {
         login();
         console.log('🦧 [ SignIn ] redirect to [ theGallery ] - (login ✅ !)');
-        router.push('/theGallery');
+        router.push('/theWorld');
       } else {
         logout();
         const data = await response.json();
