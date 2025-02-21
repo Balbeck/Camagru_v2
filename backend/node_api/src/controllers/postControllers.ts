@@ -20,16 +20,32 @@ export const createPost = async (req: Request, res: Response): Promise<void> => 
 	}
 };
 
+
 export const deletePost = async (req: Request, res: Response): Promise<void> => {
 	try {
-		console.log(' 🖼️ [C]*deletePost ] req.user.id: ', req.user.id);
-		const deletedUser = await PostService.deleteAPost(req.body.postId);
-		res.status(200).json({ message: 'Post successfully deleted' });
+		console.log(' 🗑️ [C]*deletePost ] ...');
+		if (!req.params.id) {
+			res.status(404).json({ message: "param id: Manquant " });
+		}
+		const postId: string = req.params.id;
+		console.log(`🗑️ [C]*deletePost ] req.params.id :  ${postId}`);
+
+		const deletedPost = await PostService.deleteAPost(postId);
+		if (!deletedPost) {
+			console.log('🗑️ [C]*deletePost ] ❌ Post not found');
+			res.status(404).json({ message: "Post not found!" });
+			return;
+		}
+
+		console.log('🗑️ [C]*deletePost ] ✅ Post deleted');
+		res.status(200).json({ message: "Post deleted successfully!" });
 
 	} catch (error: any) {
+		console.error('🗑️ [C]*deletePost ] ❌ Error:', error.message);
 		res.status(500).json({ message: error.message });
 	}
 };
+
 
 export const getUserPosts = async (req: Request, res: Response): Promise<void> => {
 	try {

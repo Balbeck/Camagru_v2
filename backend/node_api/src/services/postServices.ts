@@ -20,7 +20,7 @@ export const createPost = async (body: any, userIdString: string): Promise<IPost
 
 export const deleteAPost = async (postIdString: string): Promise<IPost> => {
 	try {
-		console.log(' 🖼️ [S]*deletePost ]...');
+		console.log('🗑️ [S]*deletePost ] ...');
 		if (!mongoose.Types.ObjectId.isValid(postIdString)) {
 			throw new Error('INVALID_POST_ID');
 		}
@@ -28,11 +28,11 @@ export const deleteAPost = async (postIdString: string): Promise<IPost> => {
 		const postId = new mongoose.Types.ObjectId(postIdString);
 		const deletedPost = await deletePost(postId);
 
-		console.log(' 🖼️ [S]*deletePost ] ✅ deleted Post');
+		console.log(' 🗑️️ [S]*deletePost ] ✅ deleted Post');
 		return deletedPost;
 
 	} catch (error) {
-		console.log(' 🖼️ [S]*deletePost ] . ❌ . Error');
+		console.log(' 🗑️ [S]*deletePost ] . ❌ . Error');
 		throw error;
 	}
 };
