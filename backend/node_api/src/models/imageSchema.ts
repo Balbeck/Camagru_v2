@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+
 import { Schema, Document } from "mongoose";
 
 
@@ -55,10 +56,12 @@ export const saveNewImage = async (userId: mongoose.Types.ObjectId, filename: st
 	return await newImage.save();
 };
 
+
 export const getImageById = async (imageId: mongoose.Types.ObjectId): Promise<IImage> => {
 	return await
 		Image.findById(imageId).exec();
 };
+
 
 export const getImagesByUserId = async (userId: mongoose.Types.ObjectId): Promise<IImage[]> => {
 	return await
@@ -66,6 +69,7 @@ export const getImagesByUserId = async (userId: mongoose.Types.ObjectId): Promis
 			.sort({ createdAt: -1 })
 			.exec();
 };
+
 
 export const deleteAnImage = async (imageId: mongoose.Types.ObjectId): Promise<IImage | null> => {
 	return await

@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-import { saveNewImage, deleteAnImage, getImageById, IImage, getImagesByUserId } from "models/imageSchema";
+import { IImage, saveNewImage, deleteAnImage, getImageById, getImagesByUserId } from '../models/imageSchema';
 
 
 export const saveImage = async (userIdString: string, filename: string, contentType: string, data: string): Promise<IImage> => {
