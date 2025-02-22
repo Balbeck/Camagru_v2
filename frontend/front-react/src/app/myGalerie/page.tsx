@@ -73,18 +73,15 @@ const MyGalerie: React.FC = () => {
 	};
 
 
-	const handleCreatePost = async (data: any) => {
+	const handleCreatePost = async (dataFromCreatePostForm: any) => {
 		try {
-			console.log(' 🌴 [myGaleriePage]handleCreatePost - data: ', data);
+			console.log(' 🌴 [myGaleriePage]handleCreatePost - data: ', dataFromCreatePostForm);
 			const response = await fetch(`http://localhost:3000/post/createPost`, {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json',
 				},
-				body: JSON.stringify({
-					title: data.title,
-					image: data.image
-				}),
+				body: JSON.stringify(dataFromCreatePostForm),
 				credentials: 'include',
 			});
 
