@@ -16,6 +16,7 @@ interface IImage {
 	createdAt: Date;
 }
 
+
 const MyGalerie: React.FC = () => {
 
 	const router = useRouter();
@@ -24,6 +25,7 @@ const MyGalerie: React.FC = () => {
 	const [currentIndex, setCurrentIndex] = useState(0);
 
 	useEffect(() => {
+
 		const fetchUserimages = async () => {
 			try {
 				const response = await fetch('http://localhost:3000/image/all', {
@@ -43,12 +45,14 @@ const MyGalerie: React.FC = () => {
 		};
 
 		fetchUserimages();
+
 	}, []);
 
 
 	const nextImage = () => {
 		setCurrentIndex((prevIndex) => (prevIndex + 1) % images.length);
 	};
+
 
 	const prevImage = () => {
 		setCurrentIndex((prevIndex) => (prevIndex - 1 + images.length) % images.length);
@@ -76,9 +80,11 @@ const MyGalerie: React.FC = () => {
 	};
 
 
+
 	if (images.length === 0) {
 		return <div>Looks Like You never Posted an Image \n 😁 Let Try 😁 \nLoading... 🌱</div>;
 	}
+
 
 	return (
 		<div className="flex flex-col items-center justify-center min-h-[80vh] relative">
@@ -142,189 +148,7 @@ const MyGalerie: React.FC = () => {
 		</div>
 	);
 
-
 };
 
+
 export default MyGalerie;
-
-
-
-
-// 
-// 'use client';
-
-// import React, { useState, useEffect } from 'react';
-// import { useRouter } from 'next/navigation';
-// import Image from "next/legacy/image";
-
-// import Button from '@/components/Button';
-
-
-// interface IImage {
-// 	_id: string;
-// 	userId: string;
-// 	imageUrl: string;
-// 	title?: string;
-// 	likes: string[];
-// 	lastComment?: string;
-// }
-
-// const MyGalerie: React.FC = () => {
-
-// 	const router = useRouter();
-
-// 	const [images, setimages] = useState<IImage[]>([]);
-// 	const [currentIndex, setCurrentIndex] = useState(0);
-
-// 	useEffect(() => {
-// 		const fetchUserimages = async () => {
-// 			try {
-// 				const response = await fetch('http://localhost:3000/images/all', {
-// 					method: 'GET',
-// 					headers: {
-// 						'Content-Type': 'application/json',
-// 					},
-// 					credentials: 'include',
-// 				});
-
-// 				if (response.ok) {
-// 					const data = await response.json();
-// 					setimages(data);
-// 				} else {
-// 					console.error('Failed to fetch user images');
-// 				}
-// 			} catch (error) {
-// 				console.error('Error fetching user images:', error);
-// 			}
-// 		};
-
-// 		fetchUserimages();
-// 	}, []);
-
-// 	const nextPost = () => {
-// 		setCurrentIndex((prevIndex) => (prevIndex + 1) % images.length);
-// 	};
-
-// 	const prevPost = () => {
-// 		setCurrentIndex((prevIndex) => (prevIndex - 1 + images.length) % images.length);
-// 	};
-
-// 	const handleEdit = (imageId: string) => {
-// 		console.log('Edit post with ID:', imageId);
-// 		// Ajoute ici la logique pour éditer le post
-// 	};
-
-// 	const handleDelete = async (imageId: string) => {
-// 		try {
-// 			const response = await fetch(`http://localhost:3000/image/delete/${imageId}`, {
-// 				method: 'DELETE',
-// 				headers: {
-// 					'Content-Type': 'application/json',
-// 				},
-// 				credentials: 'include',
-// 			});
-
-// 			if (response.ok) {
-// 				setimages((previmages) => previmages.filter((post) => post._id !== imageId));
-// 				console.log('Post deleted successfully');
-// 				router.push('/myGalerie')
-// 			} else {
-// 				console.error('Failed to delete post');
-// 			}
-// 		} catch (error) {
-// 			console.error('Error deleting post:', error);
-// 		}
-// 	};
-
-// 	if (images.length === 0) {
-// 		return <div>Looks Like You never Posted Something \n 😁 Let Try 😁 \nLoading... 🌱</div>;
-// 	}
-
-// 	return (
-// 		<div className="flex flex-col items-center justify-center min-h-[80vh] relative">
-// 			<h1 className="text-2xl font-bold mb-4 text-white-800">My Gallery</h1>
-
-// 			{/* Flèche gauche */}
-// 			<button
-// 				className="absolute left-8 top-1/2 transform -translate-y-1/2 bg-blue-500 text-white p-5 rounded-full shadow-lg z-20 opacity-90 hover:opacity-100 transition hover:scale-110"
-// 				onClick={prevPost}
-// 			>
-// 				&#8592;
-// 			</button>
-
-// 			{/* Conteneur du Post */}
-// 			<div className="relative w-[70vw] max-w-[350px] h-[45vh] max-h-[350px] flex flex-col items-center bg-white shadow-2xl rounded-xl overflow-hidden my-3">
-
-// 				{/* Titre au-dessus de la photo */}
-// 				<div className="w-full bg-white text-gray-900 font-bold text-lg text-center p-2 border-b">
-// 					{images[currentIndex].title}
-// 				</div>
-
-// 				{/* Image du post */}
-// 				<div className="relative w-full h-3/4">
-// 					<Image
-// 						src={images[currentIndex].imageUrl}
-// 						alt={images[currentIndex].title}
-// 						layout="fill"
-// 						objectFit="cover"
-// 						quality={75}
-// 					/>
-
-// 					{/* Like en bas à gauche SUR la photo */}
-// 					<div className="absolute bottom-2 left-2 bg-black/60 text-white px-2 py-1 rounded-md text-sm">
-// 						❤️ {images[currentIndex].likes.length} likes
-// 					</div>
-// 				</div>
-
-// 				{/* Commentaire en dessous, aligné à gauche */}
-// 				<div className="w-full p-3 text-left">
-// 					<p className="text-gray-700 text-sm italic">💬 {images[currentIndex].lastComment}</p>
-// 				</div>
-// 			</div>
-
-// 			{/* Flèche droite */}
-// 			<button
-// 				className="absolute right-8 top-1/2 transform -translate-y-1/2 bg-blue-500 text-white p-5 rounded-full shadow-lg z-20 opacity-90 hover:opacity-100 transition hover:scale-110"
-// 				onClick={nextPost}
-// 			>
-// 				&#8594;
-// 			</button>
-
-// 			{/* Boutons Edit et Delete */}
-// 			<div className="flex space-x-2 mt-4 mb-4">
-// 				<Button
-// 					className="bg-blue-500 hover:bg-blue-600 text-white rounded-full py-2 px-4 text-sm transition-all duration-200"
-// 					onClick={() => handleEdit(images[currentIndex]._id)}
-// 				>
-// 					Edit
-// 				</Button>
-// 				<Button
-// 					className="bg-red-500 hover:bg-red-600 text-white rounded-full py-2 px-4 text-sm transition-all duration-200"
-// 					onClick={() => handleDelete(images[currentIndex]._id)}
-// 				>
-// 					Delete
-// 				</Button>
-// 			</div>
-
-// 			{/* Miniatures des photos */}
-// 			<div className="flex justify-center grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-3 mt-2 justify-center w-full max-w-[800px]">
-// 				{images.map((post) => (
-// 					<div key={post._id} className="relative w-full aspect-square overflow-hidden rounded-lg shadow-md">
-// 						<Image
-// 							src={post.imageUrl}
-// 							alt={post.title}
-// 							layout="fill"
-// 							objectFit="cover"
-// 							quality={75}
-// 							className="rounded-lg"
-// 						/>
-// 					</div>
-// 				))}
-// 			</div>
-// 		</div>
-// 	);
-
-
-// };
-
-// export default MyGalerie;

@@ -2,10 +2,10 @@
 
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { useAuth } from '@/context/AuthContext';
 import Image from "next/legacy/image";
-// import PostComponent from '@/components/PostComponent';
 
+import { useAuth } from '@/context/AuthContext';
+// import PostComponent from '@/components/PostComponent';
 
 
 // 📸 Liste des posts (mock)
@@ -17,6 +17,7 @@ const posts = [
   { id: 3, title: 'Un autre post', photoUrl: '/pacific_3.jpeg', likes: 5, lastComment: 'Quel Paysage !' },
   { id: 6, title: 'Un autre post', photoUrl: '/pacific_6.jpeg', likes: 7, lastComment: 'Bonne Heure ! 🌞 ' },
 ];
+
 
 const Home: React.FC = () => {
 
@@ -33,6 +34,7 @@ const Home: React.FC = () => {
     }
   }, [isAuthenticated, router]);
 
+
   // 🌀 États pour gérer le carrousel (index du post affiché)
   const [currentIndex, setCurrentIndex] = useState(0);
   const totalPosts = posts.length;
@@ -46,6 +48,7 @@ const Home: React.FC = () => {
   const prevPost = () => {
     setCurrentIndex((prevIndex) => (prevIndex - 1 + totalPosts) % totalPosts);
   };
+
 
   return (
     <div className="flex flex-col items-center justify-center min-h-[80vh] relative">
@@ -69,12 +72,6 @@ const Home: React.FC = () => {
 
         {/* Image du post */}
         <div className="relative w-full h-3/4">
-          {/* <img
-            src={posts[currentIndex].photoUrl}
-            alt={posts[currentIndex].title}
-            className="w-full h-full object-cover"
-          /> */}
-
           <Image
             src={posts[currentIndex].photoUrl}
             alt={posts[currentIndex].title}
@@ -82,7 +79,6 @@ const Home: React.FC = () => {
             objectFit="cover"
             quality={75}
           />
-
 
           {/* Like en bas à gauche SUR la photo */}
           <div className="absolute bottom-2 left-2 bg-black/60 text-white px-2 py-1 rounded-md text-sm">
@@ -106,7 +102,7 @@ const Home: React.FC = () => {
     </div >
   );
 
-
 };
+
 
 export default Home;

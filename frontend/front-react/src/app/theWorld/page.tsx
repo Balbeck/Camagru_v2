@@ -1,8 +1,12 @@
+'use client';
+
 import React from 'react';
+
 import PostComponent from '@/components/PostComponent';
 
 
 const TheWorldPage: React.FC = () => {
+
     // Exemple de données de posts
     const posts = [
         {
@@ -50,6 +54,7 @@ const TheWorldPage: React.FC = () => {
         // Ajoute d'autres posts ici
     ];
 
+
     return (
         <div className="container mx-auto p-4">
             <h1 className="text-2xl font-bold mb-4">The Galerie</h1>
@@ -66,6 +71,8 @@ const TheWorldPage: React.FC = () => {
             </div>
         </div>
     );
+
 };
+
 
 export default TheWorldPage;
