@@ -9,11 +9,12 @@ import mongoose from "mongoose";
 export const createPost = async (body: any, userIdString: string): Promise<IPost> => {
 	// - -[ Find User ID + setValues ]- -
 	console.log(' 🖼️ [S]*newPost ]...');
+	console.log(' 🖼️ [S]*newPost ] body: ', body);
 	const user: IUser = await UserService.getUserById(userIdString);
 	const userId: mongoose.Types.ObjectId = user._id;
-	const title: string = body.title ?? "";
+	const title: string = body.title;
 
-	const newPost: IPost = await createNewPost(userId, body.imageUrl, title);
+	const newPost: IPost = await createNewPost(userId, body.image, title);
 	console.log(' 🖼️ [S]*newPost return ✅ newPost]');
 	return newPost;
 };

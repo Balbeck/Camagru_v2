@@ -47,6 +47,7 @@ const UploadImagePage: React.FC = () => {
 	const handleUpload = async () => {
 		if (base64Image) {
 			try {
+				console.log(' 🌴 [upLoad]handleUpImage - data: ', base64Image);
 				if (selectedImage) {
 					const file: File = selectedImage;
 					const response = await fetch('http://localhost:3000/image/upload', {

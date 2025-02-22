@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import Image from "next/legacy/image";
 
 import Button from '@/components/Button';
+import CreatePost from '@/components/CreatePostForm';
 
 
 interface IImage {
@@ -23,6 +24,8 @@ const MyGalerie: React.FC = () => {
 
 	const [images, setimages] = useState<IImage[]>([]);
 	const [currentIndex, setCurrentIndex] = useState(0);
+
+	const [isModalOpen, setModalOpen] = useState(false);
 
 	useEffect(() => {
 
@@ -57,6 +60,48 @@ const MyGalerie: React.FC = () => {
 	const prevImage = () => {
 		setCurrentIndex((prevIndex) => (prevIndex - 1 + images.length) % images.length);
 	};
+
+
+	// Fonction pour ouvrir le pop-up
+	const openModal = () => {
+		setModalOpen(true);
+	};
+
+	// Fonction pour fermer le pop-up
+	const closeModal = () => {
+		setModalOpen(false);
+	};
+
+
+	const handleCreatePost = async (data: any) => {
+		try {
+			console.log(' 🌴 [myGaleriePage]handleCreatePost - data: ', data);
+			const response = await fetch(`http://localhost:3000/post/createPost`, {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				body: JSON.stringify({
+					title: data.title,
+					image: data.image
+				}),
+				credentials: 'include',
+			});
+
+			if (response.ok) {
+				router.push("/theWorld");
+
+			} else {
+
+			}
+			closeModal(); // Ferme le pop-up
+
+		} catch (error) {
+			console.error(' ❌ Error Creating Post: ', error);
+			closeModal(); // Ferme le pop-up
+		}
+	};
+
 
 
 	const handleDelete = async (imageId: string) => {
@@ -123,6 +168,28 @@ const MyGalerie: React.FC = () => {
 			{/* Boutons Edit et Delete */}
 			<div className="flex space-x-2 mt-4 mb-4">
 				<Button
+					className="bg-green-500 hover:bg-green-600 text-white rounded-full py-2 px-4 text-sm transition-all duration-200"
+					onClick={openModal}
+				>
+					Create Post
+				</Button>
+			</div>
+			{/* Afficher le pop-up si modalOpen est vrai */}
+			{isModalOpen && (
+				<div
+					className="fixed inset-0 flex justify-center items-center bg-gray-500 bg-opacity-50"
+					onClick={closeModal}  // Ferme la fenêtre si on clique à l'extérieur
+				>
+					<div
+						className="relative bg-white p-6 rounded-lg shadow-lg w-[70vw] max-w-[500px] z-10"
+						onClick={(e) => e.stopPropagation()}  // Empêche la fermeture si on clique à l'intérieur
+					>
+						<CreatePost data={images[currentIndex].data} onPublish={handleCreatePost} />
+					</div>
+				</div>
+			)}
+			<div className="flex space-x-2 mt-4 mb-4">
+				<Button
 					className="bg-red-500 hover:bg-red-600 text-white rounded-full py-2 px-4 text-sm transition-all duration-200"
 					onClick={() => handleDelete(images[currentIndex]._id)}
 				>
@@ -145,7 +212,7 @@ const MyGalerie: React.FC = () => {
 					</div>
 				))}
 			</div>
-		</div>
+		</div >
 	);
 
 };
