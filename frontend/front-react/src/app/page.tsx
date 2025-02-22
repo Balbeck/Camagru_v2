@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
 import Image from "next/legacy/image";
@@ -19,15 +19,19 @@ const posts = [
 ];
 
 const Home: React.FC = () => {
+
   const router = useRouter();
   const { isAuthenticated } = useAuth();
 
-  // 🚀 Redirection automatique si l'utilisateur est authentifié
-  if (isAuthenticated) {
-    console.log('🌳 [ Home ] redirect to [ theGallery ] (auth: True !)');
-    router.push('/theWorld');
-    // router.replace('/theWorld');
-  }
+
+  useEffect(() => {
+    // 🚀 Redirection automatique si l'utilisateur est authentifié
+    if (isAuthenticated) {
+      console.log('🌳 [ Home ] redirect to [ theGallery ] (auth: True !)');
+      // router.push('/theWorld');
+      router.replace('/theWorld');
+    }
+  }, [isAuthenticated, router]);
 
   // 🌀 États pour gérer le carrousel (index du post affiché)
   const [currentIndex, setCurrentIndex] = useState(0);

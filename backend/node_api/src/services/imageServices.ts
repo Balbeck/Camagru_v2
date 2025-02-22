@@ -52,7 +52,9 @@ export const deleteImage = async (imageIdString: string, userIdString: string): 
 
 		// Control if image belongs to userId
 		const img = await getImageById(imageId);
-		if (userId !== img.userId) {
+		console.log(` 🍱 [S]deleteImage: \n ->     userId: ${userId}\n -> img.userId: ${img.userId} `);
+		console.log(` 🍱 [S]deleteImage: \n ->     userIdType: `, typeof userId, `\n -> img.userIdType: `, typeof img.userId);
+		if (userId.toString() !== img.userId.toString()) {
 			console.log(' 🍱 [S]deleteImage:  ❌ [ userIds Doesnt Match ! ] ');
 			throw new Error('INVALID_USER_ID');
 		}

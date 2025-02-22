@@ -8,16 +8,48 @@ import LogoutButton from './LogoutButton';
 import { useAuth } from '@/context/AuthContext';
 
 export default function Header() {
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, login } = useAuth();
   const router = useRouter();
 
   // 🚀 Redirection automatique si l'utilisateur NON authentifié
   useEffect(() => {
-    if (!isAuthenticated) {
-      console.log('🌱 [ Header ] redirect to [ Home ] (auth: false !)');
-      router.push('/');
-      // router.replace('/');
-    }
+
+    const fetchCheckAuth = async () => {
+      if (!isAuthenticated) {
+        try {
+          console.log('🌱 [ Header ] useEffect() - fetch /user/checkAuth');
+          const response = await fetch("http://localhost:3000/user/checkAuth", {
+            method: "GET",
+            credentials: "include",
+          });
+
+          if (!response.ok) {
+            console.log('🌱 [ Header ] ❌ Auth')
+            router.replace('/');
+          }
+          else {
+            login();
+            console.log('🌱 [ Header ] ✅ Auth')
+            // cela veut dire que cest un refresh donc peut eventuellement obtenir 
+            // import { usePathname } from 'next/navigation'; 
+            // const pathname = usePathname();
+            // if (isAuthenticated && pathname !== '/') router.replace('')
+            // A Voir utilite ...
+
+          }
+        } catch {
+          console.log('🌱 [ Header - catch ] ❌ Auth')
+          router.replace('/');
+        }
+      }
+    };
+
+    fetchCheckAuth();
+    // if (!isAuthenticated) {
+    //   console.log('🌱 [ Header ] redirect to [ Home ] (auth: false !)');
+    //   // router.push('/');
+    //   router.replace('/');
+    // }
   }, [isAuthenticated, router]);
 
   return (

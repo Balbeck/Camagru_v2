@@ -16,44 +16,66 @@ const UploadImagePage: React.FC = () => {
 	const [previewUrl, setPreviewUrl] = useState<string | null>(null);
 	const [base64Image, setBase64Image] = useState<string | null>(null);
 
+
 	const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+		const limit: number = 5000000; // Limite de 5 Mo 
 		const file = event.target.files?.[0];
 		if (file) {
-			setSelectedImage(file);
-			setPreviewUrl(URL.createObjectURL(file));
+			if (file.size > limit) {
+				alert(' File size exceeds the 5Mo limit ! ');
+				return;
+			}
+			else if (!['image/jpeg', 'image/png', 'image/svg'].includes(file.type)) {
+				alert(' Invalid file type, only jpeg, png or svg ! ');
+				return;
+			}
+			else {
+				setSelectedImage(file);
+				setPreviewUrl(URL.createObjectURL(file));
 
-			// Convertir l'image en base64
-			const reader = new FileReader();
-			reader.onloadend = () => {
-				setBase64Image(reader.result as string);
-			};
-			reader.readAsDataURL(file);
+				// Convertir l'image en base64
+				const reader = new FileReader();
+				reader.onloadend = () => {
+					setBase64Image(reader.result as string);
+				};
+				reader.readAsDataURL(file);
+			}
 		}
 	};
+
 
 	const handleUpload = async () => {
 		if (base64Image) {
 			try {
-				const response = await fetch('http://localhost:3000/post/createPost', {
-					method: 'POST',
-					headers: {
-						'Content-Type': 'application/json',
-					},
-					body: JSON.stringify({ imageUrl: base64Image }),
-					credentials: 'include'
-				});
+				if (selectedImage) {
+					const file: File = selectedImage;
+					const response = await fetch('http://localhost:3000/image/upload', {
+						method: 'POST',
+						headers: {
+							'Content-Type': 'application/json',
+						},
+						body: JSON.stringify({
+							filename: file.name,
+							contentType: file.type,
+							data: base64Image
+						}),
+						credentials: 'include'
+					});
 
-				if (response.ok) {
-					console.log('Image uploaded successfully');
-					router.push('myGalerie');
-				} else {
-					console.error('Failed to upload image');
+					if (response.ok) {
+						console.log('Image uploaded successfully');
+						router.push('myGalerie');
+
+					} else {
+						console.error('Failed to upload image');
+					}
 				}
 			} catch (error) {
 				console.error('Error uploading image:', error);
 			}
 		}
 	};
+
 
 	return (
 		<div className="container mx-auto p-12">
