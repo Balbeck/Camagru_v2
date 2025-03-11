@@ -1,14 +1,8 @@
 import Link from 'next/link';
+import { IButton } from './Interface';
 
-interface ButtonProps {
-  href?: string;
-  children: React.ReactNode;
-  className?: string;
-  type?: 'button' | 'submit' | 'reset';
-  onClick?: () => void;
-}
 
-const Button: React.FC<ButtonProps> = ({ href, children, className, type = 'button', onClick }) => {
+const Button: React.FC<IButton> = ({ href, children, className, type = 'button', onClick }) => {
   if (href) {
     return (
       <Link href={href} className={`font-bold py-2 px-4 rounded transition duration-300 ${className}`}>

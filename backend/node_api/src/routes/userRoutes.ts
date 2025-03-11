@@ -17,7 +17,7 @@ router.get('/checkAuth', verifyToken, (req, res) => {
 });
 
 
-// router.post('/confirmEmail', verifyToken, UserController.confirmEmail);
+router.get('/confirmEmail/:token', UserController.confirmEmail);
 // router.post('/forgotPassword', verifyToken, UserController.forgottenPassword);
 
 export default router;

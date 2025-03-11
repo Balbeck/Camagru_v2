@@ -6,23 +6,14 @@ import Image from "next/legacy/image";
 
 import Button from '@/components/Button';
 import CreatePost from '@/components/CreatePostForm';
-
-
-interface IImage {
-	_id: string;
-	userId: string;
-	filename: string;
-	contentType: string;
-	data: string;
-	createdAt: Date;
-}
+import { IImage, IPostData } from '@/components/Interface';
 
 
 const MyGalerie: React.FC = () => {
 
 	const router = useRouter();
 
-	const [images, setimages] = useState<IImage[]>([]);
+	const [images, setImages] = useState<IImage[]>([]);
 	const [currentIndex, setCurrentIndex] = useState(0);
 
 	const [isModalOpen, setModalOpen] = useState(false);
@@ -38,7 +29,7 @@ const MyGalerie: React.FC = () => {
 
 				if (response.ok) {
 					const data = await response.json();
-					setimages(data);
+					setImages(data);
 				} else {
 					console.error('Failed to fetch user images');
 				}
@@ -73,7 +64,7 @@ const MyGalerie: React.FC = () => {
 	};
 
 
-	const handleCreatePost = async (dataFromCreatePostForm: any) => {
+	const handleCreatePost = async (dataFromCreatePostForm: IPostData) => {
 		try {
 			console.log(' 🌴 [myGaleriePage]handleCreatePost - data: ', dataFromCreatePostForm);
 			const response = await fetch(`http://localhost:3000/post/createPost`, {
@@ -109,7 +100,7 @@ const MyGalerie: React.FC = () => {
 			});
 
 			if (response.ok) {
-				setimages((previmages) => previmages.filter((image) => image._id !== imageId));
+				setImages((previmages) => previmages.filter((image) => image._id !== imageId));
 				console.log('Image deleted successfully');
 				router.push('/myGalerie')
 
@@ -147,7 +138,9 @@ const MyGalerie: React.FC = () => {
 					<Image
 						src={images[currentIndex].data}
 						alt={images[currentIndex].filename}
-						layout="fill"
+						layout="responsive"
+						width={350}
+						height={200}
 						objectFit="cover"
 						quality={75}
 					/>

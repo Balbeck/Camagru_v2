@@ -1,10 +1,8 @@
 import React from 'react';
+import { ILikeButton } from './Interface';
 
-interface LikeButtonProps {
-	likes: number;
-}
 
-const LikeButton: React.FC<LikeButtonProps> = ({ likes }) => {
+const LikeButton: React.FC<ILikeButton> = ({ likes }) => {
 	return (
 		<div className="flex items-center space-x-2 text-gray-700 mb-2">
 			<span role="img" aria-label="like" className="text-red-500">❤️</span>

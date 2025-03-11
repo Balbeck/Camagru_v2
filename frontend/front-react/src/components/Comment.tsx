@@ -1,10 +1,8 @@
 import React from 'react';
+import { IComment } from './Interface';
 
-interface CommentProps {
-	comment: string;
-}
 
-const Comment: React.FC<CommentProps> = ({ comment }) => {
+const Comment: React.FC<IComment> = ({ comment }) => {
 	return (
 		<div className="text-gray-600 text-sm">
 			<p>{comment}</p>

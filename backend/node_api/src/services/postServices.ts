@@ -1,4 +1,4 @@
-import { IPost, createNewPost, deletePost, getUserPosts } from "../models/postSchema";
+import { IPost, createNewPost, deletePost, getUserPosts, getAllThePosts } from "../models/postSchema";
 import { IUser } from "../models/userSchema";
 
 import * as UserService from '../services/userServices';
@@ -56,4 +56,8 @@ export const getPostsByUserId = async (userIdString: string): Promise<IPost[]> =
 		console.log(' 🖼️ [S]*GetUserPosts ] . ❌ . Error');
 		throw error;
 	}
+};
+
+export const getAllPosts = async (): Promise<IPost[]> => {
+	return await getAllThePosts();
 };

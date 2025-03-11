@@ -10,6 +10,7 @@ router.post('/createPost', verifyToken, PostController.createPost);
 // router.get('/getPost', verifyToken, PostController.getPost);
 // router.get('/getLastNPosts', verifyToken, PostController.getLastNPosts);
 router.get('/getUserPosts', verifyToken, PostController.getUserPosts);
+router.get('/getAll', verifyToken, PostController.getAllPosts);
 // router.post('/updatePost', verifyToken, PostController.updatePost);
 
 // router.delete('/deletePost', verifyToken, PostController.deletePost);

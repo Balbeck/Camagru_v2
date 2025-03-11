@@ -96,6 +96,14 @@ export const deletePost = async (postId: mongoose.Types.ObjectId) => {
     return await Post.findByIdAndDelete(postId).exec();
 };
 
+export const getAllThePosts = async (): Promise<IPost[]> => {
+    const posts = await Post.find() // On récupère tous les posts
+        .sort({ createdAt: -1 }) // Tri par createdAt (descendant, du plus récent au plus ancien)
+        //   .populate('userId', 'username') // Optionnel : tu peux peupler le champ userId pour récupérer des infos sur l'utilisateur
+        .exec();
+    return posts;
+};
+
 
 // - - -[ *  LIKES  *  -  Related Fcts with DB ]- - -
 export const addLike = async (postId: mongoose.Types.ObjectId, userId: mongoose.Types.ObjectId) => {

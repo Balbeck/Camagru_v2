@@ -102,7 +102,7 @@ export const deleteUserByUserId = async (userId: mongoose.Types.ObjectId): Promi
         User.findByIdAndDelete(userId).exec();
 };
 
-// export const confirmUserEmailStatusbyUserId = async (userId: mongoose.Types.ObjectId): Promise<IUser | null> => {
-//     return await
-//         User.findByIdAndUpdate(userId, { emailConfirmed: true }, { new: true }).exec();
-// };
+export const confirmUserEmailStatusbyUserId = async (userId: mongoose.Types.ObjectId): Promise<IUser | null> => {
+    return await
+        User.findByIdAndUpdate(userId, { emailConfirmed: true }, { new: true }).exec();
+};

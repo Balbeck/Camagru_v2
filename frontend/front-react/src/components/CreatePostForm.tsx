@@ -1,9 +1,11 @@
 'use client';
 
+import Image from "next/legacy/image";
 import React, { useState } from "react";
+import { ICreatePost } from "./Interface";
 
 
-const CreatePost = ({ data, onPublish }) => {
+const CreatePost: React.FC<ICreatePost> = ({ data, onPublish }) => {
 
 	const [title, setTitle] = useState("Mon premier Post 🌞");
 
@@ -31,9 +33,12 @@ const CreatePost = ({ data, onPublish }) => {
 
 			{/* Image du post */}
 			<div className="relative w-full h-3/4 mt-2">
-				<img
+				<Image
 					src={data}
 					alt="Prévisualisation du post"
+					layout="responsive" // Cela va rendre l'image responsive en utilisant un ratio
+					width={350}  // Largeur du ratio
+					height={200} // Hauteur du ratio
 					className="object-cover w-full h-full rounded-md"
 				/>
 			</div>

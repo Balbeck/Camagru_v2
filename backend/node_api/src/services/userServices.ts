@@ -1,9 +1,38 @@
 import bcrypt from 'bcryptjs';
-import { deleteUserByUserId, findUserById, IUser, updateUserById } from '../models/userSchema'
+import { confirmUserEmailStatusbyUserId, deleteUserByUserId, findUserById, IUser, updateUserById, User } from '../models/userSchema'
 import { createNewUser, findUserByEmail, findUserByUsername } from '../models/userSchema';
 import mongoose from 'mongoose';
+import jwt from 'jsonwebtoken';
+import nodemailer from 'nodemailer';
 
 
+export const transporter = nodemailer.createTransport({
+    service: 'Gmail',
+    auth: {
+        user: process.env.EMAIL,
+        pass: process.env.EMAIL_PASSWORD
+    }
+});
+
+export const sendConfirmationEmail = async (userEmail: string, token: string) => {
+    const server_host = process.env.SERVER_HOST
+    const server_port = process.env.SERVER_PORT
+    const link: string = `${server_host}:${server_port}/user/confirmEmail/${token}`;
+    const mailOptions = {
+        from: process.env.EMAIL,
+        to: userEmail,
+        subject: 'Confirm Your Email for Camagru 42 🪆',
+        text: `Please confirm your email by clicking on the following link: ${link}`
+    };
+
+    try {
+        await transporter.sendMail(mailOptions);
+        console.log(' ✉️ [S]sendEmail: ✅ Email sent successfully');
+    } catch (error) {
+        console.log(' ✉️ [S]sendEmail: ❌ ERROR Email sent ');
+        throw new Error('EMAIL_SERVICE_ERROR');
+    }
+};
 
 export const createUser = async (body: any): Promise<IUser> => {
     try {
@@ -83,6 +112,23 @@ export const getUserById = async (userId_string: string): Promise<IUser> => {
     }
 };
 
+
+export const getUserByEmail = async (userEmail: string): Promise<IUser> => {
+    try {
+        console.log(' 📗 [S]*getUserById ] userEmail_string: ', userEmail);
+        // const user: IUser = await findUserByEmail(userEmail);
+        const user: IUser = await User.findOne({ email: userEmail }).exec();
+        console.log(' 📗 [S]*getUserByEmail ] userFound ✅ id: ', user._id);
+
+        return user;
+
+    } catch (error) {
+        console.log(' ❌ [S]*getUserByEmail ] userEmail: ', userEmail);
+        throw error;
+    }
+};
+
+
 export const updateUser = async (userId_string: string, updates: Partial<IUser>): Promise<IUser> => {
     try {
         if (!mongoose.Types.ObjectId.isValid(userId_string)) {
@@ -116,18 +162,21 @@ export const deleteUser = async (userId_string: string): Promise<IUser> => {
     }
 };
 
-// export const confirmUserEmail = async (userId_string: string): Promise<IUser> => {
-//     try {
-//         if (!mongoose.Types.ObjectId.isValid(userId_string)) {
-//             throw new Error('INVALID_USER_ID');
-//         }
+export const confirmUserEmail = async (token: string): Promise<IUser> => {
+    try {
+        const decoded = jwt.verify(token, process.env.JWT_SECRET) as { id: string };
+        console.log(' ✉️ [S]confirmEmail ] decoded: ', decoded);
+        if (!mongoose.Types.ObjectId.isValid(decoded.id)) {
+            throw new Error('INVALID_USER_ID');
+        }
+        const userId = new mongoose.Types.ObjectId(decoded.id);
+        const user = await User.findById(userId);
+        if (!user) {
+            throw new Error('USER_NOT_FOUND');
+        }
+        return await confirmUserEmailStatusbyUserId(user._id);
 
-//         const userId = new mongoose.Types.ObjectId(userId_string);
-//         const confirmedUser = await confirmUserEmailStatusbyUserId(userId);
-
-//         return confirmedUser;
-
-//     } catch (error) {
-//         throw error;
-//     }
-// };
+    } catch (error) {
+        throw error;
+    }
+};

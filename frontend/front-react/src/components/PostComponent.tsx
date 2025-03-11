@@ -6,14 +6,7 @@ import Image from "next/legacy/image";
 import PostHeader from './PostHeader';
 import LikeButton from './LikeButton';
 import Comment from './Comment';
-
-
-interface PostProps {
-	title: string;
-	photoUrl: string;
-	likes: number;
-	lastComment: string;
-}
+import { PostProps } from './Interface';
 
 
 const PostComponent: React.FC<PostProps> = ({ title, photoUrl, likes, lastComment }) => {

@@ -63,3 +63,13 @@ export const getUserPosts = async (req: Request, res: Response): Promise<void> =
 		res.status(500).json({ message: error.message });
 	}
 };
+
+
+export const getAllPosts = async (req: Request, res: Response): Promise<void> => {
+	try {
+		const posts = await PostService.getAllPosts();
+		res.status(201).json(posts);
+	} catch (error) {
+		res.status(500).json({ message: error.message });
+	}
+};

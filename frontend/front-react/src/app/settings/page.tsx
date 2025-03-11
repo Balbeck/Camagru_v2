@@ -3,12 +3,8 @@
 import { useEffect, useState } from "react";
 import Image from "next/legacy/image";
 import { useRouter } from "next/navigation";
+import { IUser } from "@/components/Interface";
 
-interface User {
-	username: string;
-	profilePicture: string;
-	bio?: string;
-}
 
 export default function SettingsPage() {
 	const [username, setUsername] = useState("");
@@ -32,7 +28,7 @@ export default function SettingsPage() {
 					throw new Error("Erreur lors du chargement des infos");
 				}
 				console.log('🗂️ [ Settings ] - fetch /user/me ✅');
-				const data: User = await response.json();
+				const data: IUser = await response.json();
 				setUsername(data.username);
 				setBio(data.bio || "");
 				// Vérifier si l'URL de profilePicture est complète ou relative

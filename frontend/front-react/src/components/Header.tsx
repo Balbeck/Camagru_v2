@@ -1,6 +1,65 @@
+// 'use client';
+
+// import React, { useEffect } from 'react';
+// import { useRouter } from 'next/navigation';
+
+// import Button from '@/components/Button';
+// import LogoutButton from './LogoutButton';
+// import { useAuth } from '@/context/AuthContext';
+
+// export default function Header() {
+//   const { isAuthenticated, login } = useAuth();
+//   const router = useRouter();
+
+//   const [checkedAuth, setCheckedAuth] = React.useState(false); // A verif avec Usage !
+
+//   // 🚀 Redirection automatique si l'utilisateur NON authentifié
+//   useEffect(() => {
+
+//     const fetchCheckAuth = async () => {
+//       if (!isAuthenticated) {
+//         if (!checkedAuth) { // Vérifie si l'auth a déjà été checkée
+//           try {
+//             console.log('🌱 [ Header ] useEffect() - fetch /user/checkAuth');
+//             const response = await fetch("http://localhost:3000/user/checkAuth", {
+//               method: "GET",
+//               credentials: "include",
+//             });
+
+//             if (!response.ok) {
+//               console.log('🌱 [ Header ] ❌ Auth')
+//               router.replace('/');
+//             }
+//             else {
+//               login();
+//               console.log('🌱 [ Header ] ✅ Auth')
+//               // cela veut dire que cest un refresh donc peut eventuellement obtenir 
+//               // import { usePathname } from 'next/navigation'; 
+//               // const pathname = usePathname();
+//               // if (isAuthenticated && pathname !== '/') router.replace('')
+//               // A Voir utilite ...
+
+//             }
+//           } catch {
+//             console.log('🌱 [ Header - catch ] ❌ Auth')
+//             router.replace('/');
+//           } finally {
+//             setCheckedAuth(true); // Évite un nouvel appel API inutile
+//           }
+//         }
+//       };
+
+//       fetchCheckAuth();
+//       // if (!isAuthenticated) {
+//       //   console.log('🌱 [ Header ] redirect to [ Home ] (auth: false !)');
+//       //   // router.push('/');
+//       //   router.replace('/');
+//       // }
+//     }, [isAuthenticated, router, login, checkedAuth]);
+
 'use client';
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 
 import Button from '@/components/Button';
@@ -11,46 +70,38 @@ export default function Header() {
   const { isAuthenticated, login } = useAuth();
   const router = useRouter();
 
-  // 🚀 Redirection automatique si l'utilisateur NON authentifié
-  useEffect(() => {
+  const [checkedAuth, setCheckedAuth] = useState(false);
 
+  useEffect(() => {
     const fetchCheckAuth = async () => {
-      if (!isAuthenticated) {
+      if (!isAuthenticated && !checkedAuth) {
         try {
-          console.log('🌱 [ Header ] useEffect() - fetch /user/checkAuth');
+          console.log('🌱 [Header] Checking authentication...');
           const response = await fetch("http://localhost:3000/user/checkAuth", {
             method: "GET",
             credentials: "include",
           });
 
-          if (!response.ok) {
-            console.log('🌱 [ Header ] ❌ Auth')
+          if (response.ok) {
+            login();
+            console.log('✅ Authenticated');
+          } else {
+            console.log('❌ Not authenticated, redirecting...');
             router.replace('/');
           }
-          else {
-            login();
-            console.log('🌱 [ Header ] ✅ Auth')
-            // cela veut dire que cest un refresh donc peut eventuellement obtenir 
-            // import { usePathname } from 'next/navigation'; 
-            // const pathname = usePathname();
-            // if (isAuthenticated && pathname !== '/') router.replace('')
-            // A Voir utilite ...
-
-          }
-        } catch {
-          console.log('🌱 [ Header - catch ] ❌ Auth')
+        } catch (error) {
+          console.error('⚠️ Error checking auth:', error);
           router.replace('/');
+        } finally {
+          setCheckedAuth(true);
         }
       }
     };
 
     fetchCheckAuth();
-    // if (!isAuthenticated) {
-    //   console.log('🌱 [ Header ] redirect to [ Home ] (auth: false !)');
-    //   // router.push('/');
-    //   router.replace('/');
-    // }
-  }, [isAuthenticated, router]);
+  }, [isAuthenticated, router, login, checkedAuth]);
+
+
 
   return (
     <header className="bg-gradient-to-r from-purple-500 to-pink-500 p-4">
