@@ -16,7 +16,7 @@ export default function ForgotPassword() {
 		setMessage('');
 
 		try {
-			const response = await fetch('http://localhost/api/forgotPassword', {
+			const response = await fetch('http://localhost:3000/user/forgotPassword', {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json',
@@ -28,8 +28,6 @@ export default function ForgotPassword() {
 
 			if (response.ok) {
 				setMessage('Password reset instructions have been sent to your email.');
-				// Optionally, redirect after a delay:
-				setTimeout(() => router.push('/signin'), 3000);
 			} else {
 				setError(data.message || 'An error occurred while processing your request');
 			}

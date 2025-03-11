@@ -180,3 +180,36 @@ export const confirmUserEmail = async (token: string): Promise<IUser> => {
         throw error;
     }
 };
+
+export const sendResetPasswordEmail = async (userEmail: string): Promise<IUser> => {
+    try {
+        const user = await findUserByEmail(userEmail);
+        if (!user) {
+            throw new Error('USER_NOT_FOUND');
+        }
+
+        const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '1h' });
+        const front_url = process.env.FRONT_URL;
+        const link: string = `${front_url}/resetPassword/${token}`;
+        const mailOptions = {
+            from: process.env.EMAIL,
+            to: userEmail,
+            subject: 'Reset Your Password for Camagru 42 🪆',
+            text: `Please reset your password by clicking on the following link: ${link}`
+        };
+
+        try {
+            await transporter.sendMail(mailOptions);
+            console.log(' ✉️ [S]forgottenPassword: ✅ Email sent successfully');
+        } catch (error) {
+            console.log(' ✉️ [S]forgottenPassword: ❌ ERROR Email sent ');
+            throw new Error('EMAIL_SERVICE_ERROR');
+        }
+
+        return user;
+
+    } catch (error) {
+        throw error;
+    }
+}
+

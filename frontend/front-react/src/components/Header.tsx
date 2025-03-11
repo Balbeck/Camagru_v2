@@ -75,6 +75,13 @@ export default function Header() {
   useEffect(() => {
     const fetchCheckAuth = async () => {
       if (!isAuthenticated && !checkedAuth) {
+        const currentPath = window.location.pathname;
+        const excludePathVerification = ['/signin', '/signup', '/forgot-password', '/resetPassword'];
+        if (excludePathVerification.some( (path) =>currentPath.startsWith(path))) {
+          setCheckedAuth(true);
+          return;
+        }
+
         try {
           console.log('🌱 [Header] Checking authentication...');
           const response = await fetch("http://localhost:3000/user/checkAuth", {

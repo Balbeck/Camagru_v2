@@ -1,4 +1,4 @@
-import { Request, Response } from 'express';
+import e, { Request, Response } from 'express';
 import * as UserService from '../services/userServices';
 import * as AuthJwt from '../middlewares/authMiddleware';
 
@@ -147,6 +147,29 @@ export const confirmEmail = async (req: Request, res: Response): Promise<void> =
 };
 
 
-// export const forgottenPassword = async (req: Request, res: Response) => {
-// 
-// };
+export const forgottenPassword = async (req: Request, res: Response): Promise<void> => {
+    try {
+        console.log(' 🐰 [C]*forgottenPassword ] req.body: ', req.body);
+        await UserService.sendResetPasswordEmail(req.body.email);
+        res.status(400).json({ message: 'Password reset instructions have been sent to your email.' });
+    } catch (error) {
+        if(error.message === 'USER_NOT_FOUND') {
+            res.status(404).json({ message: 'User not found' });
+        } else {    
+            res.status(500).json({ message: error.message });
+        }
+    }
+};
+
+
+export const resetPassword = async (req: Request, res: Response): Promise<void> => {
+    // try {
+    //     const { token } = req.params;
+    //     console.log(' 🐰 [C]*resetPassword ] req.params: ', req.params);
+    //     // const decoded = AuthJwt.verifyJwt(token);
+    //     // console.log(' 🐰 [C]*resetPassword ] decoded: ', decoded);
+    //     res.status(200).json({ message: 'Password reset instructions have been sent to your email.' });
+    // } catch (error) {
+    //     res.status(500).json({ message: error.message });
+    // }
+};
