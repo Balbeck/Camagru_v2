@@ -14,5 +14,5 @@ COPY . .
 EXPOSE 3000
 
 # Modif package.json poru enlever le script start a la fin du Dev
-CMD ["npm", "start"]
-# CMD ["npm", "run", "dev"]
+# CMD ["npm", "start"]
+CMD ["npm", "run", "dev"]
