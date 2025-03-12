@@ -30,6 +30,8 @@ export const register = async (req: Request, res: Response): Promise<void> => {
             res.status(400).json({ message: 'Email already in use' });
         } else if (error.message === 'USERNAME_ALREADY_EXISTS') {
             res.status(400).json({ message: 'Username already in use' });
+        } else if (error.message === 'INVALID_PASSWORD') {
+            res.status(400).json({ message: 'invalid password' });
         } else if (error.message === 'EMAIL_SERVICE_ERROR') {
             const user = await UserService.getUserByEmail(req.body.email);
             UserService.deleteUser(user._id.toString());
@@ -153,9 +155,9 @@ export const forgottenPassword = async (req: Request, res: Response): Promise<vo
         await UserService.sendResetPasswordEmail(req.body.email);
         res.status(400).json({ message: 'Password reset instructions have been sent to your email.' });
     } catch (error) {
-        if(error.message === 'USER_NOT_FOUND') {
+        if (error.message === 'USER_NOT_FOUND') {
             res.status(404).json({ message: 'User not found' });
-        } else {    
+        } else {
             res.status(500).json({ message: error.message });
         }
     }

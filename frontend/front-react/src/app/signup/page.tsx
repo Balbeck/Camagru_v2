@@ -6,7 +6,6 @@ import { useRouter } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
 import Button from '@/components/Button';
 
-
 export default function SignUp() {
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
@@ -16,12 +15,22 @@ export default function SignUp() {
   const router = useRouter();
   const { login, logout } = useAuth();
 
+  const validatePassword = (password: string): boolean => {
+    const passwordRegex = /^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+    return passwordRegex.test(password);
+  };
+
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setError('');
 
     if (password !== confirmPassword) {
       setError("Passwords don't match");
+      return;
+    }
+
+    if (!validatePassword(password)) {
+      setError("Password must be at least 8 characters, include one uppercase letter, one number, and one special character.");
       return;
     }
 
@@ -36,19 +45,15 @@ export default function SignUp() {
       });
 
       const data = await response.json();
-      // console.log(` [ 🥝 Sign Up ] data: ${data}`)
 
       if (response.ok) {
-        // console.log(` [ 🥝 Sign Up ] data.jwt:${data.jwt}`)
         login();
         console.log('🥝 [ SignUp ] redirect to [ theGallery ] - (register ✅ !)');
         router.push('/theWorld');
-      }
-      else {
+      } else {
         logout();
         setError(data.message || 'An error occurred during sign up');
       }
-
     } catch (error: unknown) {
       console.error('Error during sign up:', error);
       setError('Network error. Please try again.');
@@ -72,7 +77,7 @@ export default function SignUp() {
             type="text"
             placeholder="Username"
             value={username}
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setUsername(e.target.value)}
+            onChange={(e) => setUsername(e.target.value)}
             required
           />
         </div>
@@ -87,7 +92,7 @@ export default function SignUp() {
             type="email"
             placeholder="Email"
             value={email}
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setEmail(e.target.value)}
+            onChange={(e) => setEmail(e.target.value)}
             required
           />
         </div>
@@ -102,9 +107,12 @@ export default function SignUp() {
             type="password"
             placeholder="******************"
             value={password}
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setPassword(e.target.value)}
+            onChange={(e) => setPassword(e.target.value)}
             required
           />
+          {!validatePassword(password) && password.length > 0 && (
+            <p className="text-red-500 text-xs">8 chars Min, 1 uppercase, 1 number, 1 special char.</p>
+          )}
         </div>
 
         <div className="mb-6">
@@ -117,7 +125,7 @@ export default function SignUp() {
             type="password"
             placeholder="******************"
             value={confirmPassword}
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setConfirmPassword(e.target.value)}
+            onChange={(e) => setConfirmPassword(e.target.value)}
             required
           />
         </div>

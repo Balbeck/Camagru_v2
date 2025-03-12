@@ -57,6 +57,9 @@
 //       // }
 //     }, [isAuthenticated, router, login, checkedAuth]);
 
+
+
+
 'use client';
 
 import React, { useEffect, useState } from 'react';
@@ -77,7 +80,7 @@ export default function Header() {
       if (!isAuthenticated && !checkedAuth) {
         const currentPath = window.location.pathname;
         const excludePathVerification = ['/signin', '/signup', '/forgot-password', '/resetPassword'];
-        if (excludePathVerification.some( (path) =>currentPath.startsWith(path))) {
+        if (excludePathVerification.some((path) => currentPath.startsWith(path))) {
           setCheckedAuth(true);
           return;
         }
@@ -109,7 +112,6 @@ export default function Header() {
   }, [isAuthenticated, router, login, checkedAuth]);
 
 
-
   return (
     <header className="bg-gradient-to-r from-purple-500 to-pink-500 p-4">
       <div className="flex justify-between items-center">
@@ -139,13 +141,13 @@ export default function Header() {
             >
               🌏 The Galerie
             </Button>
-            {/* 
+
             <Button
               href="/photoBooth"
               className="bg-blue-500 hover:bg-blue-600 text-white rounded-full py-2 px-6 transition-all duration-200"
             >
               📸 Photo Booth
-            </Button> */}
+            </Button>
 
             <Button
               href="/settings"
