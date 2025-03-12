@@ -1,9 +1,9 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { useSearchParams, useRouter } from 'next/navigation'; // Importation de useSearchParams et useRouter
+import { useSearchParams, useRouter } from 'next/navigation';
 
-import Button from '@/components/Button'; // Le composant de bouton que tu as créé
+import Button from '@/components/Button';
 
 const ResetPassword = () => {
   const [password, setPassword] = useState('');
@@ -12,12 +12,11 @@ const ResetPassword = () => {
   const [error, setError] = useState('');
   const router = useRouter();
   const searchParams = useSearchParams();
-  const token = searchParams.get('token'); // Récupérer le token depuis l'URL
+  const token = searchParams.get('token'); // Recup token from URL
 
   useEffect(() => {
     if (!token) {
       setError('Invalid or missing token.');
-      // Rediriger vers la page d'accueil ou afficher un message d'erreur
       router.replace('/');
     }
   }, [token, router]);
@@ -25,7 +24,6 @@ const ResetPassword = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    // Vérification des mots de passe
     if (password !== confirmPassword) {
       setError('Passwords do not match.');
       return;
@@ -59,7 +57,7 @@ const ResetPassword = () => {
       {message && <p className="text-green-500 text-center mb-4">{message}</p>}
 
       <form onSubmit={handleSubmit} className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
-        
+
         <div className="mb-4">
           <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="password">
             New Password

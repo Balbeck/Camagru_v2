@@ -6,9 +6,9 @@ WORKDIR /app
 COPY ./package.json .
 # COPY ./nodemon.json .
 COPY ./tsconfig.json .
+RUN npm install nodemon --save-dev
 RUN npm install
 
-# COPY ./src .
 COPY . .
 
 EXPOSE 3000

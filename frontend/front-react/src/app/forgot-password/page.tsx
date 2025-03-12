@@ -1,14 +1,14 @@
 'use client';
 
 import { useState, FormEvent } from 'react';
-import { useRouter } from 'next/navigation';
+// import { useRouter } from 'next/navigation';
 import Button from '@/components/Button';
 
 export default function ForgotPassword() {
 	const [email, setEmail] = useState('');
 	const [error, setError] = useState('');
 	const [message, setMessage] = useState('');
-	const router = useRouter();
+	// const router = useRouter();
 
 	const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
 		e.preventDefault();

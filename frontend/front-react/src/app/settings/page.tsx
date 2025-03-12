@@ -142,6 +142,11 @@ export default function SettingsPage() {
 				<button type="submit" className="w-full bg-blue-500 text-white py-2 rounded-md">
 					Sauvegarder
 				</button>
+				<div className="flex justify-between w-full text-sm">
+					<a className="font-bold text-blue-500 hover:text-blue-800" href="/forgot-password">
+						Change your Password
+					</a>
+				</div>
 			</form>
 		</div>
 	);
