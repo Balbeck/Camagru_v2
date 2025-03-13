@@ -13,7 +13,7 @@ export default function SignUp() {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState('');
   const router = useRouter();
-  const { login, logout } = useAuth();
+  const { ft_setAuthTrue, ft_logout } = useAuth();
 
   const validatePassword = (password: string): boolean => {
     const passwordRegex = /^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
@@ -47,11 +47,11 @@ export default function SignUp() {
       const data = await response.json();
 
       if (response.ok) {
-        login();
+        ft_setAuthTrue();
         console.log('🥝 [ SignUp ] redirect to [ theGallery ] - (register ✅ !)');
         router.push('/theWorld');
       } else {
-        logout();
+        ft_logout();
         setError(data.message || 'An error occurred during sign up');
       }
     } catch (error: unknown) {

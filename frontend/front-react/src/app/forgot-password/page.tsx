@@ -37,11 +37,14 @@ export default function ForgotPassword() {
 		}
 	};
 
+
 	return (
 		<div className="max-w-md mx-auto mt-10">
+
 			<h2 className="text-2xl font-bold mb-4 text-center">Forgot Password</h2>
 			{error && <p className="text-red-500 text-center mb-4">{error}</p>}
 			{message && <p className="text-green-500 text-center mb-4">{message}</p>}
+
 			<form onSubmit={handleSubmit} className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
 				<div className="mb-4">
 					<label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="email">
@@ -66,6 +69,7 @@ export default function ForgotPassword() {
 					</a>
 				</div>
 			</form>
+
 		</div>
 	);
 }

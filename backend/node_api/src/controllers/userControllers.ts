@@ -63,7 +63,8 @@ export const confirmEmail = async (req: Request, res: Response): Promise<void> =
             secure: false,
             maxAge: 24 * 60 * 60 * 1000, // 1j
         });
-        res.redirect(301, frontUrl);
+        // res.redirect(301, frontUrl);
+        res.status(200);
 
     } catch (error) {
         console.log(' ✉️ [C]*confirmEmail ❌ ');
@@ -121,6 +122,23 @@ export const resetPassword = async (req: Request, res: Response): Promise<void> 
 };
 
 
+export const forgottenPassword = async (req: Request, res: Response): Promise<void> => {
+    try {
+        console.log(' 🐰 [C]*forgottenPassword ] req.body: ', req.body);
+        await UserService.sendResetPasswordEmail(req.body.email);
+        res.status(400).json({ message: 'Password reset instructions have been sent to your email.' });
+    } catch (error) {
+        if (error.message === 'USER_NOT_FOUND') {
+            res.status(404).json({ message: 'User not found' });
+        } else {
+            res.status(500).json({ message: error.message });
+        }
+    }
+};
+
+
+
+
 export const logout = async (req: Request, res: Response): Promise<void> => {
     res.clearCookie(tokenName);
     res.status(201).json({ message: "Déconnexion réussie !" });
@@ -167,22 +185,3 @@ export const deleteUser = async (req: Request, res: Response): Promise<void> => 
         res.status(500).json({ message: error.message });
     }
 };
-
-
-
-export const forgottenPassword = async (req: Request, res: Response): Promise<void> => {
-    try {
-        console.log(' 🐰 [C]*forgottenPassword ] req.body: ', req.body);
-        await UserService.sendResetPasswordEmail(req.body.email);
-        res.status(400).json({ message: 'Password reset instructions have been sent to your email.' });
-    } catch (error) {
-        if (error.message === 'USER_NOT_FOUND') {
-            res.status(404).json({ message: 'User not found' });
-        } else {
-            res.status(500).json({ message: error.message });
-        }
-    }
-};
-
-
-
