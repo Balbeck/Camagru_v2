@@ -5,8 +5,9 @@ import mongoose from 'mongoose';
 import jwt from 'jsonwebtoken';
 import nodemailer from 'nodemailer';
 
+// - - - - - - - - - [ Fcts - EMAIL - Services ] - - - - - - - - -
 
-export const transporter = nodemailer.createTransport({
+const transporter = nodemailer.createTransport({
     service: 'Gmail',
     auth: {
         user: process.env.EMAIL,
@@ -14,7 +15,7 @@ export const transporter = nodemailer.createTransport({
     }
 });
 
-export const sendConfirmationEmail = async (userEmail: string, token: string) => {
+export const sendRegisterEmail = async (userEmail: string, token: string) => {
     const server_host = process.env.SERVER_HOST
     const server_port = process.env.SERVER_PORT
     const link: string = `${server_host}:${server_port}/user/confirmEmail/${token}`;
@@ -27,13 +28,41 @@ export const sendConfirmationEmail = async (userEmail: string, token: string) =>
 
     try {
         await transporter.sendMail(mailOptions);
-        console.log(' ✉️ [S]sendEmail: ✅ Email sent successfully');
+        console.log(' ✉️ [S]registerEmail: ✅ Email sent ');
+
     } catch (error) {
-        console.log(' ✉️ [S]sendEmail: ❌ ERROR Email sent ');
+        console.log(' ✉️ [S]registerEmail: ❌ ERROR Email sent ');
         throw new Error('EMAIL_SERVICE_ERROR');
     }
 };
 
+
+export const confirmUserEmail = async (token: string): Promise<IUser> => {
+    try {
+        // Verifie si l'id du Jwt de l'Url est connue de la bdd. 
+        const decoded = jwt.verify(token, process.env.JWT_SECRET) as { id: string };
+        console.log(' ✉️ [S]confirmEmail ] decoded: ', decoded);
+        if (!mongoose.Types.ObjectId.isValid(decoded.id)) {
+            throw new Error('INVALID_USER_ID');
+        }
+        const userId = new mongoose.Types.ObjectId(decoded.id);
+        const user = await User.findById(userId);
+        if (!user) {
+            throw new Error('USER_NOT_FOUND');
+        }
+
+        console.log(' ✉️ [S]confirmEmail ] ✅ ');
+        return await confirmUserEmailStatusbyUserId(user._id);
+
+    } catch (error) {
+        console.log(' ✉️ [S]confirmEmail ] ❌ Error: ', error);
+        throw error;
+    }
+};
+
+
+
+// - - - - - - - - - [ Fcts - USER -  Management ] - - - - - - - - -
 
 const validatePassword = (password: string): boolean => {
     const passwordRegex = /^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
@@ -205,24 +234,6 @@ export const deleteUser = async (userId_string: string): Promise<IUser> => {
     }
 };
 
-export const confirmUserEmail = async (token: string): Promise<IUser> => {
-    try {
-        const decoded = jwt.verify(token, process.env.JWT_SECRET) as { id: string };
-        console.log(' ✉️ [S]confirmEmail ] decoded: ', decoded);
-        if (!mongoose.Types.ObjectId.isValid(decoded.id)) {
-            throw new Error('INVALID_USER_ID');
-        }
-        const userId = new mongoose.Types.ObjectId(decoded.id);
-        const user = await User.findById(userId);
-        if (!user) {
-            throw new Error('USER_NOT_FOUND');
-        }
-        return await confirmUserEmailStatusbyUserId(user._id);
-
-    } catch (error) {
-        throw error;
-    }
-};
 
 export const sendResetPasswordEmail = async (userEmail: string): Promise<IUser> => {
     try {

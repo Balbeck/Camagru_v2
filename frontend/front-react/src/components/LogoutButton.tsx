@@ -1,42 +1,47 @@
 'use client';
 
 import { useRouter } from "next/navigation";
-
 import { useAuth } from '@/context/AuthContext';
 
 
 const LogoutButton = () => {
+
 	const router = useRouter();
-	const { logout } = useAuth();
+	const { ft_logout } = useAuth();
+
 
 	const handleLogout = async () => {
 		try {
-			const res = await fetch("http://localhost:3000/user/logout", {
-				method: "POST",
-				credentials: "include",
+
+			const res = await fetch('http://localhost:3000/user/logout', {
+				method: 'POST',
+				credentials: 'include',
 			});
 
 			if (res.ok) {
-				logout();
-				console.log('🧐 [ LogOut ] redirect to [ Home ]')
-				router.push("/");
-				// router.replace("/");
+				ft_logout();
+				console.log(' 🙋🏼 [ LogOut ] router.replace("/")')
+				router.replace("/");
+				// router.push("/");
 			} else {
-				console.error("Erreur lors de la déconnexion");
+				console.error(' 🙋🏼 [ LogOut ] ❌ Erreur déconnexion');
 			}
 		} catch (error) {
-			console.error("Erreur réseau :", error);
+			console.error(' 🙋🏼 [ LogOut ] ❌ Error: ', error);
 		}
 	};
+
 
 	return (
 		<button
 			onClick={handleLogout}
-			className="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-700 transition"
+			className='px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-700 transition'
 		>
 			Logout
 		</button>
 	);
+
 };
+
 
 export default LogoutButton;

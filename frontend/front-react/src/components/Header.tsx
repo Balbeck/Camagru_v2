@@ -65,51 +65,66 @@
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 
+import { useAuth } from '@/context/AuthContext';
 import Button from '@/components/Button';
 import LogoutButton from './LogoutButton';
-import { useAuth } from '@/context/AuthContext';
+
 
 export default function Header() {
-  const { isAuthenticated, login } = useAuth();
-  const router = useRouter();
 
+  const { isAuthenticated, ft_setAuthTrue } = useAuth();
   const [checkedAuth, setCheckedAuth] = useState(false);
 
+  const router = useRouter();
+
   useEffect(() => {
+
     const fetchCheckAuth = async () => {
-      if (!isAuthenticated && !checkedAuth) {
+
+      if (!isAuthenticated! && !checkedAuth) {
+
         const currentPath = window.location.pathname;
-        const excludePathVerification = ['/signin', '/signup', '/forgot-password', '/resetPassword'];
+        const excludePathVerification = [
+          '/signin',
+          '/signup',
+          '/forgot-password',
+          '/resetPassword'
+        ];
+
         if (excludePathVerification.some((path) => currentPath.startsWith(path))) {
           setCheckedAuth(true);
           return;
         }
 
         try {
-          console.log('🌱 [Header] Checking authentication...');
+
           const response = await fetch("http://localhost:3000/user/checkAuth", {
             method: "GET",
             credentials: "include",
           });
 
           if (response.ok) {
-            login();
-            console.log('✅ Authenticated');
+            ft_setAuthTrue();
+            console.log('🌱 [ Header ] ✅ Auth');
           } else {
-            console.log('❌ Not authenticated, redirecting...');
+            console.log('🌱 [ Header ] ❌ Auth, replace( / )');
             router.replace('/');
           }
+
         } catch (error) {
-          console.error('⚠️ Error checking auth:', error);
+          console.error('🌱 [ Header ] ❌  Auth(500) Error: ', error);
           router.replace('/');
+
         } finally {
           setCheckedAuth(true);
         }
       }
+
     };
 
     fetchCheckAuth();
-  }, [isAuthenticated, router, login, checkedAuth]);
+
+  }, [isAuthenticated, router, ft_setAuthTrue, checkedAuth]);
 
 
   return (
@@ -118,6 +133,8 @@ export default function Header() {
         <h1 className="text-4xl font-bold text-white animate-pulse flex-grow text-center">
           CAM📸GRU
         </h1>
+        {/* Creation Condition Etat [ Auth ] pour Affichage Buttons*/}
+        {/* -- >  { isAuthenticated ? () : () }   */}
         {isAuthenticated ? (
           <div className="flex space-x-4">
 
@@ -125,28 +142,28 @@ export default function Header() {
               href="/uploadImage"
               className="bg-blue-500 hover:bg-blue-600 text-white rounded-full py-2 px-6 transition-all duration-200"
             >
-              🧑‍🎨 Upload Image
+              🧑‍🎨 UpImage
             </Button>
 
             <Button
               href="/myGalerie"
               className="bg-blue-500 hover:bg-blue-600 text-white rounded-full py-2 px-6 transition-all duration-200"
             >
-              🪆 My Galerie
+              🪆 Galerie
             </Button>
 
             <Button
               href="/theWorld"
               className="bg-blue-500 hover:bg-blue-600 text-white rounded-full py-2 px-6 transition-all duration-200"
             >
-              🌏 The Galerie
+              🌏 World
             </Button>
 
             <Button
               href="/photoBooth"
               className="bg-blue-500 hover:bg-blue-600 text-white rounded-full py-2 px-6 transition-all duration-200"
             >
-              📸 Photo Booth
+              📸 Booth
             </Button>
 
             <Button

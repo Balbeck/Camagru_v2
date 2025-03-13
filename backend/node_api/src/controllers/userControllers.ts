@@ -13,6 +13,7 @@ export const register = async (req: Request, res: Response): Promise<void> => {
         console.log(` 🦄 [C]*register ] ✅ newUser Created: ${newUser.username.toString()} ${newUser._id.toString()}`)
 
         const email: string = req.body.email;
+
         const token = AuthJwt.generateJwt(newUser._id.toString());
         // res.cookie(tokenName, token, {
         //     httpOnly: true,
@@ -23,7 +24,7 @@ export const register = async (req: Request, res: Response): Promise<void> => {
         // 
         // res.status(201).json({ message: 'User created and authentified', jwt: token });
 
-        await UserService.sendConfirmationEmail(email, token);
+        await UserService.sendRegisterEmail(email, token);
         res.status(400).json({ message: 'User registered. Please check your email for confirmation.' });
 
     } catch (error: any) {
@@ -107,6 +108,18 @@ export const login = async (req: Request, res: Response): Promise<void> => {
 };
 
 
+export const resetPassword = async (req: Request, res: Response): Promise<void> => {
+    // try {
+    //     const { token } = req.params;
+    //     console.log(' 🐰 [C]*resetPassword ] req.params: ', req.params);
+    //     // const decoded = AuthJwt.verifyJwt(token);
+    //     // console.log(' 🐰 [C]*resetPassword ] decoded: ', decoded);
+    //     res.status(200).json({ message: 'Password reset instructions have been sent to your email.' });
+    // } catch (error) {
+    //     res.status(500).json({ message: error.message });
+    // }
+};
+
 
 export const logout = async (req: Request, res: Response): Promise<void> => {
     res.clearCookie(tokenName);
@@ -172,14 +185,4 @@ export const forgottenPassword = async (req: Request, res: Response): Promise<vo
 };
 
 
-export const resetPassword = async (req: Request, res: Response): Promise<void> => {
-    // try {
-    //     const { token } = req.params;
-    //     console.log(' 🐰 [C]*resetPassword ] req.params: ', req.params);
-    //     // const decoded = AuthJwt.verifyJwt(token);
-    //     // console.log(' 🐰 [C]*resetPassword ] decoded: ', decoded);
-    //     res.status(200).json({ message: 'Password reset instructions have been sent to your email.' });
-    // } catch (error) {
-    //     res.status(500).json({ message: error.message });
-    // }
-};
+
