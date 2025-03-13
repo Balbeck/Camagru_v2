@@ -1,22 +1,23 @@
 'use client';
 
 import { useState, FormEvent } from 'react';
-// import { useRouter } from 'next/navigation';
 import Button from '@/components/Button';
+
 
 export default function ForgotPassword() {
 	const [email, setEmail] = useState('');
 	const [error, setError] = useState('');
 	const [message, setMessage] = useState('');
-	// const router = useRouter();
+
 
 	const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+
 		e.preventDefault();
 		setError('');
 		setMessage('');
 
 		try {
-			const response = await fetch('http://localhost:3000/user/forgotPassword', {
+			const response = await fetch('http://localhost:3000/user/sendforgotPasswordEmail', {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json',
@@ -27,11 +28,11 @@ export default function ForgotPassword() {
 			const data = await response.json();
 
 			if (response.ok) {
-				setMessage('Password reset instructions have been sent to your email.');
+				setMessage(data.message);
 			} else {
 				setError(data.message || 'An error occurred while processing your request');
 			}
-		} catch (error: unknown) {
+		} catch (error) {
 			console.error('Error during password reset:', error);
 			setError('Network error. Please try again.');
 		}
@@ -62,7 +63,7 @@ export default function ForgotPassword() {
 				</div>
 				<div className="flex items-center justify-between">
 					<Button type="submit" className="bg-blue-500 hover:bg-blue-700 text-white">
-						Reset Password
+						Get Password
 					</Button>
 					<a className="inline-block align-baseline font-bold text-sm text-blue-500 hover:text-blue-800" href="/signin">
 						Back to Sign In

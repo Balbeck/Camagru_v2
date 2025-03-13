@@ -7,13 +7,17 @@ import { useAuth } from '@/context/AuthContext';
 import Button from '@/components/Button';
 
 export default function SignUp() {
+
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState('');
-  const router = useRouter();
+
   const { ft_setAuthTrue, ft_logout } = useAuth();
+
+  const router = useRouter();
+
 
   const validatePassword = (password: string): boolean => {
     const passwordRegex = /^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;

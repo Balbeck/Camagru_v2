@@ -7,34 +7,39 @@ import { IUser } from "@/components/Interface";
 
 
 export default function SettingsPage() {
+
 	const [username, setUsername] = useState("");
 	const [bio, setBio] = useState("");
 	const [profilePicture, setProfilePicture] = useState<File | null>(null);
+
 	const [preview, setPreview] = useState<string | null>(null);
 	const [error, setError] = useState("");
+
 	const router = useRouter();
 
+
 	useEffect(() => {
+
 		const fetchUserData = async () => {
+
 			try {
 				console.log('🗂️ [ Settings ] useEffect() - fetch /user/me');
 				const response = await fetch("http://localhost:3000/user/me", {
 					method: "GET",
 					credentials: "include",
 				});
-
 				if (!response.ok) {
 					console.log('🗂️ [ Settings ] - fetch /user/me ❌');
 					throw new Error("Erreur lors du chargement des infos");
 				}
+
 				console.log('🗂️ [ Settings ] - fetch /user/me ✅');
 				const data: IUser = await response.json();
 				setUsername(data.username);
 				setBio(data.bio || "");
 				// Vérifier si l'URL de profilePicture est complète ou relative
 				const profileUrl = data.profilePicture?.startsWith("http")
-					? data.profilePicture
-					: `/${data.profilePicture}`;
+					? data.profilePicture : `/${data.profilePicture}`;
 				setPreview(profileUrl);
 
 			} catch {
@@ -45,7 +50,9 @@ export default function SettingsPage() {
 		};
 
 		fetchUserData();
+
 	}, [router]);
+
 
 	const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
 		const file = event.target.files?.[0];

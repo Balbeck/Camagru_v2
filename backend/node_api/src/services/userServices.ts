@@ -18,7 +18,7 @@ const transporter = nodemailer.createTransport({
 export const sendRegisterEmail = async (userEmail: string, token: string) => {
     const server_host = process.env.SERVER_HOST
     const server_port = process.env.SERVER_PORT
-    const link: string = `${server_host}:${server_port}/user/confirmEmail/${token}`;
+    const link: string = `${server_host}:${server_port}/user/confirmRegisterEmail/${token}`;
     const mailOptions = {
         from: process.env.EMAIL,
         to: userEmail,
@@ -68,6 +68,13 @@ const validatePassword = (password: string): boolean => {
     const passwordRegex = /^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
     return passwordRegex.test(password);
 };
+
+export const updateNewPassword = async (userId: string, newPassword: string) => {
+
+    //  TO IMPLEMENT !!!!!
+
+};
+
 
 export const createUser = async (body: any): Promise<IUser> => {
     try {

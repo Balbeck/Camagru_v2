@@ -39,29 +39,29 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
 	useEffect(() => {
 
-		// const checkAuthentification = async () => {
-		// 	// console.log(' 🌞 [ AuthContext ] - ...')
-		// 	try {
-		// 		const response = await fetch('http://localhost:3000/user/checkAuth', {
-		// 			method: 'GET',
-		// 			credentials: 'include',
-		// 		});
+		const checkAuthentification = async () => {
+			// console.log(' 🌞 [ AuthContext ] - ...')
+			try {
+				const response = await fetch('http://localhost:3000/user/checkAuth', {
+					method: 'GET',
+					credentials: 'include',
+				});
 
-		// 		if (response.ok) {
-		// 			console.log(' 🌞 [ AuthContext ] - response.ok ✅ ')
-		// 			setIsAuthenticated(true);
-		// 		} else {
-		// 			console.log(' 🌞 [ AuthContext ] - response ❌')
-		// 			setIsAuthenticated(false);
-		// 		}
+				if (response.ok) {
+					console.log(' 🌞 [ AuthContext ] - response.ok ✅ ')
+					setIsAuthenticated(true);
+				} else {
+					console.log(' 🌞 [ AuthContext ] - response ❌')
+					setIsAuthenticated(false);
+				}
 
-		// 	} catch (error) {
-		// 		console.error(' 🌞 [ AuthContext ] ❌ fetch(/user/checkAuth) -> Error: ', error);
-		// 		setIsAuthenticated(false);
-		// 	}
-		// };
+			} catch (error) {
+				console.error(' 🌞 [ AuthContext ] ❌ fetch(/user/checkAuth) -> Error: ', error);
+				setIsAuthenticated(false);
+			}
+		};
 
-		// checkAuthentification();
+		checkAuthentification();
 
 	}, []);
 
@@ -72,7 +72,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
 
 	const ft_logout = async () => {
-		console.error(' 🌞 [ AuthContext ] 🙋🏼‍♂️ ft_logout: Cokies.remove, setAuth:false');
+		console.log(' 🌞 [ AuthContext ] 🙋🏼‍♂️ ft_logout: Cokies.remove, setAuth:false');
 		Cookies.remove(tokenName);
 		setIsAuthenticated(false);
 	};

@@ -50,21 +50,23 @@ export const register = async (req: Request, res: Response): Promise<void> => {
     }
 };
 
-
-export const confirmEmail = async (req: Request, res: Response): Promise<void> => {
+// --> [ endpoint for link in Registration Email ] --> send Cookie
+export const confirmRegisterEmail = async (req: Request, res: Response): Promise<void> => {
     try {
         console.log(' ✉️ [C]*confirmEmail ] req.params: ', req.params);
         const { token } = req.params;
         const confirmedUser = await UserService.confirmUserEmail(token);
         console.log(' ✉️ [C]*confirmEmail ] ✅ confirmedUser: \n', confirmedUser);
+
         res.cookie(tokenName, token, {
             httpOnly: true,
             sameSite: "strict",
             secure: false,
             maxAge: 24 * 60 * 60 * 1000, // 1j
         });
-        // res.redirect(301, frontUrl);
-        res.status(200);
+
+        res.redirect(301, frontUrl);
+        // res.status(200);
 
     } catch (error) {
         console.log(' ✉️ [C]*confirmEmail ❌ ');
@@ -108,25 +110,14 @@ export const login = async (req: Request, res: Response): Promise<void> => {
     }
 };
 
-
-export const resetPassword = async (req: Request, res: Response): Promise<void> => {
-    // try {
-    //     const { token } = req.params;
-    //     console.log(' 🐰 [C]*resetPassword ] req.params: ', req.params);
-    //     // const decoded = AuthJwt.verifyJwt(token);
-    //     // console.log(' 🐰 [C]*resetPassword ] decoded: ', decoded);
-    //     res.status(200).json({ message: 'Password reset instructions have been sent to your email.' });
-    // } catch (error) {
-    //     res.status(500).json({ message: error.message });
-    // }
-};
-
-
+// l'email du User est dans req.body.email
 export const forgottenPassword = async (req: Request, res: Response): Promise<void> => {
     try {
+
         console.log(' 🐰 [C]*forgottenPassword ] req.body: ', req.body);
         await UserService.sendResetPasswordEmail(req.body.email);
-        res.status(400).json({ message: 'Password reset instructions have been sent to your email.' });
+        res.status(200).json({ message: ' ✉ ⚙ [From Back]  Password reset instructions have been sent to your email.' });
+
     } catch (error) {
         if (error.message === 'USER_NOT_FOUND') {
             res.status(404).json({ message: 'User not found' });
@@ -136,6 +127,20 @@ export const forgottenPassword = async (req: Request, res: Response): Promise<vo
     }
 };
 
+
+export const resetPassword = async (req: Request, res: Response): Promise<void> => {
+    try {
+
+        const { token } = req.params;
+        console.log(' 🐰 [C]*resetPassword ] req.params-> token!: ', token, '\nreq.body: ', req.body);
+        const updatedUser = await UserService.updateNewPassword(req.user.id.toString(), req.body.password);
+        res.status(200)
+
+    } catch (error) {
+        res.clearCookie(tokenName);
+        res.status(500).json({ message: error.message });
+    }
+};
 
 
 

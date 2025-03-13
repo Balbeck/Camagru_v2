@@ -43,3 +43,7 @@ export const verifyToken = (req: Request, res: Response, next: NextFunction): vo
         res.status(401).json({ message: "Invalid Credentials !" });
     }
 };
+export function verifyJwt(token: string) {
+    throw new Error('Function not implemented.');
+}
+
