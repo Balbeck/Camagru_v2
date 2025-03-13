@@ -1,6 +1,6 @@
 import mongoose, { Schema, Document } from 'mongoose'
 
-// Ajout d' Interface pour clarete et typage de typescript
+// - - - [ Typage @TypeScript ] - - -
 interface IUser extends Document {
     _id: mongoose.Types.ObjectId;
     username: string;
@@ -12,6 +12,7 @@ interface IUser extends Document {
     updatedAt: Date;
     emailConfirmed: Boolean;
 }
+
 
 const userSchema: Schema = new mongoose.Schema({
     _id: {
@@ -54,12 +55,14 @@ const userSchema: Schema = new mongoose.Schema({
     }
 });
 
-// Modele (Schema)
 const User = mongoose.model<IUser>('User', userSchema);
 export { User, IUser };
 
-// module.exports.User = mongoose.model('User', userSchema);
 
+
+// - - - [ Fcts to Request DB ] - - -
+
+//          - - - [ Fcts to Manage -> USER ] - - -
 export const createNewUser = async (username: string, email: string, passwordHash: string, profilePicture?: string, bio?: string): Promise<IUser> => {
     const newUser: IUser = new User({
         username,
@@ -75,20 +78,6 @@ export const createNewUser = async (username: string, email: string, passwordHas
     return await newUser.save();
 };
 
-export const findUserById = async (userId: mongoose.Types.ObjectId): Promise<IUser | null> => {
-    return await
-        User.findById(userId).exec();
-};
-
-export const findUserByEmail = async (email: string): Promise<IUser | null> => {
-    return await
-        User.findOne({ email }).exec();
-};
-
-export const findUserByUsername = async (username: string): Promise<IUser | null> => {
-    return await
-        User.findOne({ username }).exec();
-};
 
 export const updateUserById = async (userId: mongoose.Types.ObjectId, updates: Partial<IUser>): Promise<IUser | null> => {
     updates.updatedAt = new Date();
@@ -97,11 +86,32 @@ export const updateUserById = async (userId: mongoose.Types.ObjectId, updates: P
         User.findByIdAndUpdate(userId, updates, { new: true }).exec();
 };
 
+
 export const deleteUserByUserId = async (userId: mongoose.Types.ObjectId): Promise<IUser | null> => {
     return await
         User.findByIdAndDelete(userId).exec();
 };
 
+
+
+//          - - - [ Fcts to Request / Find -> USER ] - - -
+export const findUserById = async (userId: mongoose.Types.ObjectId): Promise<IUser | null> => {
+    return await User.findById(userId).exec();
+};
+
+
+export const findUserByEmail = async (email: string): Promise<IUser | null> => {
+    return await User.findOne({ email }).exec();
+};
+
+
+export const findUserByUsername = async (username: string): Promise<IUser | null> => {
+    return await User.findOne({ username }).exec();
+};
+
+
+
+//          - - - [ Fcts  *[ EMAIL ]* -> USER ] - - -
 export const confirmUserEmailStatusbyUserId = async (userId: mongoose.Types.ObjectId): Promise<IUser | null> => {
     return await
         User.findByIdAndUpdate(userId, { emailConfirmed: true }, { new: true }).exec();

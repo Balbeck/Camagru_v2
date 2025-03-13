@@ -44,6 +44,7 @@ const Comment = mongoose.model<IComment>('Comment', commentSchema);
 export { Comment, IComment };
 
 
+
 export const createNewComment = async (userId: mongoose.Types.ObjectId, postId: mongoose.Types.ObjectId, commentText: string): Promise<IComment> => {
     const newComment: IComment = new Comment({
         userId: userId,
@@ -56,10 +57,6 @@ export const createNewComment = async (userId: mongoose.Types.ObjectId, postId: 
     return await newComment.save();
 };
 
-export const findCommentByCommentId = async (commentId: mongoose.Types.ObjectId): Promise<IComment | null> => {
-    return await
-        Comment.findById(commentId).exec();
-};
 
 export const findAllCommentsByPostId = async (postId: mongoose.Types.ObjectId): Promise<IComment[] | null> => {
     return await
@@ -70,12 +67,17 @@ export const findAllCommentsByPostId = async (postId: mongoose.Types.ObjectId): 
 
 export const updateCommentByCommentId = async (commentId: mongoose.Types.ObjectId, updates: Partial<IComment>): Promise<IComment | null> => {
     updates.updatedAt = new Date();
-    return await
-        Comment.findByIdAndUpdate(commentId, updates, { new: true }).exec();
+    return await Comment.findByIdAndUpdate(commentId, updates, { new: true }).exec();
 
 };
 
 export const deleteCommentByCommentId = async (commentId: mongoose.Types.ObjectId): Promise<IComment | null> => {
-    return await
-        Comment.findByIdAndDelete(commentId).exec();
+    return await Comment.findByIdAndDelete(commentId).exec();
 };
+
+
+//  ???
+export const findCommentByCommentId = async (commentId: mongoose.Types.ObjectId): Promise<IComment | null> => {
+    return await Comment.findById(commentId).exec();
+};
+//  ???
