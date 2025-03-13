@@ -1,19 +1,22 @@
 import express, { Router } from "express";
-import { verifyToken } from "../middlewares/authMiddleware";
-
 import * as PostController from "../controllers/postControllers";
+import { verifyToken } from "../middlewares/authMiddleware";
 
 
 const router: Router = express.Router()
 
-router.post('/createPost', verifyToken, PostController.createPost);
-// router.get('/getPost', verifyToken, PostController.getPost);
-// router.get('/getLastNPosts', verifyToken, PostController.getLastNPosts);
-router.get('/getUserPosts', verifyToken, PostController.getUserPosts);
-router.get('/getAll', verifyToken, PostController.getAllPosts);
-// router.post('/updatePost', verifyToken, PostController.updatePost);
 
-// router.delete('/deletePost', verifyToken, PostController.deletePost);
+//  - - [ Fcts to manage a Post ] - - 
+router.post('/createPost', verifyToken, PostController.createPost);
+// router.post('/updatePost', verifyToken, PostController.updatePost);
 router.delete('/deletePost/:id', verifyToken, PostController.deletePost);
+
+
+//  - - [ Fcts to GET Post.s ] - - 
+// router.get('/getPost', verifyToken, PostController.getPost);
+router.get('/getUserPosts', verifyToken, PostController.getUserPosts);
+// router.get('/getLastNPosts', verifyToken, PostController.getLastNPosts);
+router.get('/getAll', verifyToken, PostController.getAllPosts);
+
 
 export default router;

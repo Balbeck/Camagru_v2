@@ -4,20 +4,26 @@ import jwt from 'jsonwebtoken';
 
 const JWT_SECRET = process.env.JWT_SECRET || "Y_a_un_Pb_Bro";
 
-// Étendre le type Request pour ajouter l'attribut `user` et recup l'id pour futur traitement
+
+// - - - *[ Create J W T  with ( id ) ]* - - - 
+export const generateJwt = (_id: string): string => {
+    return jwt.sign({ id: _id }, JWT_SECRET, { expiresIn: "1d" });
+};
+
+
+// - - - *[ etendre type de Request pour add 'req.user' ]* - - - 
+// * -  pour Create  req.user  pour Auth by (id) ! - *
 declare module "express-serve-static-core" {
     interface Request {
         user?: { id: string };
     }
 }
 
-export const generateJwt = (_id: string): string => {
-    return jwt.sign({ id: _id }, JWT_SECRET, { expiresIn: "1d" });
-};
-
-// Middleware pour vérifier le token JWT
+// - - - *[ Middleware pour vérifier le token JWT ]* - - - 
 export const verifyToken = (req: Request, res: Response, next: NextFunction): void => {
-    const token = req.cookies?.Cama || req.headers.authorization?.split(" ")[1];  // Vérifie le token dans les cookies ou les headers
+
+    //  * -  Vérifie le token dans les cookies ou les headers  - *
+    const token = req.cookies?.Cama || req.headers.authorization?.split(" ")[1];
     // console.log(' 🦧 [A]*verifyJwt ] token: ', token);
     if (!token) {
         console.log(' 🦧 [A]*verifyJwt ] No Token ❌ ');
@@ -27,9 +33,11 @@ export const verifyToken = (req: Request, res: Response, next: NextFunction): vo
 
     try {
         const decoded = jwt.verify(token, JWT_SECRET) as { id: string };
+        // * -  assign and set token to -> req.user  - *
         req.user = decoded;
         console.log(' 🦧 [A]*verifyJwt ] ✅ req.user: ', req.user);
         next();
+
     } catch (error) {
         console.log(' 🦧 [A]*verifyJwt ] Invalid Credentials! ❌ ');
         res.status(401).json({ message: "Invalid Credentials!" });
