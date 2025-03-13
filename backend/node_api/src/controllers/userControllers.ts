@@ -8,10 +8,11 @@ const frontUrl: string = process.env.FRONT_URL;
 export const register = async (req: Request, res: Response): Promise<void> => {
     try {
 
-        console.log(' 🦄 [C]*register ] req.body: ', req.body);
+        // console.log(' 🦄 [C]*register ] req.body: ', req.body);
         const newUser = await UserService.createUser(req.body);
-        console.log(` 🦄 [C]*register ] newUser Created: ${newUser.username.toString()} ${newUser._id.toString()}`)
+        console.log(` 🦄 [C]*register ] ✅ newUser Created: ${newUser.username.toString()} ${newUser._id.toString()}`)
 
+        const email: string = req.body.email;
         const token = AuthJwt.generateJwt(newUser._id.toString());
         // res.cookie(tokenName, token, {
         //     httpOnly: true,
@@ -21,23 +22,53 @@ export const register = async (req: Request, res: Response): Promise<void> => {
         // });
         // 
         // res.status(201).json({ message: 'User created and authentified', jwt: token });
-        const email: string = req.body.email;
+
         await UserService.sendConfirmationEmail(email, token);
         res.status(400).json({ message: 'User registered. Please check your email for confirmation.' });
 
     } catch (error: any) {
+        console.log(` 🦄 [C]*register ] ❌ ==> Error message :\n${error.message}`);
         if (error.message === 'EMAIL_ALREADY_EXISTS') {
             res.status(400).json({ message: 'Email already in use' });
-        } else if (error.message === 'USERNAME_ALREADY_EXISTS') {
+        }
+        else if (error.message === 'USERNAME_ALREADY_EXISTS') {
             res.status(400).json({ message: 'Username already in use' });
-        } else if (error.message === 'INVALID_PASSWORD') {
+        }
+        else if (error.message === 'INVALID_PASSWORD') {
             res.status(400).json({ message: 'invalid password' });
-        } else if (error.message === 'EMAIL_SERVICE_ERROR') {
+        }
+        else if (error.message === 'EMAIL_SERVICE_ERROR') {
+            // Delete User To be sure that only users with Email send are Registred
             const user = await UserService.getUserByEmail(req.body.email);
             UserService.deleteUser(user._id.toString());
             res.status(400).json({ message: 'Please try again later, Gmail Service is unvalable' });
         }
         else {
+            res.status(500).json({ message: error.message });
+        }
+    }
+};
+
+
+export const confirmEmail = async (req: Request, res: Response): Promise<void> => {
+    try {
+        console.log(' ✉️ [C]*confirmEmail ] req.params: ', req.params);
+        const { token } = req.params;
+        const confirmedUser = await UserService.confirmUserEmail(token);
+        console.log(' ✉️ [C]*confirmEmail ] ✅ confirmedUser: \n', confirmedUser);
+        res.cookie(tokenName, token, {
+            httpOnly: true,
+            sameSite: "strict",
+            secure: false,
+            maxAge: 24 * 60 * 60 * 1000, // 1j
+        });
+        res.redirect(301, frontUrl);
+
+    } catch (error) {
+        console.log(' ✉️ [C]*confirmEmail ❌ ');
+        if (error.message === 'USER_NOT_FOUND') {
+            res.status(404).json({ message: 'User not found' });
+        } else {
             res.status(500).json({ message: error.message });
         }
     }
@@ -124,29 +155,6 @@ export const deleteUser = async (req: Request, res: Response): Promise<void> => 
     }
 };
 
-
-export const confirmEmail = async (req: Request, res: Response): Promise<void> => {
-    try {
-        const { token } = req.params;
-        console.log(' 🐰 [C]*confirmEmail ] req.params: ', req.params);
-        const confirmedUser = await UserService.confirmUserEmail(token);
-        console.log(' 🐰 [C]*confirmEmail ] confirmedUser: ', confirmedUser);
-        res.cookie(tokenName, token, {
-            httpOnly: true,
-            sameSite: "strict",
-            secure: false,
-            maxAge: 24 * 60 * 60 * 1000, // 1j
-        });
-        res.redirect(301, frontUrl);
-
-    } catch (error) {
-        if (error.message === 'USER_NOT_FOUND') {
-            res.status(404).json({ message: 'User not found' });
-        } else {
-            res.status(500).json({ message: error.message });
-        }
-    }
-};
 
 
 export const forgottenPassword = async (req: Request, res: Response): Promise<void> => {

@@ -47,6 +47,7 @@ export const deletePost = async (req: Request, res: Response): Promise<void> => 
 };
 
 
+
 export const getUserPosts = async (req: Request, res: Response): Promise<void> => {
 	try {
 		console.log(' 🖼️ [C]*getUserPosts ]... ');

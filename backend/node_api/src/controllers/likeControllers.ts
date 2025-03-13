@@ -1,5 +1,4 @@
 import { Request, Response } from 'express';
-
 import * as LikeService from '../services/likeServices';
 import { IPost } from 'models/postSchema';
 

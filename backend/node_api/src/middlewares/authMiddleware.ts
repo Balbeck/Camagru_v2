@@ -22,24 +22,24 @@ declare module "express-serve-static-core" {
 // - - - *[ Middleware pour vérifier le token JWT ]* - - - 
 export const verifyToken = (req: Request, res: Response, next: NextFunction): void => {
 
-    //  * -  Vérifie le token dans les cookies ou les headers  - *
+    //  * -  Check token dans  [ cookies + header ]  - *
     const token = req.cookies?.Cama || req.headers.authorization?.split(" ")[1];
-    // console.log(' 🦧 [A]*verifyJwt ] token: ', token);
+    // console.log(' 🎫 [ Auth - *Jwt* ] token: ', token);
     if (!token) {
-        console.log(' 🦧 [A]*verifyJwt ] No Token ❌ ');
-        res.status(401).json({ message: "Access Denied, No Token" });
+        console.log(' 🎫 [ Auth - *Jwt* ] No Token ❌ ');
+        res.status(401).json({ message: "Access Denied, No Token !" });
         return;
     }
 
     try {
         const decoded = jwt.verify(token, JWT_SECRET) as { id: string };
-        // * -  assign and set token to -> req.user  - *
+        // * -  assign and set token to  [ req.user ]  - *
         req.user = decoded;
-        console.log(' 🦧 [A]*verifyJwt ] ✅ req.user: ', req.user);
+        console.log(` 🎫 [ Auth - *Jwt* ]  ✅  -  User[ ${req.user} ]`);
         next();
 
     } catch (error) {
-        console.log(' 🦧 [A]*verifyJwt ] Invalid Credentials! ❌ ');
-        res.status(401).json({ message: "Invalid Credentials!" });
+        console.log(' 🎫 [ Auth - *Jwt* ]  ❌  -  Invalid Credentials !');
+        res.status(401).json({ message: "Invalid Credentials !" });
     }
 };
