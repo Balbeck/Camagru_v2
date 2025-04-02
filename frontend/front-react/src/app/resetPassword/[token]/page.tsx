@@ -35,6 +35,13 @@ const ResetPassword = () => {
   }, [token, router]);
 
 
+
+  // *[ A Faire ]*
+
+  // *[ Fetch Back pour verifier validity du JWT ]*
+  // *[ Si fetch response.ok -> affichage form de resetPassword ]*
+  // *[ Si fetch !response.ok -> message error -> button reset password pour renvoyer emailavec token dans URL ]*
+
   const handleSubmit = async (e: React.FormEvent) => {
 
     e.preventDefault();

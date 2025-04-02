@@ -3,7 +3,7 @@ version: '3.8'
 services:
 
   #  [  Back  ]  # 
-  web_server:
+  backend:
     container_name: back_server
     build: ./backend/node_api/
     env_file: .env
@@ -32,7 +32,7 @@ services:
     restart: always
 
     #  [  Front  ]  # 
-  front:
+  frontend:
     container_name: front-next.js
     build: ./frontend/
     env_file: .env
@@ -40,7 +40,7 @@ services:
       - ${FRONT_PORT}:3000
     restart: always
     depends_on:
-      - web_server
+      - backend
     volumes:
       # Volume pour le DEV permetant rebuild en temps reel
       - ./frontend/front-react:/app
