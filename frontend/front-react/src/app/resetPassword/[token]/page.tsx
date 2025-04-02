@@ -8,7 +8,7 @@ const ResetPassword = () => {
 
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
-  const [message, setMessage] = useState('');
+  // const [message, setMessage] = useState('');
   const [error, setError] = useState('');
 
   const router = useRouter();
@@ -56,7 +56,7 @@ const ResetPassword = () => {
         credentials: 'include',
       });
       if (response.ok) {
-        setMessage('Password successfully reset!');
+        // setMessage('Password successfully reset!');
         console.log(' 🛂 [ resetPass/[token] ] ✅ -> replace(/myGalerie)');
         router.replace('/myGalerie');
       }
@@ -69,7 +69,7 @@ const ResetPassword = () => {
       }
 
     } catch (error) {
-      console.log(' 🛂 [ resetPass/[token] ] ❌ -> replace(/home)');
+      console.log(' 🛂 [ resetPass/[token] ] ❌ -> replace(/home): ', error);
       setError('Error occurred while resetting password.');
       router.replace('/');
     }
