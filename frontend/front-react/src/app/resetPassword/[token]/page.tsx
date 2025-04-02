@@ -8,8 +8,6 @@ const ResetPassword = () => {
 
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
-  // const [message, setMessage] = useState('');
-  const [error, setError] = useState('');
 
   const router = useRouter();
 
@@ -30,7 +28,7 @@ const ResetPassword = () => {
 
     if (!token) {
       console.log(' 🛂 [ResetPass] ❌ token?: ', token)
-      setError('Invalid or missing token.');
+      console.log('Invalid or missing token.');
       router.replace('/');
     }
 
@@ -42,7 +40,7 @@ const ResetPassword = () => {
     e.preventDefault();
 
     if (password !== confirmPassword) {
-      setError('Passwords do not match.');
+      console.log('Passwords do not match.');
       return;
     }
 
@@ -64,13 +62,13 @@ const ResetPassword = () => {
       else {
         console.log(' 🛂 [ resetPass/[token] ] ❌ -> replace(/)');
         const errorData = await response.json();
-        setError(errorData.message || 'Something went wrong. Try again.');
+        console.log(errorData.message || 'Something went wrong. Try again.');
         router.replace('/');
       }
 
     } catch (error) {
       console.log(' 🛂 [ resetPass/[token] ] ❌ -> replace(/home): ', error);
-      setError('Error occurred while resetting password.');
+      console.log('Error occurred while resetting password.');
       router.replace('/');
     }
   };
@@ -79,7 +77,7 @@ const ResetPassword = () => {
     <div className="max-w-md mx-auto mt-10">
       <h2 className="text-2xl font-bold mb-4 text-center">Reset Password</h2>
 
-      {error && <p className="text-red-500 text-center mb-4">{error}</p>}
+      {/* {error && <p className="text-red-500 text-center mb-4">{error}</p>} */}
 
       <form onSubmit={handleSubmit} className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
 
