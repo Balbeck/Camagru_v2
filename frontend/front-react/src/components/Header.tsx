@@ -97,7 +97,7 @@ export default function Header() {
         }
 
         try {
-
+          console.log('🌱 [ Header... ] Fetch Auth');
           const response = await fetch("http://localhost:3000/user/checkAuth", {
             method: "GET",
             credentials: "include",

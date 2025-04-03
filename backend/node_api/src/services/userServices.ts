@@ -61,6 +61,24 @@ export const confirmUserEmail = async (token: string): Promise<IUser> => {
 };
 
 
+export const verifyTokenToGetEmail = async (token: string): Promise<IUser> => {
+    try {
+        const decoded = jwt.verify(token, process.env.JWT_SECRET) as { id: string };
+        if (!mongoose.Types.ObjectId.isValid(decoded.id)) {
+            throw new Error('INVALID_USER_ID');
+        }
+        const userId = new mongoose.Types.ObjectId(decoded.id);
+        const user = await User.findById(userId);
+        if (!user) {
+            throw new Error('USER_NOT_FOUND');
+        }
+        return user;
+    } catch (error) {
+        console.log(' ✉️ [S]verifyTokenToGetEmail ] ❌ Error: ', error);
+        throw error;
+    }
+}
+
 
 // - - - - - - - - - [ Fcts - USER -  Management ] - - - - - - - - -
 
@@ -69,9 +87,38 @@ const validatePassword = (password: string): boolean => {
     return passwordRegex.test(password);
 };
 
-export const updateNewPassword = async (userId: string, newPassword: string) => {
+export const verifyUpdateNewPassword = async (email: string, newPassword: string, token: string): Promise<IUser> => {
+    try {
+        console.log(` [ verifyUpdateNewPassword ] email: ${email}, newPassword: ${newPassword}, token: ${token} `);
+        // 1 - Verifie token et si User exist !
+        const decoded = jwt.verify(token, process.env.JWT_SECRET) as { id: string };
+        if (!mongoose.Types.ObjectId.isValid(decoded.id)) {
+            throw new Error('INVALID_USER_ID');
+        }
+        const userId = new mongoose.Types.ObjectId(decoded.id);
+        const user = await User.findById(userId);
+        if (!user) {
+            throw new Error('USER_NOT_FOUND');
+        }
+        // 2 - verif si Email correspondent 
+        if (user.email.toLowerCase() !== email.toLowerCase()) {
+            console.log(`INVALID_EMAIL: ${user.email} [vs] ${email}`);
+            throw new Error('INVALID_EMAIL');
+        }
+        console.log(`EMAIL ✅ : ${user.email} [vs] ${email}`);
 
-    //  TO IMPLEMENT !!!!!
+        // 3 - hash newPassword et update Bdd
+        const hashedPassword = await bcrypt.hash(newPassword, 10);
+        const updatedUser = await User.findByIdAndUpdate(userId, { passwordHash: hashedPassword }, { new: true });
+        // console.log('  ✅ updatedUser: ', updatedUser);
+        console.log(' [ verifyUpdateNewPassword ] ✅ ');
+
+        return updatedUser;
+
+    } catch (error) {
+        console.log(' ✉️ [S]verifyTokenToGetEmail ] ❌ Error: ', error);
+        throw error;
+    }
 
 };
 

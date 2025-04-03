@@ -127,21 +127,44 @@ export const forgottenPassword = async (req: Request, res: Response): Promise<vo
     }
 };
 
+export const verifyEmailToken = async (req: Request, res: Response): Promise<void> => {
+    const { token } = req.body;
 
-export const resetPassword = async (req: Request, res: Response): Promise<void> => {
     try {
-
-        const { token } = req.params;
-        console.log(' 🐰 [C]*resetPassword ] req.params-> token!: ', token, '\nreq.body: ', req.body);
-        const updatedUser = await UserService.updateNewPassword(req.user.id.toString(), req.body.password);
-        res.status(200)
-
+        const user = await UserService.verifyTokenToGetEmail(token);
+        const email = user.email;
+        console.log(' [Ctrl verifyEmailToken]  email: ', email);
+        res.json({ email: email });
     } catch (error) {
-        res.clearCookie(tokenName);
-        res.status(500).json({ message: error.message });
+        console.log('[Ctrl verifyEmailToken] -> ERROR: ', error.message)
+        res.status(401).json({ message: "Invalid Token" });
     }
 };
 
+// export const resetPassword = async (req: Request, res: Response): Promise<void> => {
+//     try {
+
+//         const { token } = req.params;
+//         console.log(' 🐰 [C]*resetPassword ] req.params-> token!: ', token, '\nreq.body: ', req.body);
+//         const updatedUser = await UserService.updateNewPassword(req.user.id.toString(), req.body.password);
+//         res.status(200)
+
+//     } catch (error) {
+//         res.clearCookie(tokenName);
+//         res.status(500).json({ message: error.message });
+//     }
+// };
+
+export const resetPassword = async (req: Request, res: Response): Promise<void> => {
+    const { email, password, token } = req.body;
+
+    try {
+        const updatedUser = await UserService.verifyUpdateNewPassword(email, password, token);
+        res.status(200).json({ message: 'Password updated successfully' });
+    } catch (error) {
+        res.status(400).json({ message: "Error Update New Password" });
+    }
+};
 
 
 export const logout = async (req: Request, res: Response): Promise<void> => {

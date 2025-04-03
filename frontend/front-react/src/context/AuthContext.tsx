@@ -8,6 +8,7 @@ import React, {
 	useContext
 } from 'react';
 import Cookies from 'js-cookie';
+import { usePathname } from 'next/navigation';
 
 
 interface AuthContextType {
@@ -35,9 +36,14 @@ export const useAuth = () => {
 export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
 
 	const [isAuthenticated, setIsAuthenticated] = useState(false);
-
+	const pathName = usePathname();
 
 	useEffect(() => {
+
+		if (pathName.startsWith('/resetPassword')) {
+			console.log(' 🙋🏼‍♂️ AuthProvider -> Reject Page /resetPassword ');
+			return;
+		}
 
 		const checkAuthentification = async () => {
 			// console.log(' 🌞 [ AuthContext ] - ...')

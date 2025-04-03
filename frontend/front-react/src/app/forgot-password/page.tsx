@@ -63,10 +63,10 @@ export default function ForgotPassword() {
 				</div>
 				<div className="flex items-center justify-between">
 					<Button type="submit" className="bg-blue-500 hover:bg-blue-700 text-white">
-						Get Password
+						Send Email
 					</Button>
 					<a className="inline-block align-baseline font-bold text-sm text-blue-500 hover:text-blue-800" href="/signin">
-						Back to Sign In
+						Sign In Page
 					</a>
 				</div>
 			</form>

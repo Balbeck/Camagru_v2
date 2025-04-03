@@ -1,19 +1,21 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { useSearchParams, useRouter } from 'next/navigation';
+import { useSearchParams, useRouter, unauthorized } from 'next/navigation';
+import { usePathname } from 'next/navigation';
 import Button from '@/components/Button';
 
 const ResetPassword = () => {
 
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [email, setEmail] = useState('');
 
   const router = useRouter();
 
-  const searchParams = useSearchParams();
-  const token = searchParams.get('token'); // Recup token from URL
-
+  const pathname = usePathname();
+  const token = pathname.split("/").pop();
+  console.log(' 🔐 [ ResetPassword ]Token: ', token);
 
   const validatePassword = (password: string): boolean => {
     const passwordRegex = /^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
@@ -21,18 +23,43 @@ const ResetPassword = () => {
   };
 
 
-
   useEffect(() => {
 
-    console.log(' 🛂 [ResetPass] token?: ', token)
+    const verifyTokenValidity = async () => {
 
-    if (!token) {
-      console.log(' 🛂 [ResetPass] ❌ token?: ', token)
-      console.log('Invalid or missing token.');
-      router.replace('/');
+      console.log(' 🛂 [ResetPass] token?: ', token)
+      if (!token) {
+        console.log(' 🛂 [ResetPass] ❌ token?: ', token)
+        router.replace('/');
+      }
+
+      try {
+        const response = await fetch('http://localhost:3000/user/verifyEmailToken', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ token })
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          console.log('email du user: ', data.email);
+          setEmail(data.email); // Récupère l'email depuis la réponse du backend
+          // setIsTokenValid(true);
+        } else {
+          router.replace('/');
+        }
+      } catch (error) {
+        console.error('Erreur lors de la vérification du token:', error);
+        router.replace('/');
+      }
     }
 
-  }, [token, router]);
+    verifyTokenValidity();
+    // }, [token]);
+    // }, [token, router]);
+  }, []);
 
 
 
@@ -40,7 +67,7 @@ const ResetPassword = () => {
 
   // *[ Fetch Back pour verifier validity du JWT ]*
   // *[ Si fetch response.ok -> affichage form de resetPassword ]*
-  // *[ Si fetch !response.ok -> message error -> button reset password pour renvoyer emailavec token dans URL ]*
+  // *[ Si fetch !response.ok -> message error -> button reset password pour renvoyer email avec token dans URL ]*
 
   const handleSubmit = async (e: React.FormEvent) => {
 
@@ -57,17 +84,18 @@ const ResetPassword = () => {
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ password, token }),
+        body: JSON.stringify({ email, password, token }),
         credentials: 'include',
       });
       if (response.ok) {
         // setMessage('Password successfully reset!');
         console.log(' 🛂 [ resetPass/[token] ] ✅ -> replace(/myGalerie)');
-        router.replace('/myGalerie');
+        router.replace('/signin');
       }
 
       else {
         console.log(' 🛂 [ resetPass/[token] ] ❌ -> replace(/)');
+        // setMessage('Password successfully reset!');
         const errorData = await response.json();
         console.log(errorData.message || 'Something went wrong. Try again.');
         router.replace('/');
@@ -121,11 +149,13 @@ const ResetPassword = () => {
           />
         </div>
 
-        <div className="flex items-center justify-between">
-          <Button type="submit" className="bg-green-500 hover:bg-green-700 text-white">
-            Reset Password
-          </Button>
-        </div>
+        {validatePassword(password) && password === confirmPassword && (
+          <div className="flex items-center justify-between">
+            <Button type="submit" className="bg-green-500 hover:bg-green-700 text-white">
+              Reset Password
+            </Button>
+          </div>
+        )}
       </form>
     </div>
   );
