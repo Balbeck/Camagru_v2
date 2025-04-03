@@ -147,6 +147,9 @@ const ResetPassword = () => {
             onChange={(e) => setConfirmPassword(e.target.value)}
             required
           />
+          {password !== confirmPassword && confirmPassword.length > 0 && (
+            <p className="text-red-500 text-xs">Passwords do not match.</p>
+          )}
         </div>
 
         {validatePassword(password) && password === confirmPassword && (

@@ -37,6 +37,26 @@ export const sendRegisterEmail = async (userEmail: string, token: string) => {
 };
 
 
+export const sendConfirmationEmailforChangedPassword = async (userEmail: string) => {
+    const server_host = process.env.SERVER_HOST
+    const server_port = process.env.SERVER_PORT
+    const mailOptions = {
+        from: process.env.EMAIL,
+        to: userEmail,
+        subject: 'Password Changed for Camagru 42 🪆',
+        text: `Your email has been successfully changed ! 🥳`
+    };
+
+    try {
+        await transporter.sendMail(mailOptions);
+        console.log(' ✉️ [S]sendConfirmationEmailforChangedPassword: ✅ Email sent ');
+
+    } catch (error) {
+        console.log(' ✉️ [S]sendConfirmationEmailforChangedPassword: ❌ ERROR Email sent ');
+        throw new Error('EMAIL_SERVICE_ERROR');
+    }
+};
+
 export const confirmUserEmail = async (token: string): Promise<IUser> => {
     try {
         // Verifie si l'id du Jwt de l'Url est connue de la bdd. 
@@ -113,6 +133,8 @@ export const verifyUpdateNewPassword = async (email: string, newPassword: string
         // console.log('  ✅ updatedUser: ', updatedUser);
         console.log(' [ verifyUpdateNewPassword ] ✅ ');
 
+        // 4 - Send Confirmation Email that the password Changed
+        await sendConfirmationEmailforChangedPassword(user.email);
         return updatedUser;
 
     } catch (error) {
