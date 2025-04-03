@@ -69,7 +69,8 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
 		checkAuthentification();
 
-	}, []);
+	}, [pathName]);
+	// }, []);
 
 
 	const ft_setAuthTrue = () => {

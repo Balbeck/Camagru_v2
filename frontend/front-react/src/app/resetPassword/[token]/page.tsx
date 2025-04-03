@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { useSearchParams, useRouter, unauthorized } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import { usePathname } from 'next/navigation';
 import Button from '@/components/Button';
 
@@ -58,8 +58,8 @@ const ResetPassword = () => {
 
     verifyTokenValidity();
     // }, [token]);
-    // }, [token, router]);
-  }, []);
+  }, [token, router]);
+  // }, []);
 
 
 
