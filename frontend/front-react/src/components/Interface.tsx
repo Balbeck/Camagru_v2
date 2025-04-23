@@ -19,8 +19,10 @@ export interface ICreatePost {
 
 export interface IUser {
 	username: string;
+	email: string;
 	profilePicture: string;
 	bio?: string;
+	isNotificationsEnabled: boolean;
 }
 
 export interface PostProps {

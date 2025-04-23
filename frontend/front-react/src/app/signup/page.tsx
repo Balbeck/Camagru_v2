@@ -19,6 +19,11 @@ export default function SignUp() {
   const router = useRouter();
 
 
+  const validateUsername = (username: string): boolean => {
+    const usernameRegex = /^[a-zA-Z0-9_-]{3,16}$/;
+    return usernameRegex.test(username);
+  };
+
   const validatePassword = (password: string): boolean => {
     const passwordRegex = /^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
     return passwordRegex.test(password);
@@ -84,6 +89,9 @@ export default function SignUp() {
             onChange={(e) => setUsername(e.target.value)}
             required
           />
+          {!validateUsername(username) && username.length > 0 && (
+            <p className="text-red-500 text-xs">3 to 16 chars ltr, nbr, &apos;_&apos; and &apos;-&apos; only.</p>
+          )}
         </div>
 
         <div className="mb-4">

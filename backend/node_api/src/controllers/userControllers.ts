@@ -1,13 +1,22 @@
 import e, { Request, Response } from 'express';
 import * as UserService from '../services/userServices';
 import * as AuthJwt from '../middlewares/authMiddleware';
+import { findUserByUsername } from '../models/userSchema';
 
 const tokenName: string = "Cama";
 const frontUrl: string = process.env.FRONT_URL;
 
+const validateUsername = (username: string): boolean => {
+    const usernameRegex = /^[a-zA-Z0-9_-]{3,16}$/;
+    return usernameRegex.test(username);
+};
+
 export const register = async (req: Request, res: Response): Promise<void> => {
     try {
-
+        if (!validateUsername(req.body.username)) {
+            res.status(400).json({ message: 'Invalid username format' });
+            return;
+        }
         // console.log(' 🦄 [C]*register ] req.body: ', req.body);
         const newUser = await UserService.createUser(req.body);
         console.log(` 🦄 [C]*register ] ✅ newUser Created: ${newUser.username.toString()} ${newUser._id.toString()}`)
@@ -166,6 +175,46 @@ export const resetPassword = async (req: Request, res: Response): Promise<void> 
     }
 };
 
+export const resetEmail = async (req: Request, res: Response): Promise<void> => {
+    const { newEmail, token } = req.body;
+    try {
+        const updatedUser = await UserService.verifyUpdateNewEmail(newEmail, token);
+        res.status(200).json({ message: 'Email updated successfully' });
+    } catch (error) {
+        res.status(400).json({ message: "Error Update New Email" });
+    }
+};
+
+export const sendEmailToChangeUserEmailAddress = async (req: Request, res: Response): Promise<void> => {
+    try {
+        // [ Verif si l'email est déjà utilisé ]
+        try {
+            const user = await UserService.getUserByEmail(req.body.newEmail);
+            if (user) {
+                res.status(409).json({ message: 'Email already in use' });
+                return;
+            }
+        } catch (error) {
+            if (error.message === 'USER_NOT_FOUND') {
+                console.log(' 🐰 [C]*sendEmailToChangeUserEmailAddress ] ✅ Email not found can be USed !: ', req.body.newEmail);
+            }
+        }
+
+        const userId = req.user.id;
+        await UserService.sendEmailToChangeEmailAdress(req.body.newEmail, userId);
+        await UserService.updateUserNewEmail(req.user.id.toString(), req.body.newEmail);
+        res.status(200).json({ message: ' ✉ ⚙ [From Back]  Email reset instructions have been sent to your Former Email adress Bro !.' });
+
+    } catch (error) {
+        if (error.message === 'USER_NOT_FOUND') {
+            res.status(404).json({ message: 'User not found' });
+        } else {
+            res.status(500).json({ message: error.message });
+        }
+    }
+};
+
+
 
 export const logout = async (req: Request, res: Response): Promise<void> => {
     res.clearCookie(tokenName);
@@ -191,6 +240,18 @@ export const getMe = async (req: Request, res: Response): Promise<void> => {
 
 export const updateUser = async (req: Request, res: Response): Promise<void> => {
     try {
+        if (!validateUsername(req.body.username)) {
+            res.status(400).json({ message: 'Invalid username format' });
+            return;
+        }
+        const me = await UserService.getUserById(req.user.id);
+        if (me.username !== req.body.username) {
+            const user = await findUserByUsername(req.body.username);
+            if (user) {
+                res.status(409).json({ message: 'Username already in use' });
+                return;
+            }
+        }
         console.log(' 🌱 [C]*updateUser ] req.body: ', req.body);
         const updatedUser = await UserService.updateUser(req.user.id, req.body);
         console.log(' 🌱 [C]*updateUser ] updatedUser: ', updatedUser);
@@ -213,3 +274,15 @@ export const deleteUser = async (req: Request, res: Response): Promise<void> => 
         res.status(500).json({ message: error.message });
     }
 };
+
+export const updateNotification = async (req: Request, res: Response): Promise<void> => {
+    try {
+        console.log(' 🪄 [C]*updateNotification ] req.body: ', req.body);
+        const updatedUser = await UserService.updateCommentNotification(req.user.id, req.body.isNotificationsEnabled);
+        console.log(' 🪄 [C]*updateNotification ] updatedUser: ', updatedUser);
+        res.status(200);
+
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+}

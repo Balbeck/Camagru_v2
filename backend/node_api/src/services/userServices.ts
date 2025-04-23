@@ -1,5 +1,5 @@
 import bcrypt from 'bcryptjs';
-import { confirmUserEmailStatusbyUserId, deleteUserByUserId, findUserById, IUser, updateUserById, User } from '../models/userSchema'
+import { confirmUserEmailStatusbyUserId, createNewEmail, deleteUserByUserId, findUserById, IUser, updateUserById, User } from '../models/userSchema'
 import { createNewUser, findUserByEmail, findUserByUsername } from '../models/userSchema';
 import mongoose from 'mongoose';
 import jwt from 'jsonwebtoken';
@@ -44,7 +44,7 @@ export const sendConfirmationEmailforChangedPassword = async (userEmail: string)
         from: process.env.EMAIL,
         to: userEmail,
         subject: 'Password Changed for Camagru 42 🪆',
-        text: `Your email has been successfully changed ! 🥳`
+        text: `Your password has been successfully changed ! 🥳`
     };
 
     try {
@@ -99,6 +99,96 @@ export const verifyTokenToGetEmail = async (token: string): Promise<IUser> => {
     }
 }
 
+export const sendResetPasswordEmail = async (userEmail: string): Promise<IUser> => {
+    try {
+        const user = await findUserByEmail(userEmail);
+        if (!user) {
+            throw new Error('USER_NOT_FOUND');
+        }
+
+        const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '1h' });
+        const front_url = process.env.FRONT_URL;
+        const link: string = `${front_url}/resetPassword/${token}`;
+        const mailOptions = {
+            from: process.env.EMAIL,
+            to: userEmail,
+            subject: 'Reset Your Password for Camagru 42 🪆',
+            text: `Please reset your password by clicking on the following link: ${link}`
+        };
+
+        try {
+            await transporter.sendMail(mailOptions);
+            console.log(' ✉️ [S]forgottenPassword: ✅ Email sent successfully');
+        } catch (error) {
+            console.log(' ✉️ [S]forgottenPassword: ❌ ERROR Email sent ');
+            throw new Error('EMAIL_SERVICE_ERROR');
+        }
+
+        return user;
+
+    } catch (error) {
+        throw error;
+    }
+}
+
+
+export const sendEmailToChangeEmailAdress = async (newEmail: string, userId: string): Promise<IUser> => {
+    try {
+
+        const id = new mongoose.Types.ObjectId(userId);
+        if (!mongoose.Types.ObjectId.isValid(id)) {
+            throw new Error('INVALID_USER_ID');
+        }
+        const user = await createNewEmail(id, newEmail);
+        if (!user) {
+            throw new Error('USER_NOT_FOUND');
+        }
+        console.log(` 📗 [S]*sendEmailToChangeEmailAdress ] userFound ✅\n - >  email - newEmail: [${user.email}] - [${user.newEmail}] `);
+
+        const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '1h' });
+        const front_url = process.env.FRONT_URL;
+        const link: string = `${front_url}/resetEmail/${token}`;
+        const mailOptions = {
+            from: process.env.EMAIL,
+            to: user.email,
+            subject: 'Change Your Email for Camagru 42 🪆',
+            text: `Please change your email by clicking on the following link: ${link}`
+        };
+
+        try {
+            await transporter.sendMail(mailOptions);
+            console.log(' ✉️ [S]sendEmailToChangeEmailAdress: ✅ Email sent successfully');
+        } catch (error) {
+            console.log(' ✉️ [S]sendEmailToChangeEmailAdress: ❌ ERROR Email sent ');
+            throw new Error('EMAIL_SERVICE_ERROR');
+        }
+
+        return user;
+
+    } catch (error) {
+        throw error;
+    }
+};
+
+export const updateUserNewEmail = async (userId: string, newEmail: string): Promise<IUser> => {
+    try {
+        const id = new mongoose.Types.ObjectId(userId);
+        if (!mongoose.Types.ObjectId.isValid(id)) {
+            throw new Error('INVALID_USER_ID');
+        }
+        const user = await createNewEmail(id, newEmail);
+        if (!user) {
+            throw new Error('USER_NOT_FOUND');
+        }
+        console.log(` 📗 [S]*updateUserNewEmail ] userFound ✅\n - >  email - newEmail: [${user.email}] - [${user.newEmail}] `);
+        return user;
+    } catch (error) {
+        console.log(' ❌ [S]*updateUserNewEmail ] userId_string: ', userId);
+        throw error;
+    }
+};
+
+
 
 // - - - - - - - - - [ Fcts - USER -  Management ] - - - - - - - - -
 
@@ -143,6 +233,40 @@ export const verifyUpdateNewPassword = async (email: string, newPassword: string
     }
 
 };
+
+
+export const verifyUpdateNewEmail = async (newEmail: string, token: string): Promise<IUser> => {
+    try {
+        console.log(` [ verifyUpdateNewEmail ] newEmail: ${newEmail}, token: ${token} `);
+        // 1 - Verifie token et si User exist !
+        const decoded = jwt.verify(token, process.env.JWT_SECRET) as { id: string };
+        if (!mongoose.Types.ObjectId.isValid(decoded.id)) {
+            throw new Error('INVALID_USER_ID');
+        }
+        const userId = new mongoose.Types.ObjectId(decoded.id);
+        const user = await User.findById(userId);
+        if (!user) {
+            throw new Error('USER_NOT_FOUND');
+        }
+
+        // 2 - verif si Email correspondent
+        if (user.newEmail.toLowerCase() !== newEmail.toLowerCase()) {
+            console.log(`INVALID_EMAIL: ${user.newEmail} [vs] ${newEmail}`);
+            throw new Error('INVALID_EMAIL');
+        }
+        console.log(`EMAIL ✅ : ${user.newEmail} [vs] ${newEmail}`);
+
+        // 3 - Update Bdd
+        const updatedUser = await User.findByIdAndUpdate(userId, { email: newEmail, newEmail: null }, { new: true });
+        console.log('  ✅ updatedUser: ', updatedUser);
+
+        return updatedUser;
+
+    } catch (error) {
+        console.log(' ✉️ [S]verifyTokenToGetEmail ] ❌ Error: ', error);
+        throw error;
+    }
+}
 
 
 export const createUser = async (body: any): Promise<IUser> => {
@@ -217,21 +341,21 @@ export const createUser = async (body: any): Promise<IUser> => {
 export const logInUser = async (body: any): Promise<IUser> => {
     try {
         // - -[ * User * Verifications ]- -
-        const existingUserByEmail = await findUserByEmail(body.email);
-        if (!existingUserByEmail) {
+        const existingUserByUsername = await findUserByUsername(body.username);
+        if (!existingUserByUsername) {
             throw new Error('USER_NOT_FOUND')
         }
-        console.log(` 🚀 [S]*logInU ] UserFound: ${existingUserByEmail.email}`);
+        console.log(` 🚀 [S]*logInU ] UserFound: ${existingUserByUsername.username}`);
 
         // - -[ * Hash * Comparison ]- -
-        const hashComparison = await bcrypt.compare(body.password, existingUserByEmail.passwordHash);
+        const hashComparison = await bcrypt.compare(body.password, existingUserByUsername.passwordHash);
         if (!hashComparison) {
             console.log(` 🚀 [S]*logInU ] Hash Comparison ❌ `);
             throw new Error('INVALID_PASSWORD');
         }
         console.log(` 🚀 [S]*logInU ] Hash Comparison ✅ `);
 
-        return existingUserByEmail;
+        return existingUserByUsername;
 
     } catch (error) {
         console.log("❌ Error LogIn User: ", error.message);
@@ -272,7 +396,8 @@ export const getUserByEmail = async (userEmail: string): Promise<IUser> => {
 
     } catch (error) {
         console.log(' ❌ [S]*getUserByEmail ] userEmail: ', userEmail);
-        throw error;
+        throw new Error('USER_NOT_FOUND')
+        // throw error;
     }
 };
 
@@ -311,35 +436,19 @@ export const deleteUser = async (userId_string: string): Promise<IUser> => {
 };
 
 
-export const sendResetPasswordEmail = async (userEmail: string): Promise<IUser> => {
+export const updateCommentNotification = async (userId_string: string, isNotificationsEnabled: boolean): Promise<IUser> => {
     try {
-        const user = await findUserByEmail(userEmail);
-        if (!user) {
-            throw new Error('USER_NOT_FOUND');
+        if (!mongoose.Types.ObjectId.isValid(userId_string)) {
+            throw new Error('INVALID_USER_ID');
         }
 
-        const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '1h' });
-        const front_url = process.env.FRONT_URL;
-        const link: string = `${front_url}/resetPassword/${token}`;
-        const mailOptions = {
-            from: process.env.EMAIL,
-            to: userEmail,
-            subject: 'Reset Your Password for Camagru 42 🪆',
-            text: `Please reset your password by clicking on the following link: ${link}`
-        };
+        const userId = new mongoose.Types.ObjectId(userId_string);
+        const updatedUser = await User.findByIdAndUpdate(userId, { isNotificationsEnabled }, { new: true });
+        console.log(' 📗 [S]*updateNotification ] updatedUser: ', updatedUser);
 
-        try {
-            await transporter.sendMail(mailOptions);
-            console.log(' ✉️ [S]forgottenPassword: ✅ Email sent successfully');
-        } catch (error) {
-            console.log(' ✉️ [S]forgottenPassword: ❌ ERROR Email sent ');
-            throw new Error('EMAIL_SERVICE_ERROR');
-        }
-
-        return user;
+        return updatedUser;
 
     } catch (error) {
         throw error;
     }
 }
-

@@ -11,6 +11,8 @@ interface IUser extends Document {
     createdAt: Date;
     updatedAt: Date;
     emailConfirmed: Boolean;
+    newEmail?: string;
+    isNotificationsEnabled: Boolean;
 }
 
 
@@ -52,6 +54,14 @@ const userSchema: Schema = new mongoose.Schema({
     emailConfirmed: {
         type: Boolean,
         default: false
+    },
+    newEmail: {
+        type: String,
+        default: null
+    },
+    isNotificationsEnabled: {
+        type: Boolean,
+        default: true
     }
 });
 
@@ -116,3 +126,8 @@ export const confirmUserEmailStatusbyUserId = async (userId: mongoose.Types.Obje
     return await
         User.findByIdAndUpdate(userId, { emailConfirmed: true }, { new: true }).exec();
 };
+
+export const createNewEmail = async (userId: mongoose.Types.ObjectId, newEmail: string): Promise<IUser | null> => {
+    return await
+        User.findByIdAndUpdate(userId, { newEmail }, { new: true }).exec();
+}
