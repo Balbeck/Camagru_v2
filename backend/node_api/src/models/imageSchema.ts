@@ -9,6 +9,8 @@ interface IImage extends Document {
 	contentType: string; // MIME type of Image ex: image/jpeg, image/png, image/svg
 	data: string; //Image stored Base64
 	createdAt: Date;
+	type: string; // "upload" ou "montage"
+
 }
 
 const imageSchema: Schema = new Schema({
@@ -38,6 +40,11 @@ const imageSchema: Schema = new Schema({
 		default: Date.now,
 		required: true
 	},
+	type: {
+		type: String,
+		enum: ["upload", "montage"],
+		default: "upload"
+	},
 });
 
 const Image = mongoose.model<IImage>('Image', imageSchema);
@@ -46,13 +53,14 @@ export { Image, IImage };
 
 
 
-export const saveNewImage = async (userId: mongoose.Types.ObjectId, filename: string, contentType: string, data: string): Promise<IImage | null> => {
+export const saveNewImage = async (userId: mongoose.Types.ObjectId, filename: string, contentType: string, data: string, type: string): Promise<IImage | null> => {
 	const newImage: IImage = new Image({
 		userId: userId,
 		filename: filename,
 		contentType: contentType,
 		data: data,
-		createdAt: new Date()
+		createdAt: new Date(),
+		type: type
 	});
 	return await newImage.save();
 };

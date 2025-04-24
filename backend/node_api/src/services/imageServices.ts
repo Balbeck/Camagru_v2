@@ -9,7 +9,7 @@ export const saveImage = async (userIdString: string, filename: string, contentT
 			throw new Error('INVALID_USER_ID');
 		}
 		const userId = new mongoose.Types.ObjectId(userIdString);
-		const newImage: IImage = await saveNewImage(userId, filename, contentType, data);
+		const newImage: IImage = await saveNewImage(userId, filename, contentType, data, 'upload');
 
 		console.log(' 🍱 [S]saveImage:  [ ✅ ]');
 		return newImage;
@@ -20,6 +20,22 @@ export const saveImage = async (userIdString: string, filename: string, contentT
 	}
 };
 
+export const saveMontage = async (userIdString: string, filename: string, contentType: string, data: string): Promise<IImage> => {
+	try {
+		if (!mongoose.Types.ObjectId.isValid(userIdString)) {
+			throw new Error('INVALID_USER_ID');
+		}
+		const userId = new mongoose.Types.ObjectId(userIdString);
+		const newImage: IImage = await saveNewImage(userId, filename, contentType, data, 'montage');
+
+		console.log(' 🍱 [S]saveMontage:  [ ✅ ]');
+		return newImage;
+
+	} catch (error) {
+		console.log(' 🍱 [S]saveMontage:  [ ❌ ]');
+		throw error;
+	}
+};
 
 export const getAllImages = async (userIdString: string): Promise<IImage[]> => {
 	try {

@@ -48,10 +48,10 @@ export const getAllImagesByUserId = async (req: Request, res: Response): Promise
 
 export const deleteImage = async (req: Request, res: Response): Promise<void> => {
 	try {
-		if (!req.params.id) {
+		if (!req.params.imageId) {
 			res.status(404).json({ message: "Url's param :id is missing !" });
 		}
-		const imageId: string = req.params.id;
+		const imageId: string = req.params.imageId;
 		const userId: string = req.user.id;
 		const deletedImage = await ImageService.deleteImage(imageId, req.user.id);
 
