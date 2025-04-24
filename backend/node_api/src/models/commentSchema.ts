@@ -44,11 +44,16 @@ export { Comment, IComment };
 
 
 
-export const createNewComment = async (userId: mongoose.Types.ObjectId, postId: mongoose.Types.ObjectId, commentText: string): Promise<IComment> => {
+export const createNewComment = async (
+    userId: mongoose.Types.ObjectId,
+    postId: mongoose.Types.ObjectId,
+    comment: string
+): Promise<IComment> => {
+
     const newComment: IComment = new Comment({
         userId: userId,
         postId: postId,
-        comment: commentText,
+        comment: comment,
         createdAt: new Date(),
         updateddAt: new Date()
     });
@@ -57,26 +62,43 @@ export const createNewComment = async (userId: mongoose.Types.ObjectId, postId: 
 };
 
 
-export const findAllCommentsByPostId = async (postId: mongoose.Types.ObjectId): Promise<IComment[] | null> => {
-    return await
-        Comment.find({ postId: postId })
-            .sort({ createdAt: -1 })
-            .exec();
-};
-
-export const updateCommentByCommentId = async (commentId: mongoose.Types.ObjectId, updates: Partial<IComment>): Promise<IComment | null> => {
-    updates.updatedAt = new Date();
-    return await Comment.findByIdAndUpdate(commentId, updates, { new: true }).exec();
-
-};
-
 export const deleteCommentByCommentId = async (commentId: mongoose.Types.ObjectId): Promise<IComment | null> => {
     return await Comment.findByIdAndDelete(commentId).exec();
 };
 
 
-//  ???
-export const findCommentByCommentId = async (commentId: mongoose.Types.ObjectId): Promise<IComment | null> => {
-    return await Comment.findById(commentId).exec();
+export const findAllCommentsByPostId = async (postId: mongoose.Types.ObjectId): Promise<IComment[] | null> => {
+    return await
+        Comment.find({ postId })
+            .sort({ createdAt: -1 })
+            // .populate('userId', 'username') // Récupère uniquement le champ `username` de l'utilisateur
+            .exec();
 };
-//  ???
+
+
+export const findLastCommentByPostId = async (postId: mongoose.Types.ObjectId): Promise<IComment | null> => {
+    return await Comment.findOne({ postId })
+        .sort({ createdAt: -1 })
+        .exec();
+};
+
+
+// export const updateCommentByCommentId = async (
+//     commentId: mongoose.Types.ObjectId,
+//     updates: Partial<IComment>
+// ): Promise<IComment | null> => {
+//     updates.updatedAt = new Date();
+//     return await Comment.findByIdAndUpdate(commentId, updates, { new: true }).exec();
+// };
+
+
+// export const findCommentByCommentId = async (commentId: mongoose.Types.ObjectId): Promise<IComment | null> => {
+//     return await Comment.findById(commentId).exec();
+// };
+
+
+
+// const comments = await Comment.find({ postId: somePostId })
+//     .populate('userId', 'username') // Récupère uniquement le champ `username` de l'utilisateur
+//     .populate('postId', 'title')   // Récupère uniquement le champ `title` du post
+//     .exec();

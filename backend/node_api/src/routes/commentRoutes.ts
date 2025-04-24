@@ -6,11 +6,10 @@ import { verifyToken } from "../middlewares/authMiddleware";
 const router: Router = express.Router()
 
 
-router.post('/createComment', verifyToken, CommentController.createComment);
-// router.get('/getAllComments', verifyToken, CommentController.getAllComments);
+router.post('/createComment/:postId', verifyToken, CommentController.createComment);
+router.get('/getAllComments/:postId', verifyToken, CommentController.getAllCommentsByPostId);
+router.get('/getLastComment/:postId', verifyToken, CommentController.getLastCommentByPostId);
 // router.post('/updateComment', verifyToken, CommentController.updateComment);
-
-router.delete('/deleteComment', verifyToken, CommentController.deleteComment);
-// Ajouter  --- >   /deleteComment/:id
+router.delete('/deleteComment/:postId', verifyToken, CommentController.deleteComment);
 
 export default router;
