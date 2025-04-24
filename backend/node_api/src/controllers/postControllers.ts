@@ -30,13 +30,13 @@ export const deletePost = async (req: Request, res: Response): Promise<void> => 
 		const postId: string = req.params.id;
 		console.log(`🗑️ [C]*deletePost ] req.params.id :  ${postId}`);
 
-		const deletedPost = await PostService.deleteAPost(postId);
-		if (!deletedPost) {
-			console.log('🗑️ [C]*deletePost ] ❌ Post not found');
-			res.status(404).json({ message: "Post not found!" });
-			return;
-		}
-
+		// const deletedPost = await PostService.deleteAPost(postId);
+		// if (!deletedPost) {
+		// 	console.log('🗑️ [C]*deletePost ] ❌ Post not found');
+		// 	res.status(404).json({ message: "Post not found!" });
+		// 	return;
+		// }
+		await PostService.deletePostAndRelations(postId);
 		console.log('🗑️ [C]*deletePost ] ✅ Post deleted');
 		res.status(200).json({ message: "Post deleted successfully!" });
 

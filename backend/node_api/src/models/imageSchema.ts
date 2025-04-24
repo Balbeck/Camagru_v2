@@ -44,6 +44,8 @@ const Image = mongoose.model<IImage>('Image', imageSchema);
 export { Image, IImage };
 
 
+
+
 export const saveNewImage = async (userId: mongoose.Types.ObjectId, filename: string, contentType: string, data: string): Promise<IImage | null> => {
 	const newImage: IImage = new Image({
 		userId: userId,

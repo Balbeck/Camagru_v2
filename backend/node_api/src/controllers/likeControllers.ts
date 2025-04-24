@@ -6,28 +6,38 @@ import { IPost } from 'models/postSchema';
 
 export const addNewLike = async (req: Request, res: Response): Promise<void> => {
 	try {
-		console.log(' 👍 [C]*addNewLike ] req.body: ', req.body, '\nreq.user.id: ', req.user.id);
-		const updatedPost: IPost = await LikeService.addNewLike(req.body.postId, req.user.id);
-	} catch (error: any) {
-		res.status(500).json({ message: error.message });
+		const { postId } = req.params;
+		const userId = req.user.id;
+		console.log(' 👍 [C]*addNewLike ] req.params-> {postId}: ', postId, '\nreq.user.id: ', req.user.id);
+		await LikeService.likeAPost(postId, userId);
+
+	} catch (error) {
+		res.json({ message: error.message });
 	}
 };
 
 
 export const removeALike = async (req: Request, res: Response): Promise<void> => {
 	try {
-		console.log(' 👍 [C]*removeALike ] req.body: ', req.body, '\nreq.user.id: ', req.user.id);
-		const updatedPost: IPost = await LikeService.removeALike(req.body.postId, req.user.id);
+		const { postId } = req.params;
+		const userId = req.user.id;
+		console.log(' 👍 [C]*removeALike ] req.params-> {postId}: ', postId, '\nreq.user.id: ', req.user.id);
+		await LikeService.removeALike(req.body.postId, req.user.id);
+
 	} catch (error: any) {
 		res.status(500).json({ message: error.message });
 	}
 };
 
 
-export const likeCount = async (req: Request, res: Response): Promise<void> => {
+export const getLikesCountAndMe = async (req: Request, res: Response): Promise<void> => {
 	try {
-		console.log(' 👍 [C]*likeCount ] req.body: ', req.body, '\nreq.user.id: ', req.user.id);
-		const count: number = await LikeService.getLikeCount(req.body.postId);
+		const { postId } = req.params;
+		const userId = req.user.id;
+		console.log(' 👍 [C]*getLikesCountAndMe ] req.params-> {postId}: ', postId, '\nreq.user.id: ', req.user.id);
+		const countAndMe = await LikeService.getLikeCountObject(postId, userId);
+		res.status(200).json(countAndMe);
+
 	} catch (error: any) {
 		res.status(500).json({ message: error.message });
 	}

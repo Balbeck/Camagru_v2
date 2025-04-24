@@ -53,12 +53,12 @@ const MyGalerie: React.FC = () => {
 	};
 
 
-	// Fonction pour ouvrir le pop-up
+	// Open le pop-up
 	const openModal = () => {
 		setModalOpen(true);
 	};
 
-	// Fonction pour fermer le pop-up
+	// Close le pop-up
 	const closeModal = () => {
 		setModalOpen(false);
 	};

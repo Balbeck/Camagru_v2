@@ -1,67 +1,72 @@
-import { IPost, addLike, removeLike } from "../models/postSchema";
+import { addLike, getLikeCountPerPost, hasUserLikedAPost, removeLike } from "../models/likeSchema";
 import mongoose from "mongoose";
 
 
-export const addNewLike = async (postIdString: string, userIdString: string): Promise<IPost> => {
+export const likeAPost = async (postId_str: string, userId_str: string): Promise<void> => {
 	try {
-		console.log(' 🌟 [S]*addNewLike ] postIdString: ', postIdString, '\n 🌟 [S]*addNewLike ] userIdString: ', userIdString);
-		// - -[  Vérif si Valid IDs  ]- -
-		if (!mongoose.Types.ObjectId.isValid(postIdString)) {
+		if (!mongoose.Types.ObjectId.isValid(postId_str)) {
 			throw new Error('INVALID_POST_ID');
 		}
-		if (!mongoose.Types.ObjectId.isValid(userIdString)) {
+		if (!mongoose.Types.ObjectId.isValid(userId_str)) {
 			throw new Error('INVALID_USER_ID');
 		}
+		const postId = new mongoose.Types.ObjectId(postId_str);
+		const userId = new mongoose.Types.ObjectId(userId_str);
 
-		const postId = new mongoose.Types.ObjectId(postIdString);
-		const userId = new mongoose.Types.ObjectId(userIdString);
-		const updatedPost = await addLike(postId, userId);
-		console.log(' 🌟 [S]*addNewLike ] updatedPost:\n', updatedPost);
-
-		return updatedPost;
+		console.log(' 👍 [S]*addNewLike ] ✅ postId: ', postId_str);
+		await addLike(postId, userId);
 
 	} catch (error) {
-		console.log(' ❌ [S]*addNewLike ] Error: ', error.message);
+		console.log(' 👍 [S]*addNewLike ] ❌ Error: ', error.message);
 		throw error;
 	}
 };
 
 
-export const removeALike = async (postIdString: string, userIdString: string): Promise<IPost> => {
+export const removeALike = async (postId_str: string, userId_str: string): Promise<void> => {
 	try {
-		console.log(' 🌟 [S]*removeALike ] postIdString: ', postIdString, '\n 🌟 [S]*addNewLike ] userIdString: ', userIdString);
-		// - -[  Vérif si Valid IDs  ]- -
-		if (!mongoose.Types.ObjectId.isValid(postIdString)) {
+		if (!mongoose.Types.ObjectId.isValid(postId_str)) {
 			throw new Error('INVALID_POST_ID');
 		}
-		if (!mongoose.Types.ObjectId.isValid(userIdString)) {
+		if (!mongoose.Types.ObjectId.isValid(userId_str)) {
 			throw new Error('INVALID_USER_ID');
 		}
+		const postId = new mongoose.Types.ObjectId(postId_str);
+		const userId = new mongoose.Types.ObjectId(userId_str);
 
-		const postId = new mongoose.Types.ObjectId(postIdString);
-		const userId = new mongoose.Types.ObjectId(userIdString);
-		const updatedPost = await removeLike(postId, userId);
-		console.log(' 🌟 [S]*removeALike ] updatedPost:\n', updatedPost);
-
-		return updatedPost;
+		await removeLike(postId, userId);
+		console.log(' 👍 [S]*removeALike ] ✅ postId: ', postId_str);
 
 	} catch (error) {
-		console.log(' ❌ [S]*removeALike ] Error: ', error.message);
+		console.log(' 👍 [S]*removeALike ] ❌ Error: ', error.message);
 		throw error;
 	}
 };
 
 
-export const getLikeCount = async (postIdString: string): Promise<number> => {
+export const getLikeCountObject = async (postId_str: string, userId_str: string): Promise<{}> => {
 	try {
-		console.log(' 🌟 [S]*getLikeCount ] postIdString: ', postIdString);
-		const likeCount: number = await getLikeCount(postIdString);
-		console.log(' 🌟 [S]*getLikeCount ] likeCount: ', likeCount);
+		if (!mongoose.Types.ObjectId.isValid(postId_str)) {
+			throw new Error('INVALID_POST_ID');
+		}
+		if (!mongoose.Types.ObjectId.isValid(userId_str)) {
+			throw new Error('INVALID_USER_ID');
+		}
+		const postId = new mongoose.Types.ObjectId(postId_str);
+		const userId = new mongoose.Types.ObjectId(userId_str);
 
-		return likeCount;
+		const TotalLikesCount: number = await getLikeCountPerPost(postId);
+		const didILikeIt: boolean = await hasUserLikedAPost(userId, postId);
+		const countAndMe = {
+			likesCount: TotalLikesCount,
+			likedByMe: didILikeIt
+		};
+
+		console.log(' 👍 [S]*getLikeCount ] ✅ countAndMe: ', countAndMe);
+		return countAndMe;
 
 	} catch (error) {
-		console.log(' ❌ [S]*getLikeCount ] Error: ', error.message);
+		console.log(' 👍 [S]*getLikeCount ] ❌ Error: ', error.message);
 		throw error;
 	}
 };

@@ -31,7 +31,7 @@ const commentSchema: Schema = new Schema({
     createdAt: {
         type: Date,
         default: Date.now,
-        index: true
+        // index: true
     },
     updatedAt: {
         type: Date,
@@ -39,7 +39,6 @@ const commentSchema: Schema = new Schema({
     }
 });
 
-// Creation Modele pour export
 const Comment = mongoose.model<IComment>('Comment', commentSchema);
 export { Comment, IComment };
 

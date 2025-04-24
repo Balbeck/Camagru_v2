@@ -1,14 +1,13 @@
-import mongoose, { Schema, Document, mongo } from "mongoose";
+import mongoose, { Schema, Document } from "mongoose";
 
 
 interface IPost extends Document {
     _id: mongoose.Types.ObjectId;
     userId: mongoose.Types.ObjectId;
-    imageUrl: string;
-    title?: string;
+    imageId: mongoose.Types.ObjectId;
+    title: string;
     createdAt: Date;
     updatedAt: Date;
-    likes: mongoose.Types.ObjectId[];
 }
 
 const postSchema: Schema = new mongoose.Schema({
@@ -20,10 +19,10 @@ const postSchema: Schema = new mongoose.Schema({
         type: Schema.Types.ObjectId,
         ref: 'User',
         required: true,
-        index: true
     },
-    imageUrl: {
-        type: String,
+    imageId: {
+        type: Schema.Types.ObjectId,
+        ref: 'Image',
         required: true
     },
     title: {
@@ -38,16 +37,12 @@ const postSchema: Schema = new mongoose.Schema({
     updatedAt: {
         type: Date,
         default: Date.now
-    },
-    likes: [{
-        type: Schema.Types.ObjectId,
-        ref: 'User'
-    }]
+    }
 });
 
-// Definition et exportation du Model et de l'Interface
 const Post = mongoose.model<IPost>('Post', postSchema);
 export { Post, IPost };
+
 
 
 
@@ -106,24 +101,24 @@ export const getAllThePosts = async (): Promise<IPost[]> => {
 };
 
 
-// - - -[ *  LIKES  *  -  Related Fcts with DB ]- - -
-export const addLike = async (postId: mongoose.Types.ObjectId, userId: mongoose.Types.ObjectId) => {
-    return await
-        Post.findByIdAndUpdate(postId, { $addToSet: { likes: userId } }, { new: true })
-            .exec();
-};
+// // - - -[ *  LIKES  *  -  Related Fcts with DB ]- - -
+// export const addLike = async (postId: mongoose.Types.ObjectId, userId: mongoose.Types.ObjectId) => {
+//     return await
+//         Post.findByIdAndUpdate(postId, { $addToSet: { likes: userId } }, { new: true })
+//             .exec();
+// };
 
-export const removeLike = async (postId: mongoose.Types.ObjectId, userId: mongoose.Types.ObjectId) => {
-    return await
-        Post.findOneAndUpdate(postId, { $pull: { likes: userId } }, { new: true })
-            .exec();
-};
+// export const removeLike = async (postId: mongoose.Types.ObjectId, userId: mongoose.Types.ObjectId) => {
+//     return await
+//         Post.findOneAndUpdate(postId, { $pull: { likes: userId } }, { new: true })
+//             .exec();
+// };
 
-export const getLikeCount = async (postIdString: string): Promise<number> => {
-    if (!mongoose.Types.ObjectId.isValid(postIdString)) {
-        throw new Error('INVALID_POST_ID');
-    }
-    const postId = new mongoose.Types.ObjectId(postIdString);
-    const post: IPost = await Post.findById(postId, 'likes').exec();
-    return post ? post.likes.length : 0;
-};
+// export const getLikeCount = async (postIdString: string): Promise<number> => {
+//     if (!mongoose.Types.ObjectId.isValid(postIdString)) {
+//         throw new Error('INVALID_POST_ID');
+//     }
+//     const postId = new mongoose.Types.ObjectId(postIdString);
+//     const post: IPost = await Post.findById(postId, 'likes').exec();
+//     return post ? post.likes.length : 0;
+// };

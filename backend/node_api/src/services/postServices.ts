@@ -1,3 +1,6 @@
+import { Post } from '../models/postSchema';
+import { Comment } from '../models/commentSchema';
+import { Like } from '../models/likeSchema';
 import { IPost, createNewPost, deletePost, getUserPosts, getAllThePosts } from "../models/postSchema";
 import { IUser } from "../models/userSchema";
 
@@ -60,4 +63,24 @@ export const getPostsByUserId = async (userIdString: string): Promise<IPost[]> =
 
 export const getAllPosts = async (): Promise<IPost[]> => {
 	return await getAllThePosts();
+};
+
+
+export const deletePostAndRelations = async (postId_str: string): Promise<void> => {
+	try {
+		if (!mongoose.Types.ObjectId.isValid(postId_str)) {
+			throw new Error('INVALID_POST_ID');
+		}
+		const postId = new mongoose.Types.ObjectId(postId_str);
+
+		await Comment.deleteMany({ postId: postId });
+		await Like.deleteMany({ postId: postId });
+		await Post.findByIdAndDelete(postId);
+		console.log(' 🗑️ [S]*deletePostAndRelations ] ✅ deleted Post and Relations');
+
+	} catch (error) {
+		console.log(' 🗑️ [S]*deletePostAndRelations ] ❌ Error: ', error);
+		throw error;
+	}
+
 };
