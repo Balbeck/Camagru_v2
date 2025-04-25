@@ -5,7 +5,7 @@ import React, { useState } from "react";
 import { ICreatePost } from "./Interface";
 
 
-const CreatePost: React.FC<ICreatePost> = ({ data, onPublish }) => {
+const CreatePost: React.FC<ICreatePost> = ({ data, imageId, onPublish }) => {
 
 	const [title, setTitle] = useState("Mon premier Post 🌞");
 
@@ -16,7 +16,7 @@ const CreatePost: React.FC<ICreatePost> = ({ data, onPublish }) => {
 			return;
 		}
 
-		const newPost = { title: title, image: data };
+		const newPost = { title: title, imageId: imageId };
 		onPublish(newPost);
 	};
 

@@ -9,12 +9,13 @@ export interface IImage {
 
 export interface IPostData {
 	title: string;
-	image: string;
+	imageId: string;
 }
 
 export interface ICreatePost {
 	data: string;
-	onPublish: (newPost: { title: string, image: string }) => void
+	imageId: string;
+	onPublish: (newPost: { title: string, imageId: string }) => void
 }
 
 export interface IUser {
@@ -33,6 +34,7 @@ export interface PostProps {
 }
 
 export interface IPost {
+	imageId: IImage;
 	_id: string;           // Identifiant unique du post (généralement un ObjectId)
 	userId: string;        // Identifiant de l'utilisateur ayant posté (généralement un ObjectId)
 	imageUrl: string;      // L'URL de l'image du post

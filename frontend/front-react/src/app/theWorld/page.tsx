@@ -69,6 +69,7 @@ const TheWorldPage: React.FC = () => {
 
                 if (response.ok) {
                     const postsData = await response.json();
+                    console.log('🌳 [ TheWorldPage ] fetchAllPosts - postsData: ', postsData);
                     setPosts(postsData);
                 } else {
                     console.error('Failed to fetch user images');
@@ -91,7 +92,8 @@ const TheWorldPage: React.FC = () => {
                     <PostComponent
                         key={post._id}
                         title={post.title}
-                        photoUrl={post.imageUrl}
+                        // photoUrl={post.imageUrl}
+                        photoUrl={post.imageId?.data}
                         // likes={post.likes}
                         // lastComment={post.lastComment}
                         likes={10}

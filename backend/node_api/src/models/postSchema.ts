@@ -27,7 +27,7 @@ const postSchema: Schema = new mongoose.Schema({
     },
     title: {
         type: String,
-        default: 'One of my latest picture !'
+        default: 'One of my latest pictures !'
     },
     createdAt: {
         type: Date,
@@ -46,19 +46,19 @@ export { Post, IPost };
 
 
 
-// - - -[ *  POST  *  -  Related Fcts with DB ]- - -
-export const createNewPost = async (userId: mongoose.Types.ObjectId, imageUrl: string, title?: string): Promise<IPost> => {
-    const newPost: IPost = new Post({
-        userId,
-        imageUrl,
-        title,
-        createdAt: new Date(),
-        updatedAt: new Date(),
-        likes: []
-    });
-    console.log(' 🖼️ [Model]*create newPost ...]');
-    return await newPost.save();
-};
+// // - - -[ *  POST  *  -  Related Fcts with DB ]- - -
+// export const createNewPost = async (userId: mongoose.Types.ObjectId, imageUrl: string, title?: string): Promise<IPost> => {
+//     const newPost: IPost = new Post({
+//         userId,
+//         image,
+//         title,
+//         createdAt: new Date(),
+//         updatedAt: new Date(),
+//         likes: []
+//     });
+//     console.log(' 🖼️ [Model]*create newPost ...]');
+//     return await newPost.save();
+// };
 
 export const getPostByPostId = async (postId: mongoose.Types.ObjectId): Promise<IPost | null> => {
     return await
@@ -78,6 +78,8 @@ export const getUserPosts = async (userId: mongoose.Types.ObjectId): Promise<IPo
     return await
         Post.find({ userId })
             .sort({ createdAt: -1 })
+            .populate('userId', 'username') // Optionnel : peupler les infos utilisateur
+            .populate('imageId') // Peupler les infos de l'image
             .exec();
 
 };
@@ -94,9 +96,11 @@ export const deletePost = async (postId: mongoose.Types.ObjectId) => {
 
 export const getAllThePosts = async (): Promise<IPost[]> => {
     const posts = await Post.find() // On récupère tous les posts
-        .sort({ createdAt: -1 }) // Tri par createdAt (descendant, du plus récent au plus ancien)
-        //   .populate('userId', 'username') // Optionnel : tu peux peupler le champ userId pour récupérer des infos sur l'utilisateur
+        .sort({ createdAt: -1 }) // Trier par date de création (du plus récent au plus ancien)
+        .populate('userId', 'username') // Optionnel : peupler les infos utilisateur
+        .populate('imageId') // Peupler les infos de l'image
         .exec();
+    console.log(' 📸 [M]*getAllThePosts ] ***[ posts ]***\n', posts);
     return posts;
 };
 

@@ -39,29 +39,28 @@ const MyGalerie: React.FC = () => {
 		};
 
 		fetchUserimages();
-
 	}, []);
+
 
 
 	const nextImage = () => {
 		setCurrentIndex((prevIndex) => (prevIndex + 1) % images.length);
 	};
 
-
 	const prevImage = () => {
 		setCurrentIndex((prevIndex) => (prevIndex - 1 + images.length) % images.length);
 	};
 
 
-	// Open le pop-up
+
 	const openModal = () => {
 		setModalOpen(true);
 	};
 
-	// Close le pop-up
 	const closeModal = () => {
 		setModalOpen(false);
 	};
+
 
 
 	const handleCreatePost = async (dataFromCreatePostForm: IPostData) => {
@@ -100,9 +99,9 @@ const MyGalerie: React.FC = () => {
 			});
 
 			if (response.ok) {
-				setImages((previmages) => previmages.filter((image) => image._id !== imageId));
 				console.log('Image deleted successfully');
-				router.push('/myGalerie')
+				router.replace('/myGalerie')
+				setImages((previmages) => previmages.filter((image) => image._id !== imageId));
 
 			} else {
 				console.error('Failed to delete Image');
@@ -174,7 +173,11 @@ const MyGalerie: React.FC = () => {
 						className="relative bg-white p-6 rounded-lg shadow-lg w-[70vw] max-w-[500px] z-10"
 						onClick={(e) => e.stopPropagation()}  // Empêche la fermeture si on clique à l'intérieur
 					>
-						<CreatePost data={images[currentIndex].data} onPublish={handleCreatePost} />
+						<CreatePost
+							data={images[currentIndex].data}
+							imageId={images[currentIndex]._id}
+							onPublish={handleCreatePost}
+						/>
 					</div>
 				</div>
 			)}

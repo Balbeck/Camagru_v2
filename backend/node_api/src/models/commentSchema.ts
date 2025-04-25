@@ -31,7 +31,7 @@ const commentSchema: Schema = new Schema({
     createdAt: {
         type: Date,
         default: Date.now,
-        // index: true
+        index: true
     },
     updatedAt: {
         type: Date,
