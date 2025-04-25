@@ -139,10 +139,10 @@ export default function Header() {
           <div className="flex space-x-4">
 
             <Button
-              href="/uploadImage"
+              href="/myPosts"
               className="bg-blue-500 hover:bg-blue-600 text-white rounded-full py-2 px-6 transition-all duration-200"
             >
-              🧑‍🎨 UpImage
+              🧑‍🎨 myPosts
             </Button>
 
             <Button
