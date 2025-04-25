@@ -1,9 +1,7 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-// import { useRouter } from 'next/navigation';
 import Image from "next/legacy/image";
-// import { IPost } from '@/components/Interface';
 
 
 export interface IPostData {
@@ -31,12 +29,31 @@ export interface IPostData {
 };
 
 const MyPosts: React.FC = () => {
-	// const router = useRouter();
 
-	const [posts, setPosts] = useState<IPostData[]>([]);
 	// 🌀 États pour gérer le carrousel (index du post affiché)
 	const [currentIndex, setCurrentIndex] = useState(0);
+	const nextPost = () => {
+		setCurrentIndex((prevIndex) => (prevIndex + 1) % totalPosts);
+	};
+	const prevPost = () => {
+		setCurrentIndex((prevIndex) => (prevIndex - 1 + totalPosts) % totalPosts);
+	};
+
+	// Modal pour DeletePost
 	const [isModalOpen, setIsModalOpen] = useState(false);
+	const openDeleteModal = () => {
+		setIsModalOpen(true);
+	};
+	const closeDeleteModal = () => {
+		setIsModalOpen(false);
+	};
+
+
+	const [posts, setPosts] = useState<IPostData[]>([]);
+	const [newComment, setNewComment] = useState<string>("");
+	const [myUserId, setMyUserId] = useState<string>("");
+	const [myUsername, setMyUsername] = useState<string>("");
+
 
 	useEffect(() => {
 
@@ -48,7 +65,6 @@ const MyPosts: React.FC = () => {
 				});
 
 				if (response.ok) {
-					// const data: IPost[] = await response.json();
 					const data: IPostData[] = await response.json();
 					setPosts(data);
 					console.log('🌳 [ MyPosts ] fetchMyPosts - postsData: ', data);
@@ -61,26 +77,99 @@ const MyPosts: React.FC = () => {
 		};
 
 		fetchMyPosts();
+		// Récupérer l'ID de l'utilisateur connecté
+		const fetchMyUserId = async () => {
+			try {
+				const response = await fetch('http://localhost:3000/user/me', {
+					method: 'GET',
+					credentials: 'include',
+				});
+
+				if (response.ok) {
+					const data = await response.json();
+					setMyUserId(data._id);
+					setMyUsername(data.username);
+					console.log('🌳 [ MyPosts ] fetchMyUserId - userId: ', data._id);
+				} else {
+					console.error('Failed to fetch user ID');
+				}
+			} catch (error) {
+				console.error('Error fetching user ID:', error);
+			}
+		}
+		fetchMyUserId();
 	}, []);
 
 
 	const totalPosts = posts.length;
 
-	// Fonction pour passer au post suivant
-	const nextPost = () => {
-		setCurrentIndex((prevIndex) => (prevIndex + 1) % totalPosts);
-	};
-	// Fonction pour passer au post précédent
-	const prevPost = () => {
-		setCurrentIndex((prevIndex) => (prevIndex - 1 + totalPosts) % totalPosts);
+
+
+	const handleDeleteComment = async (postId: string, commentId: string) => {
+		try {
+			const response = await fetch(`http://localhost:3000/comment/deleteComment/${commentId}`, {
+				method: "DELETE",
+				credentials: "include",
+			});
+
+			if (response.ok) {
+				// Met à jour les commentaires localement
+				setPosts((prevPosts) =>
+					prevPosts.map((post) =>
+						post._id === postId
+							? { ...post, comments: post.comments.filter((comment) => comment._id !== commentId) }
+							: post
+					)
+				);
+				console.log("Commentaire supprimé avec succès !");
+			} else {
+				console.error("Erreur lors de la suppression du commentaire");
+			}
+		} catch (error) {
+			console.error("Erreur lors de la suppression du commentaire :", error);
+		}
 	};
 
 
-	const openDeleteModal = () => {
-		setIsModalOpen(true);
-	};
-	const closeDeleteModal = () => {
-		setIsModalOpen(false);
+
+	const handleAddComment = async (postId: string) => {
+		if (!newComment.trim()) return;
+
+		try {
+			const response = await fetch(`http://localhost:3000/comment/createComment/${postId}`, {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+				},
+				body: JSON.stringify({ comment: newComment }),
+				credentials: "include",
+			});
+
+			if (response.ok) {
+				const createdComment = await response.json();
+				const formatedCeatedComment = {
+					...createdComment,
+					'userId': {
+						'_id': myUserId,
+						'username': myUsername
+					}
+				};
+				console.log('🌳 [ MyPosts ] handleAddComment - createdComment: ', formatedCeatedComment);
+				setPosts((prevPosts) =>
+					prevPosts.map((post) =>
+						post._id === postId
+							? { ...post, comments: [...post.comments, formatedCeatedComment] } // Ajoute le nouveau commentaire
+							: post
+					)
+				);
+				setNewComment('');
+
+			} else {
+				console.error("Failed to add comment");
+			}
+		} catch (error) {
+			console.error("Error adding comment:", error);
+		}
 	};
 
 
@@ -100,7 +189,6 @@ const MyPosts: React.FC = () => {
 			currentPost.likes.nbr_likes += 1;
 			currentPost.likes.didILikeIt = true;
 		}
-		// Mise à jour de l'état local
 		setPosts(updatedPosts);
 
 		try {
@@ -129,10 +217,7 @@ const MyPosts: React.FC = () => {
 
 	const handleDeletePost = async () => {
 		try {
-			const postId = posts[currentIndex]._id; // Récupère l'ID du post actuel
-			console.log(`Suppression du post avec l'ID : ${postId}`);
-
-			// Appel API pour supprimer le post
+			const postId = posts[currentIndex]._id;
 			const response = await fetch(`http://localhost:3000/post/deletePost/${postId}`, {
 				method: 'DELETE',
 				credentials: 'include',
@@ -147,11 +232,12 @@ const MyPosts: React.FC = () => {
 				if (currentIndex >= updatedPosts.length) {
 					setCurrentIndex(0);
 				}
-
 				console.log('Post supprimé avec succès');
+
 			} else {
 				console.error('Erreur lors de la suppression du post');
 			}
+
 		} catch (error) {
 			console.error('Erreur lors de la suppression du post :', error);
 		} finally {
@@ -175,7 +261,7 @@ const MyPosts: React.FC = () => {
 
 			{/* Conteneur du Post */}
 			{posts.length > 0 ? (
-				<div className="relative w-[70vw] max-w-[350px] h-[45vh] max-h-[350px] flex flex-col items-center bg-white shadow-2xl rounded-xl overflow-hidden my-3">
+				<div className="relative w-[70vw] max-w-[350px] flex flex-col items-center bg-white shadow-2xl rounded-xl overflow-hidden my-3">
 
 					{/* Titre au-dessus de la photo */}
 					<div className="w-full bg-white text-gray-900 font-bold text-lg text-center p-2 border-b">
@@ -183,7 +269,7 @@ const MyPosts: React.FC = () => {
 					</div>
 
 					{/* Image du post */}
-					<div className="relative w-full h-3/4">
+					<div className="relative w-full max-h-[250px] aspect-[4/5]">
 						<Image
 							src={posts[currentIndex]?.imageId?.data}
 							alt={posts[currentIndex]?.title}
@@ -195,24 +281,6 @@ const MyPosts: React.FC = () => {
 						{/* Bouton Like */}
 						<button
 							className="absolute bottom-2 left-2 bg-black/60 text-white px-2 py-1 rounded-md text-sm hover:bg-black/80 hover:scale-105 transition-all duration-200"
-							// onClick={() => console.log('Like button clicked!')}
-							// onClick={() => {
-							// 	// Copie des posts pour mise à jour locale
-							// 	const updatedPosts = [...posts];
-							// 	const currentPost = updatedPosts[currentIndex];
-
-							// 	// Mise à jour du compteur de likes et de didILikeIt
-							// 	if (currentPost.likes.didILikeIt) {
-							// 		currentPost.likes.nbr_likes -= 1;
-							// 		currentPost.likes.didILikeIt = false;
-							// 	} else {
-							// 		currentPost.likes.nbr_likes += 1;
-							// 		currentPost.likes.didILikeIt = true;
-							// 	}
-
-							// 	// Mise à jour de l'état local
-							// 	setPosts(updatedPosts);
-							// }}
 							onClick={() => handleClickLike(posts[currentIndex]._id, currentIndex)}
 						>
 							❤️ {posts[currentIndex].likes.nbr_likes} likes
@@ -224,11 +292,60 @@ const MyPosts: React.FC = () => {
 						</div>
 					</div>
 
-
-					{/* Commentaire en dessous, aligné à gauche */}
-					<div className="w-full p-3 text-left">
-						<p className="text-gray-700 text-sm italic">💬 {posts[currentIndex].comments[0]?.text}</p>
+					{/* Ajouter un commentaire */}
+					<div className="w-full p-3 border-t border-gray-200">
+						<form
+							className="flex items-center space-x-2"
+							onSubmit={(e) => {
+								e.preventDefault(); // Empêche le rechargement de la page
+								handleAddComment(posts[currentIndex]._id); // Appelle la fonction pour ajouter un commentaire
+							}}
+						>
+							<input
+								type="text"
+								placeholder="Ajouter un commentaire..."
+								className="flex-1 px-3 py-2 border border-blue-400 rounded-full text-xs text-black focus:outline-none focus:ring-2 focus:ring-blue-500"
+								value={newComment}
+								onChange={(e) => setNewComment(e.target.value)} // Met à jour l'état du commentaire
+								maxLength={200}
+							/>
+							<button
+								type="submit"
+								className="px-3 py-2 bg-blue-500 text-white rounded-full text-xs hover:bg-blue-600 transition-all duration-200"
+							>
+								publish
+							</button>
+						</form>
 					</div>
+
+
+					{/* Liste des commentaires */}
+					<div className="w-full p-3 text-left">
+						{posts[currentIndex].comments.map((comment) => (
+							<div key={comment._id} className="relative mb-4">
+								{/* Bouton Delete (croix) */}
+								{comment.userId._id === myUserId && (
+									<button
+										className="absolute top-1 right-2 text-gray-400 hover:text-red-500 text-sm"
+										onClick={() => handleDeleteComment(posts[currentIndex]._id, comment._id)}
+									>
+										&times;
+									</button>
+								)}
+
+								{/* Username du propriétaire du commentaire */}
+								<p className="text-blue-500 text-[10px] italic">
+									{comment.userId.username}
+								</p>
+								{/* Texte du commentaire */}
+								<p className="text-gray-700 text-xs italic">
+									💬 {comment.text}
+								</p>
+							</div>
+						))}
+					</div>
+
+
 
 					{/* Bouton Delete */}
 					<button
@@ -251,22 +368,25 @@ const MyPosts: React.FC = () => {
 				&#8594;
 			</button>
 
-
-			{/* Modal de confirmation */}
+			{/* Modal de confirmation DeletePost */}
 			{isModalOpen && (
 				<div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-					<div className="bg-white p-6 rounded-lg shadow-lg">
-						<h2 className="text-lg font-bold mb-4">Confirmer la suppression</h2>
-						<p>Êtes-vous sûr de vouloir supprimer ce post ?</p>
-						<div className="flex justify-end space-x-4 mt-4">
+					<div className="bg-white p-6 rounded-lg shadow-lg max-w-md w-full">
+						<h2 className="text-xl font-bold text-black mb-4 text-center">
+							Confirmer la suppression
+						</h2>
+						<p className="text-gray-800 text-sm text-center">
+							Êtes-vous sûr de vouloir supprimer ce post ?
+						</p>
+						<div className="flex justify-end space-x-4 mt-6">
 							<button
-								className="px-4 py-2 bg-gray-300 rounded-md"
+								className="px-4 py-2 bg-gray-200 text-black rounded-md hover:bg-gray-300 transition-all duration-200"
 								onClick={closeDeleteModal}
 							>
 								Annuler
 							</button>
 							<button
-								className="px-4 py-2 bg-red-500 text-white rounded-md"
+								className="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 transition-all duration-200"
 								onClick={handleDeletePost}
 							>
 								Supprimer

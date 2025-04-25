@@ -17,7 +17,15 @@ export const createComment = async (req: Request, res: Response): Promise<void> 
 		}
 		const newComment: IComment = await CommentService.createComment(postId, userId, comment);
 		if (newComment) {
-			res.status(201).json(newComment);
+			const formatedComment = {
+				_id: newComment._id,
+				userId: newComment.userId,
+				postId: newComment.postId,
+				text: newComment.comment,
+				createdAt: newComment.createdAt,
+				updateddAt: newComment.updatedAt
+			};
+			res.status(201).json(formatedComment);
 		}
 		else {
 			res.status(404).json({ message: "Probleme Creation new Comment ! Try Again 😘 " });
