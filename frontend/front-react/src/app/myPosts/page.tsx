@@ -3,13 +3,37 @@
 import React, { useEffect, useState } from 'react';
 // import { useRouter } from 'next/navigation';
 import Image from "next/legacy/image";
-import { IPost } from '@/components/Interface';
+// import { IPost } from '@/components/Interface';
 
+
+export interface IPostData {
+	_id: string;
+	userId: {
+		_id: string,
+		username: string
+	};
+	imageId: { data: string };
+	title: string;
+	createdAt: string;
+	likes: {
+		nbr_likes: number,
+		didILikeIt: boolean
+	};
+	comments: {
+		_id: string,
+		userId: {
+			_id: string,
+			username: string
+		},
+		text: string,
+		createdAt: string
+	}[];
+};
 
 const MyPosts: React.FC = () => {
 	// const router = useRouter();
 
-	const [posts, setPosts] = useState<IPost[]>([]);
+	const [posts, setPosts] = useState<IPostData[]>([]);
 	// 🌀 États pour gérer le carrousel (index du post affiché)
 	const [currentIndex, setCurrentIndex] = useState(0);
 	const [isModalOpen, setIsModalOpen] = useState(false);
@@ -24,7 +48,8 @@ const MyPosts: React.FC = () => {
 				});
 
 				if (response.ok) {
-					const data: IPost[] = await response.json();
+					// const data: IPost[] = await response.json();
+					const data: IPostData[] = await response.json();
 					setPosts(data);
 					console.log('🌳 [ MyPosts ] fetchMyPosts - postsData: ', data);
 				} else {
@@ -45,7 +70,6 @@ const MyPosts: React.FC = () => {
 	const nextPost = () => {
 		setCurrentIndex((prevIndex) => (prevIndex + 1) % totalPosts);
 	};
-
 	// Fonction pour passer au post précédent
 	const prevPost = () => {
 		setCurrentIndex((prevIndex) => (prevIndex - 1 + totalPosts) % totalPosts);
@@ -55,11 +79,52 @@ const MyPosts: React.FC = () => {
 	const openDeleteModal = () => {
 		setIsModalOpen(true);
 	};
-
 	const closeDeleteModal = () => {
 		setIsModalOpen(false);
 	};
 
+
+
+	const handleClickLike = async (postId: string, currentIndex: number) => {
+		// Copie des posts pour mise à jour locale
+		const updatedPosts = [...posts];
+		const currentPost = updatedPosts[currentIndex];
+		// Détermine si on ajoute ou supprime un like
+		const add_or_remove = currentPost.likes.didILikeIt ? "remove" : "add";
+
+		// Mise à jour locale du compteur de likes et de didILikeIt
+		if (currentPost.likes.didILikeIt) {
+			currentPost.likes.nbr_likes -= 1;
+			currentPost.likes.didILikeIt = false;
+		} else {
+			currentPost.likes.nbr_likes += 1;
+			currentPost.likes.didILikeIt = true;
+		}
+		// Mise à jour de l'état local
+		setPosts(updatedPosts);
+
+		try {
+
+			const response = await fetch(`http://localhost:3000/like/${add_or_remove}/${postId}`, {
+				method: 'POST',
+				credentials: 'include',
+			});
+
+			if (!response.ok) {
+				console.log('👍 ❌ Erreur lors de la mise à jour des likes sur le backend');
+				// Revenir à l'état précédent en cas d'erreur
+				currentPost.likes.nbr_likes += currentPost.likes.didILikeIt ? -1 : 1;
+				currentPost.likes.didILikeIt = !currentPost.likes.didILikeIt;
+				setPosts(updatedPosts);
+			}
+		} catch (error) {
+			console.log('👍 ❌ Erreur lors de la communication avec le backend :', error);
+			// Revenir à l'état précédent en cas d'erreur
+			currentPost.likes.nbr_likes += currentPost.likes.didILikeIt ? -1 : 1;
+			currentPost.likes.didILikeIt = !currentPost.likes.didILikeIt;
+			setPosts(updatedPosts);
+		}
+	};
 
 
 	const handleDeletePost = async () => {
@@ -127,30 +192,57 @@ const MyPosts: React.FC = () => {
 							quality={75}
 						/>
 
-						{/* Like en bas à gauche SUR la photo */}
-						<div className="absolute bottom-2 left-2 bg-black/60 text-white px-2 py-1 rounded-md text-sm">
-							{/* ❤️ {posts[currentIndex].likes} likes */}
-							❤️ 6 likes
+						{/* Bouton Like */}
+						<button
+							className="absolute bottom-2 left-2 bg-black/60 text-white px-2 py-1 rounded-md text-sm hover:bg-black/80 hover:scale-105 transition-all duration-200"
+							// onClick={() => console.log('Like button clicked!')}
+							// onClick={() => {
+							// 	// Copie des posts pour mise à jour locale
+							// 	const updatedPosts = [...posts];
+							// 	const currentPost = updatedPosts[currentIndex];
+
+							// 	// Mise à jour du compteur de likes et de didILikeIt
+							// 	if (currentPost.likes.didILikeIt) {
+							// 		currentPost.likes.nbr_likes -= 1;
+							// 		currentPost.likes.didILikeIt = false;
+							// 	} else {
+							// 		currentPost.likes.nbr_likes += 1;
+							// 		currentPost.likes.didILikeIt = true;
+							// 	}
+
+							// 	// Mise à jour de l'état local
+							// 	setPosts(updatedPosts);
+							// }}
+							onClick={() => handleClickLike(posts[currentIndex]._id, currentIndex)}
+						>
+							❤️ {posts[currentIndex].likes.nbr_likes} likes
+						</button>
+
+						{/* username en bas à droite SUR la photo */}
+						<div className="absolute bottom-2 right-2 bg-black/60 text-white px-2 py-1 rounded-md text-sm">
+							{posts[currentIndex].userId.username}
 						</div>
 					</div>
 
+
 					{/* Commentaire en dessous, aligné à gauche */}
 					<div className="w-full p-3 text-left">
-						{/* <p className="text-gray-700 text-sm italic">💬 {posts[currentIndex].lastComment}</p> */}
-						<p className="text-gray-700 text-sm italic">💬 Commentaire de test 🙏 </p>
+						<p className="text-gray-700 text-sm italic">💬 {posts[currentIndex].comments[0]?.text}</p>
 					</div>
 
 					{/* Bouton Delete */}
 					<button
-						className="mt-2 px-4 py-2 bg-red-500 text-white rounded-md"
+						className="mt-2 px-3 py-1 bg-red-500 text-white text-xs mb-1 font-semibold rounded-full shadow-md hover:bg-red-600 transition"
 						onClick={openDeleteModal}
 					>
 						Delete Post
 					</button>
 				</div>
+
 			) : (
 				<p className="text-gray-500">Aucun post à afficher.</p>
 			)}
+
 			{/* Flèche droite */}
 			<button
 				className="absolute right-8 top-1/2 transform -translate-y-1/2 bg-blue-500 text-white p-5 rounded-full shadow-lg z-20 opacity-90 hover:opacity-100 transition hover:scale-110"

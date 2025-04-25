@@ -1,4 +1,8 @@
 import mongoose, { Schema, Document } from "mongoose";
+import { getLikeCountPerPost, Like } from "./likeSchema";
+import { Comment } from "./commentSchema";
+import { IUser } from "./userSchema";
+import { IImage } from "./imageSchema";
 
 
 interface IPost extends Document {
@@ -46,20 +50,6 @@ export { Post, IPost };
 
 
 
-// // - - -[ *  POST  *  -  Related Fcts with DB ]- - -
-// export const createNewPost = async (userId: mongoose.Types.ObjectId, imageUrl: string, title?: string): Promise<IPost> => {
-//     const newPost: IPost = new Post({
-//         userId,
-//         image,
-//         title,
-//         createdAt: new Date(),
-//         updatedAt: new Date(),
-//         likes: []
-//     });
-//     console.log(' 🖼️ [Model]*create newPost ...]');
-//     return await newPost.save();
-// };
-
 export const getPostByPostId = async (postId: mongoose.Types.ObjectId): Promise<IPost | null> => {
     return await
         Post.findById(postId).exec();
@@ -74,55 +64,129 @@ export const getLastNPosts = async (n: number): Promise<IPost[]> => {
             .exec();
 };
 
-export const getUserPosts = async (userId: mongoose.Types.ObjectId): Promise<IPost[]> => {
-    return await
-        Post.find({ userId })
+
+
+
+export interface IPostData {
+    _id: string;
+    userId: {
+        _id: string,
+        username: string
+    };
+    imageId: { data: string };
+    title: string;
+    createdAt: string;
+    likes: {
+        nbr_likes: number,
+        didILikeIt: boolean
+    };
+    comments: {
+        _id: string,
+        userId: {
+            _id: string,
+            username: string
+        },
+        text: string,
+        createdAt: string
+    }[];
+};
+
+export const getUserPosts = async (userId: mongoose.Types.ObjectId): Promise<IPostData[]> => {
+    try {
+        // const posts = await Post.find({ userId })
+        //     .sort({ createdAt: -1 })
+        //     .populate('userId', 'username') // recupere _id + username 
+        //     .populate('imageId', 'data') // Return _id + data pour ImageId
+        //     .exec();
+        const posts = await Post.find({ userId })
             .sort({ createdAt: -1 })
-            .populate('userId', 'username') // Optionnel : peupler les infos utilisateur
-            .populate('imageId') // Peupler les infos de l'image
+            .populate<{ userId: IUser }>('userId', 'username')
+            .populate<{ imageId: IImage }>('imageId', 'data')
             .exec();
+        if (!posts || posts.length === 0) {
+            return [];
+        }
 
+        // Formater chaque post
+        const formattedPosts = await Promise.all(
+            posts.map(async (post) => {
+                const postId_str = post._id.toString();
+                const postId = new mongoose.Types.ObjectId(postId_str);
+                const comments = await Comment.find({ postId: postId })
+                    .populate<{ userId: IUser }>('userId', 'username')
+                    .select('_id userId comment createdAt')
+                    .exec();
+
+
+                const nbr_likes = await Like.countDocuments({ postId: postId }).exec();
+                const didILikeIt = !!(await Like.exists({ postId: postId, userId: userId }).exec()); // double negation '!!' pour transformer en bool
+                console.log(' 🌅 [M]*getUserPosts ] nbr_likes: ', nbr_likes, '  -  didILikeIt: ', didILikeIt);
+
+
+
+                // Formater les commentaires
+                const formattedComments = comments.map((comment) => (
+                    {
+                        _id: comment._id.toString(),
+                        userId: {
+                            _id: comment.userId._id.toString(),
+                            username: comment.userId.username
+                        },
+                        text: comment.comment,
+                        createdAt: comment.createdAt.toISOString()
+                    }
+                ));
+
+                // Retourner le post formaté
+                return (
+                    {
+                        _id: post._id.toString(),
+                        userId: {
+                            _id: post.userId._id.toString(),
+                            username: post.userId.username
+                        },
+                        imageId: {
+                            data: post.imageId.data
+                        },
+                        title: post.title,
+                        createdAt: post.createdAt.toISOString(),
+                        likes: {
+                            nbr_likes,
+                            didILikeIt: !!didILikeIt // bool
+                        },
+                        comments: formattedComments
+                    }
+                );
+            })
+        );
+
+        return formattedPosts;
+    } catch (error) {
+        console.error(' 📸 [M]*getUserPosts ] ❌ Error: ', error)
+        throw error;
+    }
 };
 
-export const updatePostByPostId = async (postId: mongoose.Types.ObjectId, updates: Partial<IPost>): Promise<IPost | null> => {
-    updates.updatedAt = new Date();
-    return await
-        Post.findByIdAndUpdate(postId, updates, { new: true }).exec();
-};
 
-export const deletePost = async (postId: mongoose.Types.ObjectId) => {
-    return await Post.findByIdAndDelete(postId).exec();
-};
+
+
+
+// export const updatePostByPostId = async (postId: mongoose.Types.ObjectId, updates: Partial<IPost>): Promise<IPost | null> => {
+//     updates.updatedAt = new Date();
+//     return await
+//         Post.findByIdAndUpdate(postId, updates, { new: true }).exec();
+// };
+
+// export const deletePost = async (postId: mongoose.Types.ObjectId) => {
+//     return await Post.findByIdAndDelete(postId).exec();
+// };
 
 export const getAllThePosts = async (): Promise<IPost[]> => {
-    const posts = await Post.find() // On récupère tous les posts
-        .sort({ createdAt: -1 }) // Trier par date de création (du plus récent au plus ancien)
-        .populate('userId', 'username') // Optionnel : peupler les infos utilisateur
-        .populate('imageId') // Peupler les infos de l'image
+    const posts = await Post.find()
+        .sort({ createdAt: -1 }) // Tri par createdAt
+        .populate('userId', 'username') // Return username avec userId
+        .populate('imageId') // Return obj Image
         .exec();
     console.log(' 📸 [M]*getAllThePosts ] ***[ posts ]***\n', posts);
     return posts;
 };
-
-
-// // - - -[ *  LIKES  *  -  Related Fcts with DB ]- - -
-// export const addLike = async (postId: mongoose.Types.ObjectId, userId: mongoose.Types.ObjectId) => {
-//     return await
-//         Post.findByIdAndUpdate(postId, { $addToSet: { likes: userId } }, { new: true })
-//             .exec();
-// };
-
-// export const removeLike = async (postId: mongoose.Types.ObjectId, userId: mongoose.Types.ObjectId) => {
-//     return await
-//         Post.findOneAndUpdate(postId, { $pull: { likes: userId } }, { new: true })
-//             .exec();
-// };
-
-// export const getLikeCount = async (postIdString: string): Promise<number> => {
-//     if (!mongoose.Types.ObjectId.isValid(postIdString)) {
-//         throw new Error('INVALID_POST_ID');
-//     }
-//     const postId = new mongoose.Types.ObjectId(postIdString);
-//     const post: IPost = await Post.findById(postId, 'likes').exec();
-//     return post ? post.likes.length : 0;
-// };

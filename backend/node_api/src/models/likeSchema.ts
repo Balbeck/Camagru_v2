@@ -33,7 +33,7 @@ export { Like, ILike };
 
 
 
-export const addLike = async (userId: mongoose.Types.ObjectId, postId: mongoose.Types.ObjectId): Promise<void> => {
+export const addLike = async (postId: mongoose.Types.ObjectId, userId: mongoose.Types.ObjectId): Promise<void> => {
 	const existingLike = await Like.findOne({ postId, userId }).exec();
 	if (existingLike) {
 		throw new Error('Like already exists');
@@ -48,7 +48,7 @@ export const addLike = async (userId: mongoose.Types.ObjectId, postId: mongoose.
 };
 
 
-export const removeLike = async (userId: mongoose.Types.ObjectId, postId: mongoose.Types.ObjectId): Promise<void> => {
+export const removeLike = async (postId: mongoose.Types.ObjectId, userId: mongoose.Types.ObjectId): Promise<void> => {
 	const deletedLike = await Like.findOneAndDelete({ postId, userId }).exec();
 	if (!deletedLike) {
 		throw new Error('Like not found');
@@ -56,6 +56,9 @@ export const removeLike = async (userId: mongoose.Types.ObjectId, postId: mongoo
 };
 
 
+
+// [ Non Used ]
+//
 export const getLikeCountPerPost = async (postId: mongoose.Types.ObjectId): Promise<number> => {
 	return await Like.countDocuments({ postId }).exec();
 };
@@ -64,3 +67,5 @@ export const hasUserLikedAPost = async (userId: mongoose.Types.ObjectId, postId:
 	const like = await Like.findOne({ userId, postId }).exec();
 	return !!like; // Retourne true si un like existe, sinon false
 };
+// 
+// // // // // // // //

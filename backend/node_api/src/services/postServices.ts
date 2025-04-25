@@ -1,4 +1,4 @@
-import { Post } from '../models/postSchema';
+import { IPostData, Post } from '../models/postSchema';
 import { Comment } from '../models/commentSchema';
 import { Like } from '../models/likeSchema';
 import { IPost, getUserPosts, getAllThePosts } from "../models/postSchema";
@@ -67,7 +67,7 @@ export const createPost = async (imageId_str: string, userId_str: string, title:
 
 
 
-export const getPostsByUserId = async (userId_str: string): Promise<IPost[]> => {
+export const getPostsByUserId = async (userId_str: string): Promise<{} | null> => {
 	try {
 		console.log(' 📸 [S]*GetUserPosts ]...');
 		if (!mongoose.Types.ObjectId.isValid(userId_str)) {
@@ -75,7 +75,7 @@ export const getPostsByUserId = async (userId_str: string): Promise<IPost[]> => 
 		}
 		const userId = new mongoose.Types.ObjectId(userId_str);
 
-		const posts: IPost[] = await getUserPosts(userId);
+		const posts = await getUserPosts(userId);
 		console.log(' 📸 [S]*GetUserPosts ] ✅ return GetUserPosts[]...');
 		return posts;
 

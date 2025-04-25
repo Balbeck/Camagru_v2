@@ -22,7 +22,7 @@ export const removeALike = async (req: Request, res: Response): Promise<void> =>
 		const { postId } = req.params;
 		const userId = req.user.id;
 		console.log(' 👍 [C]*removeALike ] req.params-> {postId}: ', postId, '\nreq.user.id: ', req.user.id);
-		await LikeService.removeALike(req.body.postId, req.user.id);
+		await LikeService.removeALike(postId, userId);
 
 	} catch (error: any) {
 		res.status(500).json({ message: error.message });
