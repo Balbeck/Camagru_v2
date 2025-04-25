@@ -1,5 +1,8 @@
 import mongoose from "mongoose";
 import { Schema, Document } from "mongoose";
+import { Comment } from "./commentSchema";
+import { Like } from "./likeSchema";
+import { Post } from "./postSchema";
 
 
 interface IImage extends Document {
@@ -83,4 +86,28 @@ export const getImagesByUserId = async (userId: mongoose.Types.ObjectId): Promis
 export const deleteAnImage = async (imageId: mongoose.Types.ObjectId): Promise<IImage | null> => {
 	return await
 		Image.findByIdAndDelete(imageId).exec();
+};
+
+export const deleteImageWithCascade = async (imageId: mongoose.Types.ObjectId): Promise<void> => {
+	try {
+		const image = await Image.findById(imageId).exec();
+		if (!image) {
+			throw new Error('Image not found');
+		}
+
+		const posts = await Post.find({ imageId }).exec();
+		for (const post of posts) {
+			const postId = post._id;
+			await Like.deleteMany({ postId }).exec();
+			await Comment.deleteMany({ postId }).exec();
+		}
+
+		await Post.deleteMany({ imageId }).exec();
+		await Image.findByIdAndDelete(imageId).exec();
+		console.log(` ✅ 🗑️ Image et ses dépendances supprimées avec succès : ${imageId}`);
+
+	} catch (error) {
+		console.error('❌ 🗑️ Erreur lors de la suppression en cascade :', error);
+		throw error;
+	}
 };

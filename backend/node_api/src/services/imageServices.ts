@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-import { IImage, saveNewImage, deleteAnImage, getImageById, getImagesByUserId } from '../models/imageSchema';
+import { IImage, saveNewImage, deleteAnImage, getImageById, getImagesByUserId, deleteImageWithCascade } from '../models/imageSchema';
 
 
 export const saveImage = async (userIdString: string, filename: string, contentType: string, data: string): Promise<IImage> => {
@@ -55,7 +55,7 @@ export const getAllImages = async (userIdString: string): Promise<IImage[]> => {
 };
 
 
-export const deleteImage = async (imageIdString: string, userIdString: string): Promise<IImage> => {
+export const deleteImage = async (imageIdString: string, userIdString: string): Promise<void> => {
 	try {
 		if (!mongoose.Types.ObjectId.isValid(imageIdString)) {
 			throw new Error('INVALID_IMAGE_ID');
@@ -75,9 +75,9 @@ export const deleteImage = async (imageIdString: string, userIdString: string): 
 			throw new Error('INVALID_USER_ID');
 		}
 
-		const deletedImage: IImage = await deleteAnImage(imageId);
+		// const deletedImage: IImage = await deleteAnImage(imageId);
+		await deleteImageWithCascade(imageId);
 		console.log(' 🍱 [S]deleteImage:  [ ✅ ]');
-		return deletedImage;
 
 	} catch (error) {
 		console.log(' 🍱 [S]deleteImage:  [ ❌ ]');

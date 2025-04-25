@@ -56,7 +56,7 @@ export const deleteImage = async (req: Request, res: Response): Promise<void> =>
 		const deletedImage = await ImageService.deleteImage(imageId, req.user.id);
 
 		console.log('🗑️ [C]*deleteImage ] ✅ ');
-		res.status(201).json(deletedImage);
+		res.status(201).json({ message: "Image and dependenses deleted successfully!" });
 
 	} catch (error) {
 		console.log('🗑️ [C]*deleteImage ] ❌ ');

@@ -141,7 +141,38 @@ const MyGalerie: React.FC = () => {
 
 
 	if (images.length === 0) {
-		return <div>Looks Like You never Posted an Image \n 😁 Let Try 😁 \nLoading... 🌱</div>;
+		return (
+			<div className="flex flex-col items-center justify-center min-h-[80vh] text-center">
+				<h2 className="text-2xl font-bold text-gray-800 mb-4">
+					Looks Like You never Posted an Image... Let Try 😁 🌱
+				</h2>
+				<div className="mt-4">
+					<Button
+						className="bg-blue-500 hover:bg-blue-600 text-white rounded-full py-2 px-4 text-sm transition-all duration-200"
+						onClick={openUploadImageModal}
+					>
+						Upload image
+					</Button>
+				</div>
+				{/* Modale UploadImage */}
+				{isUploadImageModalOpen && (
+					<div
+						className="fixed inset-0 flex justify-center items-center bg-gray-500 bg-opacity-50 z-50"
+						onClick={closeUploadImageModal} // Ferme la fenêtre si on clique à l'extérieur
+					>
+						<div
+							className="relative bg-white p-6 rounded-lg shadow-lg w-[70vw] max-w-[500px] z-10"
+							onClick={(e) => e.stopPropagation()} // Empêche la fermeture si on clique à l'intérieur
+						>
+
+							{/* Composant UploadImage */}
+							<UploadImage onUpload={handleUploadImage} />
+
+						</div>
+					</div>
+				)}
+			</div>
+		);
 	}
 
 
