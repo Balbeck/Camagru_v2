@@ -25,6 +25,7 @@ export const createComment = async (req: Request, res: Response): Promise<void> 
 				createdAt: newComment.createdAt,
 				updateddAt: newComment.updatedAt
 			};
+			CommentService.SendEmailToPostOwner(req.user.id, postId, comment);
 			res.status(201).json(formatedComment);
 		}
 		else {

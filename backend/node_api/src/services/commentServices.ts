@@ -6,6 +6,18 @@ import {
 	findAllCommentsByPostId,
 	findLastCommentByPostId
 } from "../models/commentSchema";
+import { Post } from '../models/postSchema';
+import nodemailer from 'nodemailer';
+import { User } from '../models/userSchema';
+
+
+const transporter = nodemailer.createTransport({
+	service: 'Gmail',
+	auth: {
+		user: process.env.EMAIL,
+		pass: process.env.EMAIL_PASSWORD
+	}
+});
 
 
 export const createComment = async (postId_str: string, userId_str: string, comment: string): Promise<IComment> => {
@@ -30,6 +42,44 @@ export const createComment = async (postId_str: string, userId_str: string, comm
 	}
 };
 
+export const SendEmailToPostOwner = async (userId_str: string, postId_str: string, comment: string): Promise<void> => {
+	try {
+		if (!mongoose.Types.ObjectId.isValid(userId_str)) {
+			throw new Error('INVALID_USER_ID');
+		}
+		if (!mongoose.Types.ObjectId.isValid(postId_str)) {
+			throw new Error('INVALID_POST_ID');
+		}
+
+		const userId = new mongoose.Types.ObjectId(userId_str);
+		const postId = new mongoose.Types.ObjectId(postId_str);
+		// Verif si le post appartient au User
+		const commentUser = await User.findById(userId).exec();
+		const commentUserName = commentUser.username;
+		const post = await Post.findById(postId).exec();
+		const postOwner = await User.findById(post.userId).exec();
+		const userEmail = postOwner.email;
+		if (!post) {
+			throw new Error('POST_NOT_FOUND');
+		}
+		// si le post appartient PAS au User -> send un Email au Owner du post !
+		if (post.userId.toString() !== userId.toString()) {
+			if (postOwner.isNotificationsEnabled) {
+		    const mailOptions = {
+        	from: process.env.EMAIL,
+        	to: userEmail,
+        	subject: 'Someone commented one of your post on Camagru 42 🪆',
+        	text: `${commentUserName} commented on your post: "${post.title}"\n\nComment: "${comment}"\n\nCheck it out on Camagru 42!`
+   	 		};
+		await transporter.sendMail(mailOptions);
+		console.log('💬 [S] ✅ Email Sent to Post Owner !');
+			}
+		}
+	} catch (error) {
+		console.log('💬 [S] SendEmailToPostOwner ❌ Error: \n', error);
+		throw error;
+	}
+};
 
 export const deleteComment = async (commentId_str: string): Promise<IComment> => {
 	try {

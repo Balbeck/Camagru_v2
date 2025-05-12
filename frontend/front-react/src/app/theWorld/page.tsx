@@ -88,7 +88,7 @@ const TheWorld: React.FC = () => {
     useEffect(() => {
         fetchPosts(currentPage);
 		fetchMyUserId();
-    }, []);
+    },[] );
 
 
 	const nextPost = () => {
