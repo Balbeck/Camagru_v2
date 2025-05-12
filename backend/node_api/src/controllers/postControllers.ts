@@ -89,14 +89,28 @@ export const getAllMyPosts = async (req: Request, res: Response): Promise<void> 
 
 export const getAllPosts = async (req: Request, res: Response): Promise<void> => {
 	try {
-		const posts = await PostService.getAllPosts();
-		console.log(' 📸 [C]*getAllPosts ] ✅ Posts');
-		res.status(201).json(posts);
+		const page: number = parseInt(req.query.page as string) || 1;
+		const limit = 5;
+		const skip = (page - 1) * limit;
+		const { posts, totalPosts, totalPages } = await PostService.getAllPosts(req.user.id, skip, limit);
+		if (!posts) {
+			res.status(404).json({ message: " ❌ pb avec posts[] " });
+		}
+		else {
+			console.log(' 📸 [C]*getAllPosts ] ✅ return Posts[]... ');
+			res.status(201).json({
+				posts,
+				totalPosts,
+				totalPages,
+				currentPage: page,
+			});
+		}
 	} catch (error) {
 		console.log(' 📸 [C]*getAllPosts ] ❌ Error: ', error.message);
 		res.status(500).json({ message: error.message });
 	}
 };
+
 
 export const getAPostbyId = async (req: Request, res: Response): Promise<void> => {
 	try {

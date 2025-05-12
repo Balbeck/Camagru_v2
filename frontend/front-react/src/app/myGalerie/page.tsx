@@ -35,6 +35,11 @@ const MyGalerie: React.FC = () => {
 	const openUploadImageModal = () => { setUploadImageModalOpen(true); };
 	const closeUploadImageModal = () => { setUploadImageModalOpen(false); };
 
+	// Modal pour DeleteImage
+	const [isModalOpen, setModalOpen] = useState(false);
+	const openDeleteImageModal = () => { setModalOpen(true); };
+	const closeDeleteImageModal = () => { setModalOpen(false); };
+
 
 	const fetchUserimages = async () => {
 		try {
@@ -118,8 +123,9 @@ const MyGalerie: React.FC = () => {
 
 
 
-	const handleDelete = async (imageId: string) => {
+	const handleDelete = async () => {
 		try {
+			const imageId = images[currentIndex]._id;
 			const response = await fetch(`http://localhost:3000/image/delete/${imageId}`, {
 				method: 'DELETE',
 				credentials: 'include',
@@ -129,6 +135,7 @@ const MyGalerie: React.FC = () => {
 				console.log('Image deleted successfully');
 				router.replace('/myGalerie')
 				setImages((previmages) => previmages.filter((image) => image._id !== imageId));
+				closeDeleteImageModal();
 
 			} else {
 				console.error('Failed to delete Image');
@@ -249,7 +256,8 @@ const MyGalerie: React.FC = () => {
 				</Button>
 				<Button
 					className="bg-red-500 hover:bg-red-600 text-white rounded-full py-2 px-4 text-sm transition-all duration-200"
-					onClick={() => handleDelete(images[currentIndex]._id)}
+					// onClick={() => handleDelete(images[currentIndex]._id)}
+					onClick={openDeleteImageModal}
 				>
 					Delete image
 				</Button>
@@ -288,6 +296,37 @@ const MyGalerie: React.FC = () => {
 					</div>
 				))}
 			</div>
+
+
+			{/* Modal de confirmation DeleteImage */}
+			{isModalOpen && (
+				<div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+					<div className="bg-white p-6 rounded-lg shadow-lg max-w-md w-full">
+						<h2 className="text-xl font-bold text-black mb-4 text-center">
+							Confirmer la suppression
+						</h2>
+						<p className="text-gray-800 text-sm text-center">
+							Êtes-vous sûr de vouloir supprimer cette image et tous les posts relatifs ?
+						</p>
+						<div className="flex justify-end space-x-4 mt-6">
+							<button
+								className="px-4 py-2 bg-gray-200 text-black rounded-md hover:bg-gray-300 transition-all duration-200"
+								onClick={closeDeleteImageModal}
+							>
+								Annuler
+							</button>
+							<button
+								className="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 transition-all duration-200"
+								onClick={handleDelete}
+							>
+								Supprimer
+							</button>
+						</div>
+					</div>
+				</div>
+			)}
+
+
 		</div >
 	);
 

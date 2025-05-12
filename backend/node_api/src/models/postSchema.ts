@@ -181,12 +181,83 @@ export const getUserPosts = async (userId: mongoose.Types.ObjectId): Promise<IPo
 //     return await Post.findByIdAndDelete(postId).exec();
 // };
 
-export const getAllThePosts = async (): Promise<IPost[]> => {
-    const posts = await Post.find()
-        .sort({ createdAt: -1 }) // Tri par createdAt
-        .populate('userId', 'username') // Return username avec userId
-        .populate('imageId') // Return obj Image
-        .exec();
-    console.log(' 📸 [M]*getAllThePosts ] ***[ posts ]***\n', posts);
-    return posts;
+// export const getAllThePosts = async (): Promise<IPost[]> => {
+//     const posts = await Post.find()
+//         .sort({ createdAt: -1 }) // Tri par createdAt
+//         .populate('userId', 'username') // Return username avec userId
+//         .populate('imageId') // Return obj Image
+//         .exec();
+//     console.log(' 📸 [M]*getAllThePosts ] ***[ posts ]***\n', posts);
+//     return posts;
+// };
+
+
+
+export const getAllThePostsPerPage = async(userId: mongoose.Types.ObjectId, skip: number, limit: number): Promise<IPostData[]> => {
+const posts = await Post.find()
+            .sort({ createdAt: -1 })
+            .skip(skip)
+            .limit(limit)
+            .populate<{ userId: IUser }>('userId', 'username')
+            .populate<{ imageId: IImage }>('imageId', 'data')
+            .exec();
+        console.log(` 📸 [M]*getAllThePosts ] *** posts -> [ ${posts.length} ]***`);
+        if (!posts || posts.length === 0) {
+            return [];
+        }
+
+        // Formater chaque post
+        const formattedPosts = await Promise.all(
+            posts.map(async (post) => {
+                const postId_str = post._id.toString();
+                const postId = new mongoose.Types.ObjectId(postId_str);
+                const comments = await Comment.find({ postId: postId })
+                    .populate<{ userId: IUser }>('userId', 'username')
+                    .select('_id userId comment createdAt')
+                    .exec();
+
+
+                const nbr_likes = await Like.countDocuments({ postId: postId }).exec();
+                const didILikeIt = !!(await Like.exists({ postId: postId, userId: userId }).exec()); // double negation '!!' pour transformer en bool
+                console.log(' 🌅 [M]*getUserPosts ] nbr_likes: ', nbr_likes, '  -  didILikeIt: ', didILikeIt);
+
+
+
+                // Formater les commentaires
+                const formattedComments = comments.map((comment) => (
+                    {
+                        _id: comment._id.toString(),
+                        userId: {
+                            _id: comment.userId._id.toString(),
+                            username: comment.userId.username
+                        },
+                        text: comment.comment,
+                        createdAt: comment.createdAt.toISOString()
+                    }
+                ));
+
+                // Retourner le post formaté
+                return (
+                    {
+                        _id: post._id.toString(),
+                        userId: {
+                            _id: post.userId._id.toString(),
+                            username: post.userId.username
+                        },
+                        imageId: {
+                            data: post.imageId.data
+                        },
+                        title: post.title,
+                        createdAt: post.createdAt.toISOString(),
+                        likes: {
+                            nbr_likes,
+                            didILikeIt: !!didILikeIt // bool
+                        },
+                        comments: formattedComments
+                    }
+                );
+            })
+        );
+
+        return formattedPosts;
 };

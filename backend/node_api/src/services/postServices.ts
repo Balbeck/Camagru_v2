@@ -1,7 +1,7 @@
 import { IPostData, Post } from '../models/postSchema';
 import { Comment } from '../models/commentSchema';
 import { Like } from '../models/likeSchema';
-import { IPost, getUserPosts, getAllThePosts } from "../models/postSchema";
+import { IPost, getUserPosts, getAllThePostsPerPage } from "../models/postSchema";
 // import { IUser } from "../models/userSchema";
 
 // import * as UserService from '../services/userServices';
@@ -66,6 +66,29 @@ export const createPost = async (imageId_str: string, userId_str: string, title:
 // };
 
 
+export const getAllPosts = async (userId_str: string, skip: number, limit: number): Promise<{ posts: IPostData[]; totalPosts: number; totalPages: number }> => {
+	try {
+		console.log(' 📸 [S]*GetAllPosts ] ...');
+		if (!mongoose.Types.ObjectId.isValid(userId_str)) {
+			throw new Error('INVALID_USER_ID');
+		}
+		const userId = new mongoose.Types.ObjectId(userId_str);
+		const posts = await getAllThePostsPerPage(userId, skip, limit);
+		const totalPosts = await Post.countDocuments();
+		const totalPages = Math.ceil(totalPosts / limit);
+		console.log(' 📸 [S]*GetAllPosts ] ✅ return GetAllPosts[]...');
+		return {
+			posts,
+			totalPosts,
+			totalPages,
+	};
+	} catch (error) {
+		console.log(' 📸 [S]*GetAllPosts ] . ❌ . Error');
+		throw error;
+	}
+};
+
+
 
 export const getPostsByUserId = async (userId_str: string): Promise<{} | null> => {
 	try {
@@ -85,9 +108,9 @@ export const getPostsByUserId = async (userId_str: string): Promise<{} | null> =
 	}
 };
 
-export const getAllPosts = async (): Promise<IPost[]> => {
-	return await getAllThePosts();
-};
+// export const getAllPosts = async (): Promise<IPost[]> => {
+// 	return await getAllThePosts();
+// };
 
 
 export const deletePostAndRelations = async (postId_str: string): Promise<void> => {
