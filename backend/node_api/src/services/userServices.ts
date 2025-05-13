@@ -5,6 +5,7 @@ import mongoose from 'mongoose';
 import jwt from 'jsonwebtoken';
 import nodemailer from 'nodemailer';
 
+
 // - - - - - - - - - [ Fcts - EMAIL - Services ] - - - - - - - - -
 
 const transporter = nodemailer.createTransport({
@@ -14,6 +15,7 @@ const transporter = nodemailer.createTransport({
         pass: process.env.EMAIL_PASSWORD
     }
 });
+
 
 export const sendRegisterEmail = async (userEmail: string, token: string) => {
     const server_host = process.env.SERVER_HOST
@@ -197,6 +199,12 @@ const validatePassword = (password: string): boolean => {
     return passwordRegex.test(password);
 };
 
+const validateEmail = (email: string): boolean => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+};
+
+
 export const verifyUpdateNewPassword = async (email: string, newPassword: string, token: string): Promise<IUser> => {
     try {
         console.log(` [ verifyUpdateNewPassword ] email: ${email}, newPassword: ${newPassword}, token: ${token} `);
@@ -291,6 +299,11 @@ export const createUser = async (body: any): Promise<IUser> => {
         }
         console.log(` 🥝 [S]*createU ] body.password: ${pass}`);
 
+        // - -[ * Email * Verification ]- -
+        if (!validateEmail(body.email)) {
+            throw new Error('INVALID_EMAIL');
+        }
+
         // - -[ * Hash * Password ]- -
         const hashedPassword: string = await bcrypt.hash(pass, 10);
 
@@ -305,37 +318,6 @@ export const createUser = async (body: any): Promise<IUser> => {
         throw error;
     }
 };
-
-// export const createUser = async (body: any): Promise<IUser> => {
-//     try {
-//         // - -[ * User * Verifications ]- -
-//         const existingUserByEmail = await findUserByEmail(body.email);
-//         const existingUserByUsername = await findUserByUsername(body.username);
-//         if (existingUserByEmail) {
-//             throw new Error('EMAIL_ALREADY_EXISTS');
-//         }
-//         if (existingUserByUsername) {
-//             throw new Error('USERNAME_ALREADY_EXISTS');
-//         }
-//         console.log(` 🥝 [S]*createU ] User: ${body.username}, ${body.email}:  [ Doesnt already exist ! ]`)
-
-//         // - -[ * Hash * Password ]- -
-//         const pass: string = body.password;
-//         console.log(` 🥝 [S]*createU ] body.password: ${pass}`);
-//         const hashedPassword: string = await bcrypt.hash(pass, 10);
-
-//         // - -[ * User * Creation ]- -
-//         const newUser = await createNewUser(body.username, body.email, hashedPassword);
-//         console.log(" 🥝 [S]*createU ] ✅ User created successfully: ", newUser);
-
-//         return newUser;
-
-//     } catch (error) {
-//         // console.error("❌ Error User Creation: ", error.message);
-//         console.log("❌ Error User Creation: ", error.message);
-//         throw error;
-//     }
-// };
 
 
 export const logInUser = async (body: any): Promise<IUser> => {
@@ -397,7 +379,6 @@ export const getUserByEmail = async (userEmail: string): Promise<IUser> => {
     } catch (error) {
         console.log(' ❌ [S]*getUserByEmail ] userEmail: ', userEmail);
         throw new Error('USER_NOT_FOUND')
-        // throw error;
     }
 };
 

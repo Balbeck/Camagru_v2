@@ -24,14 +24,6 @@ export const register = async (req: Request, res: Response): Promise<void> => {
         const email: string = req.body.email;
 
         const token = AuthJwt.generateJwt(newUser._id.toString());
-        // res.cookie(tokenName, token, {
-        //     httpOnly: true,
-        //     sameSite: "strict",
-        //     secure: false,
-        //     maxAge: 24 * 60 * 60 * 1000, // 1j
-        // });
-        // 
-        // res.status(201).json({ message: 'User created and authentified', jwt: token });
 
         await UserService.sendRegisterEmail(email, token);
         res.status(400).json({ message: 'User registered. Please check your email for confirmation.' });
@@ -46,6 +38,9 @@ export const register = async (req: Request, res: Response): Promise<void> => {
         }
         else if (error.message === 'INVALID_PASSWORD') {
             res.status(400).json({ message: 'invalid password' });
+        }
+        else if (error.message === 'INVALID_EMAIL') {
+            res.status(400).json({ message: 'invalid email' });
         }
         else if (error.message === 'EMAIL_SERVICE_ERROR') {
             // Delete User To be sure that only users with Email send are Registred

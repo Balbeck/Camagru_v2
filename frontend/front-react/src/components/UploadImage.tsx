@@ -22,7 +22,16 @@ const UploadImage: React.FC<UploadImageProps> = ({ onUpload }) => {
 			} else if (!['image/jpeg', 'image/png', 'image/svg'].includes(file.type)) {
 				alert('Invalid file type, only jpeg, png or svg!');
 				return;
-			} else {
+			}
+
+
+			const img = document.createElement('img');
+			img.onload = () => {
+				if (img.width === 0 || img.height === 0) {
+					alert('Invalid image dimensions!');
+					return;
+				}
+
 				setSelectedImage(file);
 				setPreviewUrl(URL.createObjectURL(file));
 
@@ -32,13 +41,20 @@ const UploadImage: React.FC<UploadImageProps> = ({ onUpload }) => {
 					setBase64Image(reader.result as string);
 				};
 				reader.readAsDataURL(file);
-			}
+			};
+
+			img.onerror = () => {
+				alert('Invalid image Bro, that was a good try !');
+			};
+
+			img.src = URL.createObjectURL(file);
 		}
 	};
 
+
 	const handleUploadClick = () => {
 		if (selectedImage && base64Image) {
-			onUpload(selectedImage, base64Image); // Appelle la fonction passée en prop
+			onUpload(selectedImage, base64Image); // Appel + passage param a fct prop
 		}
 	};
 

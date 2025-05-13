@@ -4,6 +4,40 @@ import * as ImageService from '../services/imageServices';
 
 export const uploadImage = async (req: Request, res: Response): Promise<void> => {
 	try {
+		const { filename, contentType, data } = req.body;
+		if (!filename || !contentType || !data) {
+			res.status(400).json({ message: "Filename, contentType and data are required!" });
+			return;
+		}
+		if (!req.user.id) {
+			res.status(404).json({ message: "User ID is missing!" });
+			return;
+		}
+
+		// verif type MIME de l'img
+		const allowedMimeTypes = ['image/jpeg', 'image/png', 'image/jpg'];
+		if (!allowedMimeTypes.includes(contentType)) {
+			res.status(400).json({ message: "Invalid image type. Only JPEG and PNG are allowed." });
+			return;
+		}
+
+		// verif format de l'img
+		const base64Regex = /^data:image\/(jpeg|jpg|png);base64,/;
+		if (!base64Regex.test(data)) {
+			res.status(400).json({ message: "Invalid image format. Only Base64 encoded images are allowed." });
+			return;
+		}
+		const maxSize = 5 * 1024 * 1024; // 5MB
+
+		// vraie taille en octets car data en Base64
+		const fileSizeInBytes = (data.length * 3) / 4 - (data.endsWith('==') ? 2 : data.endsWith('=') ? 1 : 0);
+
+		if (fileSizeInBytes > maxSize) {
+			res.status(400).json({ message: "Image size exceeds the maximum limit of 5MB." });
+			return;
+		}
+
+
 		const uploadedImage =
 			await ImageService.saveImage(
 				req.user.id,
