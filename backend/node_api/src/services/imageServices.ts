@@ -75,7 +75,6 @@ export const deleteImage = async (imageIdString: string, userIdString: string): 
 			throw new Error('INVALID_USER_ID');
 		}
 
-		// const deletedImage: IImage = await deleteAnImage(imageId);
 		await deleteImageWithCascade(imageId);
 		console.log(' 🍱 [S]deleteImage:  [ ✅ ]');
 

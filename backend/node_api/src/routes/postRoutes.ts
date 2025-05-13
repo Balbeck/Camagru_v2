@@ -19,5 +19,7 @@ router.get('/getAllMyPosts', verifyToken, PostController.getAllMyPosts);
 router.get('/getAll', verifyToken, PostController.getAllPosts);
 router.get('/getAPost/:postId', verifyToken, PostController.getAPostbyId);
 
+router.get('/getAllPublic', PostController.getAllPublicPosts);
+
 
 export default router;

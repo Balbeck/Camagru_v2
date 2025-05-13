@@ -2,14 +2,11 @@ import { IPostData, Post } from '../models/postSchema';
 import { Comment } from '../models/commentSchema';
 import { Like } from '../models/likeSchema';
 import { IPost, getUserPosts, getAllThePostsPerPage } from "../models/postSchema";
-// import { IUser } from "../models/userSchema";
 
-// import * as UserService from '../services/userServices';
 
 import mongoose from "mongoose";
 
 
-// export const createPost = async (body: any, userId_str: string): Promise<IPost> => {
 export const createPost = async (imageId_str: string, userId_str: string, title: string): Promise<IPost> => {
 	try {
 		if (!mongoose.Types.ObjectId.isValid(userId_str)) {
@@ -32,38 +29,11 @@ export const createPost = async (imageId_str: string, userId_str: string, title:
 
 		return await newPost.save();
 
-		// console.log(' 📸 [S]*newPost ] body: ', body);
-		// const user: IUser = await UserService.getUserById(userId_str);
-		// const userId: mongoose.Types.ObjectId = user._id;
-		// const title: string = body.title;
-
-		// const newPost: IPost = await createNewPost(userId, body.image, title);
-		// console.log(' 📸 [S]*newPost return ✅ newPost]');
-		// return newPost;
 	} catch (error) {
 		console.log(' 📸 [S]*newPost ] ❌  Error: ', error.message);
 		throw error;
 	}
 };
-
-// export const deleteAPost = async (postId_str: string): Promise<IPost> => {
-// 	try {
-// 		console.log('📸🗑️ [S]*deletePost ] ...');
-// 		if (!mongoose.Types.ObjectId.isValid(postIdString)) {
-// 			throw new Error('INVALID_POST_ID');
-// 		}
-
-// 		const postId = new mongoose.Types.ObjectId(postIdString);
-// 		const deletedPost = await deletePost(postId);
-
-// 		console.log(' 📸 🗑️️ [S]*deletePost ] ✅ deleted Post');
-// 		return deletedPost;
-
-// 	} catch (error) {
-// 		console.log(' 📸 🗑️ [S]*deletePost ] . ❌ . Error');
-// 		throw error;
-// 	}
-// };
 
 
 export const getAllPosts = async (userId_str: string, skip: number, limit: number): Promise<{ posts: IPostData[]; totalPosts: number; totalPages: number }> => {
@@ -89,6 +59,26 @@ export const getAllPosts = async (userId_str: string, skip: number, limit: numbe
 };
 
 
+export const getAllPublicPosts = async (skip: number, limit: number): Promise<{ posts: IPostData[]; totalPosts: number; totalPages: number }> => {
+	try {
+		console.log(' 📸 [S]*GetAllPublicPosts ] ...');
+		const posts = await getAllThePostsPerPage(new mongoose.Types.ObjectId(), skip, limit);
+		const totalPosts = await Post.countDocuments();
+		const totalPages = Math.ceil(totalPosts / limit);
+		console.log(' 📸 [S]*GetAllPublicPosts ] ✅ return GetAllPublicPosts[]...');
+		return {
+			posts,
+			totalPosts,
+			totalPages,
+	};
+	} catch (error) {
+		console.log(' 📸 [S]*GetAllPublicPosts ] . ❌ . Error');
+		throw error;
+	}
+};
+
+
+
 
 export const getPostsByUserId = async (userId_str: string): Promise<{} | null> => {
 	try {
@@ -107,10 +97,6 @@ export const getPostsByUserId = async (userId_str: string): Promise<{} | null> =
 		throw error;
 	}
 };
-
-// export const getAllPosts = async (): Promise<IPost[]> => {
-// 	return await getAllThePosts();
-// };
 
 
 export const deletePostAndRelations = async (postId_str: string): Promise<void> => {
@@ -133,7 +119,6 @@ export const deletePostAndRelations = async (postId_str: string): Promise<void> 
 };
 
 
-// export const getAPostByPostId = async (postId_str: string): Promise<void> => {
 export const getAPostbyPostId = async (postId_str: string): Promise<IPost | null> => {
 	try {
 		if (!mongoose.Types.ObjectId.isValid(postId_str)) {
@@ -144,8 +129,8 @@ export const getAPostbyPostId = async (postId_str: string): Promise<IPost | null
 
 		// Récupérer le post avec les relations peuplées
 		const post = await Post.findById(postId)
-			.populate('userId', 'username') // Inclut uniquement le champ `username` de l'utilisateur
-			.populate('imageId') // Inclut toutes les informations de l'image
+			.populate('userId', 'username') // inclut username du User
+			.populate('imageId') // inclut toutes infos de imageId
 			.exec();
 
 		if (!post) {

@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import {
+	Comment,
 	IComment,
 	createNewComment,
 	deleteCommentByCommentId,
@@ -41,6 +42,24 @@ export const createComment = async (postId_str: string, userId_str: string, comm
 		throw error;
 	}
 };
+
+export const getCommentById = async (commentId_str: string): Promise<IComment> => {
+	try {
+		if (!mongoose.Types.ObjectId.isValid(commentId_str)) {
+			throw new Error('INVALID_COMMENT_ID');
+		}
+		const commentId = new mongoose.Types.ObjectId(commentId_str);
+		const comment = await Comment.findById(commentId).exec();
+		if (!comment) {
+			throw new Error('COMMENT_NOT_FOUND');
+		}
+		return comment;
+	} catch (error) {
+		console.log('💬 [S] getCommentById ❌ Error: \n', error);
+		throw error;
+	}
+};
+
 
 export const SendEmailToPostOwner = async (userId_str: string, postId_str: string, comment: string): Promise<void> => {
 	try {
