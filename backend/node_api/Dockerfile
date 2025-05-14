@@ -4,9 +4,9 @@ FROM node:19.9.0
 WORKDIR /app
 
 COPY ./package.json .
-# COPY ./nodemon.json .
+COPY ./nodemon.json .
 COPY ./tsconfig.json .
-RUN npm install nodemon --save-dev
+# RUN npm install nodemon --save-dev
 RUN npm install
 
 COPY . .

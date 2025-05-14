@@ -64,13 +64,12 @@ export const confirmRegisterEmail = async (req: Request, res: Response): Promise
 
         res.cookie(tokenName, token, {
             httpOnly: true,
-            sameSite: "strict",
+            sameSite: "none",
             secure: false,
             maxAge: 24 * 60 * 60 * 1000, // 1j
         });
 
         res.redirect(301, frontUrl);
-        // res.status(200);
 
     } catch (error) {
         console.log(' ✉️ [C]*confirmEmail ❌ ');
