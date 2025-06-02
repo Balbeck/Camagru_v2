@@ -12,14 +12,13 @@ export default function PhotoBooth() {
 	const [error, setError] = useState<string | null>(null);
 	const [filter, setFilter] = useState<string>("");
 	const [overlayImage, setOverlayImage] = useState<string | null>(null);
-	const [overlayImageSize, setOverlayImageSize] = useState<number>(100); // Taille initiale à 100%
+	const [overlayImageSize, setOverlayImageSize] = useState<number>(50);
 
 	// Thumbnails - Images vars
 	const [userImages, setUserImages] = useState<IImage[]>([]);
 	const [selectedImage, setSelectedImage] = useState<string | null>(null);
 	const [thumbStart, setThumbStart] = useState(0);
 	const THUMB_WINDOW = 10;
-
 
 	const fetchUserimages = async () => {
 		try {
@@ -68,41 +67,6 @@ export default function PhotoBooth() {
 		}
 	};
 
-
-
-
-
-	// 📌 Prendre une photo
-	const takePhoto = () => {
-		if (videoRef.current && canvasRef.current) {
-			const context = canvasRef.current.getContext("2d");
-			if (context) {
-				canvasRef.current.width = videoRef.current.videoWidth;
-				canvasRef.current.height = videoRef.current.videoHeight;
-				context.drawImage(videoRef.current, 0, 0);
-
-				// Applique le filtre sur la photo capturée
-				context.filter = filter;
-
-				if (overlayImage) {
-					const img = new Image();
-					img.src = overlayImage;
-					img.onload = () => {
-						const width = (img.width * overlayImageSize) / 100; // Appliquer la taille à partir du slider
-						const height = (img.height * overlayImageSize) / 100; // Appliquer la taille à partir du slider
-						const x = canvasRef.current.width / 2 - width / 2;
-						const y = canvasRef.current.height / 2 - height / 2;
-						context.drawImage(img, x, y, width, height); // Dessiner l'image avec la nouvelle taille
-						setPhoto(canvasRef.current.toDataURL("image/png"));
-					};
-				} else {
-					setPhoto(canvasRef.current.toDataURL("image/png"));
-				}
-			}
-		}
-	};
-
-	// 📌 Arrêter la caméra
 	const stopCamera = () => {
 		if (stream) {
 			stream.getTracks().forEach((track) => track.stop());
@@ -111,7 +75,59 @@ export default function PhotoBooth() {
 	};
 
 
-	// 📌 Liste des filtres avec icônes
+
+	const takePhoto = async () => {
+		let photoData: string | null = null;
+
+		if (selectedImage) {
+			// Si une image de la galerie est sélectionnée, on l'utilise
+			photoData = selectedImage;
+		} else if (videoRef.current && canvasRef.current) {
+			// Sinon, on capture la frame vidéo
+			const context = canvasRef.current.getContext("2d");
+			if (context) {
+				canvasRef.current.width = videoRef.current.videoWidth;
+				canvasRef.current.height = videoRef.current.videoHeight;
+				context.drawImage(videoRef.current, 0, 0);
+				photoData = canvasRef.current.toDataURL("image/png");
+			}
+		}
+
+		if (!photoData) {
+			setError("Aucune image à traiter.");
+			return;
+		}
+
+		const payload = {
+			photo: photoData, // toujours une image en base64
+			filter: filter || null,
+			overlay: overlayImage || null,
+			overlaySize: overlayImageSize || 50,
+		};
+		console.log("photoData", photoData);
+		console.log("payload", payload);
+		try {
+			const response = await fetch("http://localhost:3000/image/uploadForMontage", {
+				method: "POST",
+				headers: { "Content-Type": "application/json" },
+				body: JSON.stringify(payload),
+				credentials: "include"
+			});
+			if (response.ok) {
+				const data = await response.json();
+				setPhoto(data.processedPhoto);
+			} else {
+				setError("Erreur lors du traitement de la photo en Back");
+			}
+		} catch (err) {
+			setError("Erreur réseau lors de l'envoi de la photo.");
+			setError(err instanceof Error ? err.message : "Error Bro");
+		}
+	};
+
+
+
+	// Filtres pour la CAM
 	const filters = [
 		{ name: "Noir et Blanc", style: "grayscale(100%)", icon: "🌑" },
 		{ name: "Sépia", style: "sepia(100%)", icon: "🟤" },
@@ -123,7 +139,7 @@ export default function PhotoBooth() {
 		{ name: "Teinte", style: "hue-rotate(91deg)", icon: "🎨" },
 	];
 
-	// 📌 Liste des images SVG pour superposition
+	// SVG pour les overlays
 	const overlayImages = [
 		{ src: "/stickers/diving-goggles-svgrepo-com.svg", alt: "Overlay 1" },
 		{ src: "/stickers/hat-svgrepo-com.svg", alt: "Overlay 2" },
@@ -213,9 +229,13 @@ export default function PhotoBooth() {
 							<div
 								className="absolute"
 								style={{
-									width: "50%",
+									width: `${overlayImageSize}%`,
+									height: `${overlayImageSize}%`,
 									left: "50%",
 									top: "50%",
+									// width: "50%",
+									// left: "50%",
+									// top: "50%",
 									transform: "translate(-50%, -50%)",
 									aspectRatio: "1/1",
 									pointerEvents: "none",
@@ -234,16 +254,39 @@ export default function PhotoBooth() {
 
 					</div>
 					<canvas ref={canvasRef} className="hidden"></canvas>
-
+					{/* ...dans ta section <section className="flex-1 flex flex-col items-center"> ... */}
+					{overlayImage && (
+						<div className="w-64 mt-4 flex flex-col items-center">
+							<label htmlFor="overlay-size" className="mb-1 text-sm">
+								Size : {overlayImageSize}%
+							</label>
+							<input
+								id="overlay-size"
+								type="range"
+								min={1}
+								max={100}
+								value={overlayImageSize}
+								onChange={e => setOverlayImageSize(Number(e.target.value))}
+								className="w-full"
+							/>
+						</div>
+					)}
 
 					{/* Affichage conditionnel des Buttons */}
 					<div className="mt-4 flex space-x-2 flex-wrap">
 						{!stream ? (
-							<button onClick={startCamera} className="px-4 py-2 bg-green-500 rounded-lg">
-								📷 Activer la caméra
-							</button>
+							<div>
+								<button onClick={startCamera} className="px-4 py-2 bg-green-500 rounded-lg">
+									📷 Activer la caméra
+								</button>
+								{selectedImage && overlayImage && (
+									<button onClick={takePhoto} className="px-4 py-2 bg-blue-500 rounded-lg">
+										📸 Save
+									</button>
+								)}
+							</div>
 						) : (
-							<>
+							<div>
 								{!photo && (
 									<button onClick={takePhoto} className="px-4 py-2 bg-blue-500 rounded-lg">
 										📸 Prendre une photo
@@ -252,10 +295,10 @@ export default function PhotoBooth() {
 								<button onClick={stopCamera} className="px-4 py-2 bg-red-500 rounded-lg">
 									❌ Arrêter
 								</button>
-							</>
+							</div>
 						)}
 						{photo && (
-							<>
+							<div>
 								<button onClick={() => setPhoto(null)} className="px-4 py-2 bg-yellow-500 rounded-lg">
 									🔄 Reprendre
 								</button>
@@ -265,7 +308,7 @@ export default function PhotoBooth() {
 								<button onClick={sharePhoto} className="px-4 py-2 bg-blue-500 rounded-lg">
 									🐦 Partager
 								</button>
-							</>
+							</div>
 						)}
 					</div>
 					{error && <p className="text-red-500 mt-2">{error}</p>}
