@@ -10,7 +10,7 @@ router.post('/upload', verifyToken, ImageController.uploadImage);
 router.get('/all', verifyToken, ImageController.getAllImagesByUserId);
 router.delete('/delete/:imageId', verifyToken, ImageController.deleteImage);
 
-// router.post('/uploadMontage', verifyToken, ImageController.uploadMontage);
+router.post('/uploadForMontage', verifyToken, ImageController.uploadForMontage);
 
 
 export default router;

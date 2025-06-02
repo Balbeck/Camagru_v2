@@ -20,22 +20,6 @@ export const saveImage = async (userIdString: string, filename: string, contentT
 	}
 };
 
-export const saveMontage = async (userIdString: string, filename: string, contentType: string, data: string): Promise<IImage> => {
-	try {
-		if (!mongoose.Types.ObjectId.isValid(userIdString)) {
-			throw new Error('INVALID_USER_ID');
-		}
-		const userId = new mongoose.Types.ObjectId(userIdString);
-		const newImage: IImage = await saveNewImage(userId, filename, contentType, data, 'montage');
-
-		console.log(' 🍱 [S]saveMontage:  [ ✅ ]');
-		return newImage;
-
-	} catch (error) {
-		console.log(' 🍱 [S]saveMontage:  [ ❌ ]');
-		throw error;
-	}
-};
 
 export const getAllImages = async (userIdString: string): Promise<IImage[]> => {
 	try {
@@ -80,6 +64,25 @@ export const deleteImage = async (imageIdString: string, userIdString: string): 
 
 	} catch (error) {
 		console.log(' 🍱 [S]deleteImage:  [ ❌ ]');
+		throw error;
+	}
+};
+
+
+export const saveMontage = async (userIdString: string, photo: string, filter: string, overlay: string, overlaySize: number): Promise<any> => {
+	// : Promise<IImage> => {
+	try {
+		if (!mongoose.Types.ObjectId.isValid(userIdString)) {
+			throw new Error('INVALID_USER_ID');
+		}
+		const userId = new mongoose.Types.ObjectId(userIdString);
+		// const newImage: IImage = await saveNewImage(userId, filename, contentType, data, 'montage');
+
+		console.log(' 🍱 [S]saveMontage:  [ ✅ ]');
+		// return newImage;
+
+	} catch (error) {
+		console.log(' 🍱 [S]saveMontage:  [ ❌ ]');
 		throw error;
 	}
 };

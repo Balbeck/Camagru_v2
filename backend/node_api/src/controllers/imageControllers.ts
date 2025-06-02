@@ -105,3 +105,44 @@ export const deleteImage = async (req: Request, res: Response): Promise<void> =>
 		}
 	}
 };
+
+
+export const uploadForMontage = async (req: Request, res: Response): Promise<void> => {
+	try {
+		const { photo, filter, overlay, overlaySize } = req.body;
+		console.log(' 🖼️ [C]*uploadMontage ] 🖼️ ', req.body);
+		if (!photo) {
+			res.status(400).json({ message: "Photo (base64) is required!" });
+			return;
+		}
+		if (!req.user.id) {
+			res.status(404).json({ message: "User ID is missing!" });
+			return;
+		}
+
+		const montage = await ImageService.saveMontage(
+			req.user.id,
+			photo,
+			filter,
+			overlay,
+			overlaySize
+		);
+
+		console.log(' 🖼️ [C]*uploadMontage ] ✅ ');
+		// res.status(201).json(montage);
+		res.status(201).json({
+			message: "Montage uploaded successfully!"
+		});
+
+	} catch (error) {
+		console.log(' 🖼️ [C]*uploadMontage ] ❌ ');
+		if (error.message == 'INVALID_USER_ID') {
+			res.status(404).json({ message: error.message });
+		} else if (error.message == 'INVALID_IMAGE_DATA') {
+			res.status(400).json({ message: error.message });
+			// res.status(400).json({ message: "Caca Bro" });
+		} else {
+			res.status(500).json({ message: error.message });
+		}
+	}
+};
