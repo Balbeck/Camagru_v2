@@ -1,242 +1,389 @@
 "use client";
 
-// import { useRef, useState, useEffect } from "react";
+import { IImage } from "@/components/Interface";
+import Image from "next/image";
+import { useRef, useState, useEffect } from "react";
 
 export default function PhotoBooth() {
-// 	const videoRef = useRef<HTMLVideoElement | null>(null);
-// 	const canvasRef = useRef<HTMLCanvasElement | null>(null);
-// 	const [photo, setPhoto] = useState<string | null>(null);
-// 	const [stream, setStream] = useState<MediaStream | null>(null);
-// 	const [error, setError] = useState<string | null>(null);
-// 	const [filter, setFilter] = useState<string>("");
-// 	const [overlayImage, setOverlayImage] = useState<string | null>(null);
-// 	const [overlayImageSize, setOverlayImageSize] = useState<number>(100); // Taille initiale à 100%
+	const videoRef = useRef<HTMLVideoElement | null>(null);
+	const canvasRef = useRef<HTMLCanvasElement | null>(null);
+	const [photo, setPhoto] = useState<string | null>(null);
+	const [stream, setStream] = useState<MediaStream | null>(null);
+	const [error, setError] = useState<string | null>(null);
+	const [filter, setFilter] = useState<string>("");
+	const [overlayImage, setOverlayImage] = useState<string | null>(null);
+	const [overlayImageSize, setOverlayImageSize] = useState<number>(100); // Taille initiale à 100%
 
-// 	// 📌 Demander l'accès à la caméra et afficher le flux vidéo
-// 	const startCamera = async () => {
-// 		setError(null);
-// 		try {
-// 			const stream = await navigator.mediaDevices.getUserMedia({ video: true });
-// 			setStream(stream);
-// 			if (videoRef.current) {
-// 				videoRef.current.srcObject = stream;
-// 			}
-// 		} catch (error) {
-// 			console.log("⚠️ Impossible d'accéder à la caméra: ",error);
-// 		}
-// 	};
+	// Thumbnails - Images vars
+	const [userImages, setUserImages] = useState<IImage[]>([]);
+	const [selectedImage, setSelectedImage] = useState<string | null>(null);
+	const [thumbStart, setThumbStart] = useState(0);
+	const THUMB_WINDOW = 10;
 
-// 	// 📌 Prendre une photo
-// 	const takePhoto = () => {
-// 		if (videoRef.current && canvasRef.current) {
-// 			const context = canvasRef.current.getContext("2d");
-// 			if (context) {
-// 				canvasRef.current.width = videoRef.current.videoWidth;
-// 				canvasRef.current.height = videoRef.current.videoHeight;
-// 				context.drawImage(videoRef.current, 0, 0);
 
-// 				// Applique le filtre sur la photo capturée
-// 				context.filter = filter;
+	const fetchUserimages = async () => {
+		try {
+			const response = await fetch('http://localhost:3000/image/all', {
+				method: 'GET',
+				credentials: 'include',
+			});
 
-// 				if (overlayImage) {
-// 					const img = new Image();
-// 					img.src = overlayImage;
-// 					img.onload = () => {
-// 						const width = (img.width * overlayImageSize) / 100; // Appliquer la taille à partir du slider
-// 						const height = (img.height * overlayImageSize) / 100; // Appliquer la taille à partir du slider
-// 						const x = canvasRef.current.width / 2 - width / 2;
-// 						const y = canvasRef.current.height / 2 - height / 2;
-// 						context.drawImage(img, x, y, width, height); // Dessiner l'image avec la nouvelle taille
-// 						setPhoto(canvasRef.current.toDataURL("image/png"));
-// 					};
-// 				} else {
-// 					setPhoto(canvasRef.current.toDataURL("image/png"));
-// 				}
-// 			}
-// 		}
-// 	};
+			if (response.ok) {
+				const data = await response.json();
+				setUserImages(data);
+			} else {
+				console.error('Failed to fetch user images');
+			}
+		} catch (error) {
+			console.error('Error fetching user images:', error);
+		}
+	};
 
-// 	// 📌 Arrêter la caméra
-// 	const stopCamera = () => {
-// 		if (stream) {
-// 			stream.getTracks().forEach((track) => track.stop());
-// 			setStream(null);
-// 		}
-// 	};
+	const thumbnailsRef = useRef<HTMLDivElement>(null);
 
-// 	// 📌 Nettoyer la caméra quand on quitte la page
-// 	useEffect(() => {
-// 		return () => {
-// 			stopCamera();
-// 		};
-// 	}, []);
+	const scrollThumbnails = (direction: "up" | "down") => {
+		if (direction === "up") {
+			setThumbStart((prev) => Math.max(prev - 1, 0));
+		} else {
+			setThumbStart((prev) =>
+				Math.min(prev + 1, Math.max(userImages.length - THUMB_WINDOW, 0))
+			);
+		}
+	};
 
-// 	// 📌 Liste des filtres avec icônes
-// 	const filters = [
-// 		{ name: "Noir et Blanc", style: "grayscale(100%)", icon: "🌑" },
-// 		{ name: "Sépia", style: "sepia(100%)", icon: "🟤" },
-// 		{ name: "Inversé", style: "invert(100%)", icon: "🔁" },
-// 		{ name: "Flou", style: "blur(5px)", icon: "🌫️" },
-// 		{ name: "Saturation", style: "saturate(2)", icon: "🌈" },
-// 		{ name: "Contraste", style: "contrast(2)", icon: "⚫" },
-// 		{ name: "Luminosité", style: "brightness(1.5)", icon: "💡" },
-// 		{ name: "Teinte", style: "hue-rotate(91deg)", icon: "🎨" },
-// 	];
 
-// 	// 📌 Liste des images SVG pour superposition
-// 	const overlayImages = [
-// 		{ src: "/stickers/diving-goggles-svgrepo-com.svg", alt: "Overlay 1" },
-// 		{ src: "/stickers/hat-svgrepo-com.svg", alt: "Overlay 2" },
-// 		{ src: "/stickers/hot-air-balloon-svgrepo-com.svg", alt: "Overlay 3" },
-// 	];
 
-// 	// 📌 Fonction pour télécharger l'image
-// 	const downloadPhoto = () => {
-// 		if (photo) {
-// 			const link = document.createElement("a");
-// 			link.href = photo;
-// 			link.download = "photo_booth.png";
-// 			link.click();
-// 		}
-// 	};
 
-// 	// 📌 Fonction pour partager sur Twitter
-// 	const sharePhoto = () => {
-// 		if (photo) {
-// 			const url = `https://twitter.com/intent/tweet?url=${encodeURIComponent(photo)}&text=Check%20out%20my%20photo%20from%20PhotoBooth!`;
-// 			window.open(url, "_blank");
-// 		}
-// 	};
+	const startCamera = async () => {
+		setError(null);
+		setSelectedImage(null);
+		try {
+			const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+			setStream(stream);
+			if (videoRef.current) {
+				videoRef.current.srcObject = stream;
+			}
+		} catch (error) {
+			console.log("⚠️ Impossible to access the Cam Bro: ", error);
+		}
+	};
+
+
+
+
+
+	// 📌 Prendre une photo
+	const takePhoto = () => {
+		if (videoRef.current && canvasRef.current) {
+			const context = canvasRef.current.getContext("2d");
+			if (context) {
+				canvasRef.current.width = videoRef.current.videoWidth;
+				canvasRef.current.height = videoRef.current.videoHeight;
+				context.drawImage(videoRef.current, 0, 0);
+
+				// Applique le filtre sur la photo capturée
+				context.filter = filter;
+
+				if (overlayImage) {
+					const img = new Image();
+					img.src = overlayImage;
+					img.onload = () => {
+						const width = (img.width * overlayImageSize) / 100; // Appliquer la taille à partir du slider
+						const height = (img.height * overlayImageSize) / 100; // Appliquer la taille à partir du slider
+						const x = canvasRef.current.width / 2 - width / 2;
+						const y = canvasRef.current.height / 2 - height / 2;
+						context.drawImage(img, x, y, width, height); // Dessiner l'image avec la nouvelle taille
+						setPhoto(canvasRef.current.toDataURL("image/png"));
+					};
+				} else {
+					setPhoto(canvasRef.current.toDataURL("image/png"));
+				}
+			}
+		}
+	};
+
+	// 📌 Arrêter la caméra
+	const stopCamera = () => {
+		if (stream) {
+			stream.getTracks().forEach((track) => track.stop());
+			setStream(null);
+		}
+	};
+
+
+	// 📌 Liste des filtres avec icônes
+	const filters = [
+		{ name: "Noir et Blanc", style: "grayscale(100%)", icon: "🌑" },
+		{ name: "Sépia", style: "sepia(100%)", icon: "🟤" },
+		{ name: "Inversé", style: "invert(100%)", icon: "🔁" },
+		{ name: "Flou", style: "blur(5px)", icon: "🌫️" },
+		{ name: "Saturation", style: "saturate(2)", icon: "🌈" },
+		{ name: "Contraste", style: "contrast(2)", icon: "⚫" },
+		{ name: "Luminosité", style: "brightness(1.5)", icon: "💡" },
+		{ name: "Teinte", style: "hue-rotate(91deg)", icon: "🎨" },
+	];
+
+	// 📌 Liste des images SVG pour superposition
+	const overlayImages = [
+		{ src: "/stickers/diving-goggles-svgrepo-com.svg", alt: "Overlay 1" },
+		{ src: "/stickers/hat-svgrepo-com.svg", alt: "Overlay 2" },
+		{ src: "/stickers/hot-air-balloon-svgrepo-com.svg", alt: "Overlay 3" },
+	];
+
+	// 📌 Fonction pour télécharger l'image
+	const downloadPhoto = () => {
+		if (photo) {
+			const link = document.createElement("a");
+			link.href = photo;
+			link.download = "photo_booth.png";
+			link.click();
+		}
+	};
+
+	// 📌 Fonction pour partager sur Twitter
+	const sharePhoto = () => {
+		if (photo) {
+			const url = `https://twitter.com/intent/tweet?url=${encodeURIComponent(photo)}&text=Check%20out%20my%20photo%20from%20PhotoBooth!`;
+			window.open(url, "_blank");
+		}
+	};
+
+
+	useEffect(() => {
+		fetchUserimages();
+		return () => {
+			stopCamera();
+		};
+	}, []);
+
 
 	return (
-		<h1>Hello PhotoBooth</h1>
-	)
-// 	return (
-// 		<div className="flex flex-col md:flex-row items-center justify-center min-h-screen bg-gray-900 text-white">
-// 			{/* Sidebar Filters */}
-// 			<div className="md:w-60 w-full p-4 bg-gray-800 text-white rounded-lg flex-shrink-0">
-// 				<h2 className="text-xl font-semibold mb-4">🎨 Filtres</h2>
-// 				<div className="space-y-4">
-// 					{filters.map((f, index) => (
-// 						<button
-// 							key={index}
-// 							onClick={() => setFilter(f.style)}
-// 							className="w-full text-2xl p-3 bg-gray-700 hover:bg-gray-600 py-2 px-4 rounded-lg transform transition duration-300 ease-in-out hover:scale-105"
-// 						>
-// 							{f.icon} {f.name}
-// 						</button>
-// 					))}
-// 				</div>
-// 			</div>
+		<div className="flex flex-col md:flex-row min-h-screen bg-gray-900 text-white">
+			{/* MAIN SECTION */}
+			{/* <main className="flex-1 flex flex-col md:flex-row items-center justify-center p-4"> */}
+			<main className="flex-1 flex flex-col md:flex-row items-center justify-center p-4 max-h-[38rem] w-full my-auto">
 
-// 			{/* Camera & Overlay Section */}
-// 			<div className="flex-1 flex flex-col items-center relative">
-// 				{/* PhotoBooth Zone */}
-// 				<div className="relative w-80 h-80 border-4 border-white rounded-lg overflow-hidden">
-// 					{!photo ? (
-// 						<video
-// 							ref={videoRef}
-// 							autoPlay
-// 							className={`w-full h-full object-cover ${filter ? 'filter' : ''}`}
-// 							style={{ filter: filter }}
-// 						></video>
-// 					) : (
-// 						<img src={photo} alt="Captured" className="w-full h-full object-cover" />
-// 					)}
+				{/* LEFT SIDEBAR: Filters */}
+				<aside className="w-full md:w-48 mb-4 md:mb-0 md:mr-4 flex-shrink-0">
+					<div className="bg-gray-800 rounded-lg p-2 flex md:flex-col flex-row overflow-x-auto md:overflow-y-auto md:overflow-x-hidden">
+						{filters.map((f, idx) => (
+							<button
+								key={idx}
+								onClick={() => setFilter(f.style)}
+								className="m-1 p-2 bg-gray-700 rounded-lg hover:bg-gray-600 flex-shrink-0 text-xl"
+							>
+								{f.icon} {f.name}
+							</button>
+						))}
+					</div>
+				</aside>
 
-// 					{overlayImage && !photo && (
-// 						<img
-// 							src={overlayImage}
-// 							alt="Overlay"
-// 							style={{
-// 								width: `${(overlayImageSize)}%`, // Applique la taille dynamique en temps réel
-// 								height: "auto", // Garde le ratio de l'image intact
-// 							}}
-// 							className="absolute top-0 left-0 object-contain"
-// 						/>
-// 					)}
-// 				</div>
+				{/* CAM */}
+				<section className="flex-1 flex flex-col items-center">
+					{/* Webcam Preview */}
+					<div className="relative w-80 h-80 border-4 border-white rounded-lg overflow-hidden">
+						{selectedImage ? (
+							<Image
+								src={selectedImage}
+								alt="Selected"
+								fill
+								className="object-cover"
+								sizes="320px"
+								priority
+							/>
+						) : !photo ? (
+							<video
+								ref={videoRef}
+								autoPlay
+								className="w-full h-full object-cover"
+								style={{ filter: filter }}
+							/>
+						) : (
+							<Image
+								src={photo}
+								alt="Captured"
+								fill
+								className="object-cover"
+								sizes="320px"
+								priority
+							/>
+						)}
 
-// 				{/* Canvas caché pour capturer l'image */}
-// 				<canvas ref={canvasRef} className="hidden"></canvas>
+						{overlayImage && (
+							<div
+								className="absolute"
+								style={{
+									width: "50%",
+									left: "50%",
+									top: "50%",
+									transform: "translate(-50%, -50%)",
+									aspectRatio: "1/1",
+									pointerEvents: "none",
+								}}
+							>
+								<Image
+									src={overlayImage}
+									alt="Overlay"
+									fill
+									unoptimized
+									className="object-contain"
+									priority
+								/>
+							</div>
+						)}
 
-// 				{/* Buttons */}
-// 				<div className="mt-4 flex space-x-4">
-// 					{!stream ? (
-// 						<button onClick={startCamera} className="px-4 py-2 bg-green-500 rounded-lg">
-// 							📷 Activer la caméra
-// 						</button>
-// 					) : (
-// 						<>
-// 							{!photo && (
-// 								<button onClick={takePhoto} className="px-4 py-2 bg-blue-500 rounded-lg">
-// 									📸 Prendre une photo
-// 								</button>
-// 							)}
-// 							<button onClick={stopCamera} className="px-4 py-2 bg-red-500 rounded-lg">
-// 								❌ Arrêter
-// 							</button>
-// 						</>
-// 					)}
+					</div>
+					<canvas ref={canvasRef} className="hidden"></canvas>
 
-// 					{photo && (
-// 						<button onClick={() => setPhoto(null)} className="px-4 py-2 bg-yellow-500 rounded-lg">
-// 							🔄 Reprendre
-// 						</button>
-// 					)}
-// 				</div>
 
-// 				{/* Taille de l'image SVG */}
-// 				{overlayImage && !photo && (
-// 					<div className="mt-4 w-full px-4">
-// 						<label htmlFor="overlay-size" className="text-sm text-white mb-2">
-// 							Ajuster la taille de l'image
-// 						</label>
-// 						<input
-// 							id="overlay-size"
-// 							type="range"
-// 							min="0"
-// 							max="100"
-// 							value={overlayImageSize}
-// 							onChange={(e) => setOverlayImageSize(Number(e.target.value))}
-// 							className="w-full"
-// 						/>
-// 						<p className="text-sm text-white text-center">{overlayImageSize}%</p>
-// 					</div>
-// 				)}
+					{/* Affichage conditionnel des Buttons */}
+					<div className="mt-4 flex space-x-2 flex-wrap">
+						{!stream ? (
+							<button onClick={startCamera} className="px-4 py-2 bg-green-500 rounded-lg">
+								📷 Activer la caméra
+							</button>
+						) : (
+							<>
+								{!photo && (
+									<button onClick={takePhoto} className="px-4 py-2 bg-blue-500 rounded-lg">
+										📸 Prendre une photo
+									</button>
+								)}
+								<button onClick={stopCamera} className="px-4 py-2 bg-red-500 rounded-lg">
+									❌ Arrêter
+								</button>
+							</>
+						)}
+						{photo && (
+							<>
+								<button onClick={() => setPhoto(null)} className="px-4 py-2 bg-yellow-500 rounded-lg">
+									🔄 Reprendre
+								</button>
+								<button onClick={downloadPhoto} className="px-4 py-2 bg-purple-500 rounded-lg">
+									📥 Télécharger
+								</button>
+								<button onClick={sharePhoto} className="px-4 py-2 bg-blue-500 rounded-lg">
+									🐦 Partager
+								</button>
+							</>
+						)}
+					</div>
+					{error && <p className="text-red-500 mt-2">{error}</p>}
+				</section>
 
-// 				{/* Additional Actions */}
-// 				<div className="mt-4 flex space-x-4">
-// 					{photo && (
-// 						<>
-// 							<button onClick={downloadPhoto} className="px-4 py-2 bg-purple-500 rounded-lg">
-// 								📥 Télécharger
-// 							</button>
-// 							<button onClick={sharePhoto} className="px-4 py-2 bg-blue-500 rounded-lg">
-// 								🐦 Partager
-// 							</button>
-// 						</>
-// 					)}
-// 				</div>
+				{/* Overlay Svg preview images */}
+				<aside className="w-full md:w-48 mt-4 md:mt-0 md:ml-4 flex-shrink-0">
+					<div className="bg-gray-800 rounded-lg p-2 flex md:flex-col flex-row overflow-x-auto md:overflow-y-auto md:overflow-x-hidden">
+						{overlayImages.map((image, idx) => (
+							<button
+								key={idx}
+								onClick={() => setOverlayImage(image.src)}
+								className="m-1 p-2 bg-gray-700 rounded-lg hover:bg-gray-600 flex-shrink-0 flex items-center justify-center"
+							>
+								<Image
+									src={image.src}
+									alt={image.alt}
+									width={64}
+									height={64}
+									className="object-contain"
+									unoptimized
+								/>
+							</button>
+						))}
+					</div>
+				</aside>
+			</main>
 
-// 				{error && <p className="text-red-500 mt-2">{error}</p>}
-// 			</div>
 
-// 			{/* Sidebar Overlay Images */}
-// 			<div className="md:w-60 w-full p-4 bg-gray-800 text-white rounded-lg flex-shrink-0 mt-4 md:mt-0">
-// 				<h2 className="text-xl font-semibold mb-4">📸 Superposition d'images</h2>
-// 				<div className="space-y-4">
-// 					{overlayImages.map((image, index) => (
-// 						<button
-// 							key={index}
-// 							onClick={() => setOverlayImage(image.src)}
-// 							className="w-full text-2xl p-3 bg-gray-700 hover:bg-gray-600 py-2 px-4 rounded-lg transform transition duration-300 ease-in-out hover:scale-105"
-// 						>
-// 							<img src={image.src} alt={image.alt} className="w-16 h-16 object-contain" />
-// 						</button>
-// 					))}
-// 				</div>
-// 			</div>
-// 		</div>
-// 	);
+			{/* Sidebar -> Thumbnails */}
+			<aside className="relative md:w-32 w-full bg-gray-800 p-2 flex md:flex-col flex-row md:static fixed bottom-0 left-0 right-0 z-30 md:flex-shrink-0 md:items-stretch">
+				{/* Desktop: vertical flex, Mobile: horizontal flex */}
+				<div className="flex md:flex-col flex-row w-full items-center md:items-stretch">
+					{/* Fleche Up (desk) */}
+					<button
+						type="button"
+						onClick={() => scrollThumbnails("up")}
+						className="hidden md:flex justify-center items-center mb-2 bg-gray-700 hover:bg-gray-600 rounded-full p-1"
+						aria-label="Scroll up"
+						style={{ minHeight: "2rem" }}
+					>
+						▲
+					</button>
+					{/* Fleche Up (mob) */}
+					<button
+						type="button"
+						onClick={() => thumbnailsRef.current?.scrollBy({ left: -80, behavior: "smooth" })}
+						className="md:hidden flex justify-center items-center mr-2 bg-gray-700 hover:bg-gray-600 rounded-full p-1"
+						aria-label="Scroll left"
+						style={{ minWidth: "2rem" }}
+					>
+						◀
+					</button>
+					{/* Miniatures */}
+					<div
+						ref={thumbnailsRef}
+						className="flex-1 flex md:flex-col flex-row gap-4 w-full h-full md:overflow-y-auto overflow-x-auto md:py-2 items-center"
+						style={{
+							maxHeight: "calc(100vh - 4rem)",
+							minHeight: "5rem",
+							scrollbarWidth: "thin",
+						}}
+					>
+						{userImages.slice(thumbStart, thumbStart + THUMB_WINDOW).map((image) => (
+							<button
+								key={image._id}
+								onClick={() => {
+									setSelectedImage(image.data);
+									stopCamera();
+								}}
+								className="bg-gradient-to-tr from-pink-500 via-red-500 to-yellow-500 rounded-full flex-shrink-0 flex items-center justify-center w-20 h-20 md:w-20 md:h-20 w-16 h-16 shadow-lg border-4 border-white transition-all duration-200 hover:scale-105 hover:shadow-pink-400/60"
+								style={{
+									minWidth: "4rem",
+									minHeight: "4rem",
+								}}
+							>
+								<div className="bg-gray-900 rounded-full w-16 h-16 md:w-16 md:h-16 flex items-center justify-center overflow-hidden">
+									<Image
+										src={image.data}
+										alt={image.filename}
+										width={64}
+										height={64}
+										className="object-contain"
+										unoptimized
+									/>
+								</div>
+							</button>
+						))}
+					</div>
+
+					{/* Fleche Down (desk) */}
+					<button
+						type="button"
+						onClick={() => scrollThumbnails("down")}
+						className="hidden md:flex justify-center items-center mt-2 bg-gray-700 hover:bg-gray-600 rounded-full p-1"
+						aria-label="Scroll down"
+						style={{ minHeight: "2rem" }}
+					>
+						▼
+					</button>
+					{/* Fleche Down (mob) */}
+					<button
+						type="button"
+						onClick={() => thumbnailsRef.current?.scrollBy({ left: 80, behavior: "smooth" })}
+						className="md:hidden flex justify-center items-center ml-2 bg-gray-700 hover:bg-gray-600 rounded-full p-1"
+						aria-label="Scroll right"
+						style={{ minWidth: "2rem" }}
+					>
+						▶
+					</button>
+				</div>
+			</aside>
+
+		</div>
+	);
+
+
+
+
+
 }
