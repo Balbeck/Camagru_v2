@@ -96,6 +96,7 @@ export default function PhotoBooth() {
 	const takePhoto = async () => {
 		let photoData: string | null = null;
 
+		console.log("selectedImage", selectedImage);
 		if (selectedImage) {
 			photoData = selectedImage;
 		} else if (videoRef.current && canvasRef.current) {
@@ -107,7 +108,7 @@ export default function PhotoBooth() {
 				photoData = canvasRef.current.toDataURL("image/png");
 			}
 		}
-
+		console.log("photoData", photoData);
 		if (!photoData) {
 			setError("Aucune image à traiter.");
 			return;
@@ -148,6 +149,26 @@ export default function PhotoBooth() {
 			setError("Erreur réseau lors de l'envoi de la photo.");
 			setError(err instanceof Error ? err.message : "Error Bro");
 		}
+
+		setPhoto(null);
+		setSelectedImage(null);
+		setFilter("");
+		setOverlayImage(null);
+		setOverlayImageSize(50);
+		if (videoRef.current) {
+			videoRef.current.srcObject = null; // Clear the video stream
+		}
+		if (canvasRef.current) {
+			const context = canvasRef.current.getContext("2d");
+			if (context) {
+				context.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
+			}
+		}
+		if (stream) {
+			stream.getTracks().forEach((track) => track.stop()); // Stop the camera stream
+		}
+		setStream(null);
+
 	};
 
 

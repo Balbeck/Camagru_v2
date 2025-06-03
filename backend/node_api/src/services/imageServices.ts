@@ -104,10 +104,12 @@ export const createMontage = async (photo: string, filter: string, overlay: stri
 		// Ajoute filtre
 		if (filter !== "" && filterMap[filter]) {
 			filterMap[filter](ctx, canvas);
-			console.log(` 🍱 [S]createMontage:  [ ✅ ] Filter "${filter}" applied`);
+			console.log(` 🍱 [S]createMontage:  [ ✅ ] Filter:  "${filter}" applied`);
 		}
 
+
 		// Ajoute overlay
+		console.log(` 🍱 [S]createMontage:  [ ✅ ] Overlay:  "${overlay}"`);
 		if (overlay) {
 			console.log(' 🍱 [S]createMontage: Overlay ...');
 			// Charger l'overlay SVG (base64 ou string)

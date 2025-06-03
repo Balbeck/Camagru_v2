@@ -110,7 +110,7 @@ export const deleteImage = async (req: Request, res: Response): Promise<void> =>
 
 export const uploadForMontage = async (req: Request, res: Response): Promise<void> => {
 	try {
-		const { photo, filter, overlay, overlaySize } = req.body;
+		const { photo, filter, overlayImage, overlaySize } = req.body;
 		console.log(' 🖼️ [C]*uploadMontage ] 🖼️ ', req.body);
 		if (!req.user.id) {
 			res.status(404).json({ message: "User ID is missing!" });
@@ -122,11 +122,14 @@ export const uploadForMontage = async (req: Request, res: Response): Promise<voi
 			console.log(' 🖼️ [C]*uploadMontage ] ❌ !photo ');
 			return;
 		}
-		// if (!filter || !overlay || !overlaySize) {
-		// 	res.status(400).json({ message: "Filter, overlay and overlaySize are required!" });
-		// 	console.log(' 🖼️ [C]*uploadMontage ] ❌ !filter || !overlay || !overlaySize');
-		// 	return;
-		// }
+		console.log(` 🖼️ [C]*uploadMontage ] filter: ${filter},`, filter);
+		console.log(` 🖼️ [C]*uploadMontage ] overlayImage: ${overlayImage} `);
+		console.log(` 🖼️ [C]*uploadMontage ] overlaySize: ${overlaySize} `);
+		if (!overlayImage || !overlaySize) {
+			res.status(400).json({ message: "Filter, overlayImage and overlaySize are required!" });
+			console.log(' 🖼️ [C]*uploadMontage ] ❌ !filter || !overlayImage || !overlaySize');
+			return;
+		}
 		// verif format Img
 		const base64Regex = /^data:image\/(jpeg|jpg|png);base64,/;
 		if (!base64Regex.test(photo)) {
@@ -149,7 +152,7 @@ export const uploadForMontage = async (req: Request, res: Response): Promise<voi
 			req.user.id,
 			photo,
 			filter,
-			overlay,
+			overlayImage,
 			overlaySize
 		);
 
