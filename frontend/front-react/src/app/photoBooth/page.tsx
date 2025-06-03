@@ -10,7 +10,7 @@ export default function PhotoBooth() {
 	const [photo, setPhoto] = useState<string | null>(null);
 	const [stream, setStream] = useState<MediaStream | null>(null);
 	const [error, setError] = useState<string | null>(null);
-	const [filter, setFilter] = useState<string | null>(null);
+	const [filter, setFilter] = useState<string>("");
 	const [overlayImage, setOverlayImage] = useState<string | null>(null);
 	const [overlayImageSize, setOverlayImageSize] = useState<number>(50);
 
@@ -97,11 +97,15 @@ export default function PhotoBooth() {
 			setError("Aucune image à traiter.");
 			return;
 		}
+		if (overlayImage == null) {
+			setError("Veuillez sélectionner une image de superposition.");
+			return;
+		}
 
 		const payload = {
 			photo: photoData,
 			filter: filter,
-			overlay: overlayImage,
+			overlayImage: overlayImage,
 			overlaySize: overlayImageSize,
 		};
 		// console.log("photoData", photoData);
@@ -132,12 +136,10 @@ export default function PhotoBooth() {
 		{ name: "Noir et Blanc", style: "grayscale(100%)", icon: "🌑" },
 		{ name: "Sépia", style: "sepia(100%)", icon: "🟤" },
 		{ name: "Inversé", style: "invert(100%)", icon: "🔁" },
-		{ name: "Flou", style: "blur(5px)", icon: "🌫️" },
 		{ name: "Saturation", style: "saturate(2)", icon: "🌈" },
 		{ name: "Contraste", style: "contrast(2)", icon: "⚫" },
 		{ name: "Luminosité", style: "brightness(1.5)", icon: "💡" },
-		{ name: "Teinte", style: "hue-rotate(91deg)", icon: "🎨" },
-		{ name: "Aucune", style: null, icon: "❌" },
+		{ name: "Aucune", style: "", icon: "❌" },
 	];
 
 	// SVG pour les overlays

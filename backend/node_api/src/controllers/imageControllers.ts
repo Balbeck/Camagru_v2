@@ -1,5 +1,6 @@
 import { Request, Response, } from "express";
 import * as ImageService from '../services/imageServices';
+import { IImage } from "models/imageSchema";
 
 
 export const uploadImage = async (req: Request, res: Response): Promise<void> => {
@@ -111,16 +112,36 @@ export const uploadForMontage = async (req: Request, res: Response): Promise<voi
 	try {
 		const { photo, filter, overlay, overlaySize } = req.body;
 		console.log(' 🖼️ [C]*uploadMontage ] 🖼️ ', req.body);
-		if (!photo) {
-			res.status(400).json({ message: "Photo (base64) is required!" });
-			return;
-		}
 		if (!req.user.id) {
 			res.status(404).json({ message: "User ID is missing!" });
 			return;
 		}
+		// Verification Img
+		if (!photo) {
+			res.status(400).json({ message: "Photo (base64) is required!" });
+			return;
+		}
+		if (!filter || !overlay || !overlaySize) {
+			res.status(400).json({ message: "Filter, overlay and overlaySize are required!" });
+			return;
+		}
+		// verif format Img
+		const base64Regex = /^data:image\/(jpeg|jpg|png);base64,/;
+		if (!base64Regex.test(photo)) {
+			res.status(400).json({ message: "Invalid image format. Only Base64 encoded images are allowed." });
+			return;
+		}
+		const maxSize = 5 * 1024 * 1024; // 5MB
+		// vraie taille en octets car data en Base64
+		const fileSizeInBytes = (photo.length * 3) / 4 - (photo.endsWith('==') ? 2 : photo.endsWith('=') ? 1 : 0);
+		if (fileSizeInBytes > maxSize) {
+			res.status(400).json({ message: "Image size exceeds the maximum limit of 5MB." });
+			return;
+		}
 
-		const montage = await ImageService.saveMontage(
+
+		// Tente d'effectuer le Montage
+		const montage: IImage = await ImageService.montageMe(
 			req.user.id,
 			photo,
 			filter,
@@ -128,11 +149,9 @@ export const uploadForMontage = async (req: Request, res: Response): Promise<voi
 			overlaySize
 		);
 
-		console.log(' 🖼️ [C]*uploadMontage ] ✅ ');
-		// res.status(201).json(montage);
-		res.status(201).json({
-			message: "Montage uploaded successfully!"
-		});
+		console.log(' 🖼️ [C]*uploadMontage ] -Montage: ✅ ');
+		res.status(201).json(montage);
+		// res.status(201).json({message: "Montage uploaded successfully!"});
 
 	} catch (error) {
 		console.log(' 🖼️ [C]*uploadMontage ] ❌ ');
@@ -140,7 +159,8 @@ export const uploadForMontage = async (req: Request, res: Response): Promise<voi
 			res.status(404).json({ message: error.message });
 		} else if (error.message == 'INVALID_IMAGE_DATA') {
 			res.status(400).json({ message: error.message });
-			// res.status(400).json({ message: "Caca Bro" });
+		} else if (error.message == 'MONTAGE_CREATION_FAILED') {
+			res.status(400).json({ message: error.message });
 		} else {
 			res.status(500).json({ message: error.message });
 		}
