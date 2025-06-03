@@ -144,7 +144,7 @@ export const createMontage = async (photo: string, filter: string, overlay: stri
 
 
 export const filterMap: { [key: string]: (ctx: CanvasRenderingContext2D, canvas: any) => void } = {
-	"Noir et Blanc": (ctx, canvas) => {
+	"grayscale(100%)": (ctx, canvas) => {
 		const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
 		for (let i = 0; i < imageData.data.length; i += 4) {
 			const avg = (imageData.data[i] + imageData.data[i + 1] + imageData.data[i + 2]) / 3;
@@ -154,7 +154,7 @@ export const filterMap: { [key: string]: (ctx: CanvasRenderingContext2D, canvas:
 		}
 		ctx.putImageData(imageData, 0, 0);
 	},
-	"Sépia": (ctx, canvas) => {
+	"sepia(100%)": (ctx, canvas) => {
 		const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
 		for (let i = 0; i < imageData.data.length; i += 4) {
 			const r = imageData.data[i];
@@ -166,7 +166,7 @@ export const filterMap: { [key: string]: (ctx: CanvasRenderingContext2D, canvas:
 		}
 		ctx.putImageData(imageData, 0, 0);
 	},
-	"Inversé": (ctx, canvas) => {
+	"invert(100%)": (ctx, canvas) => {
 		const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
 		for (let i = 0; i < imageData.data.length; i += 4) {
 			imageData.data[i] = 255 - imageData.data[i];
@@ -175,7 +175,7 @@ export const filterMap: { [key: string]: (ctx: CanvasRenderingContext2D, canvas:
 		}
 		ctx.putImageData(imageData, 0, 0);
 	},
-	"Saturation": (ctx, canvas) => {
+	"saturate(2)": (ctx, canvas) => {
 		const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
 		for (let i = 0; i < imageData.data.length; i += 4) {
 			const gray = 0.2989 * imageData.data[i] + 0.587 * imageData.data[i + 1] + 0.114 * imageData.data[i + 2];
@@ -185,7 +185,7 @@ export const filterMap: { [key: string]: (ctx: CanvasRenderingContext2D, canvas:
 		}
 		ctx.putImageData(imageData, 0, 0);
 	},
-	"Contraste": (ctx, canvas) => {
+	"contrast(2)": (ctx, canvas) => {
 		const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
 		const factor = (259 * (128 + 255)) / (255 * (259 - 128));
 		for (let i = 0; i < imageData.data.length; i += 4) {
@@ -195,7 +195,7 @@ export const filterMap: { [key: string]: (ctx: CanvasRenderingContext2D, canvas:
 		}
 		ctx.putImageData(imageData, 0, 0);
 	},
-	"Luminosité": (ctx, canvas) => {
+	"brightness(1.5)": (ctx, canvas) => {
 		const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
 		for (let i = 0; i < imageData.data.length; i += 4) {
 			imageData.data[i] = Math.min(imageData.data[i] * 1.5, 255);

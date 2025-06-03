@@ -159,7 +159,7 @@ export default function PhotoBooth() {
 		{ name: "Saturation", style: "saturate(2)", icon: "🌈" },
 		{ name: "Contraste", style: "contrast(2)", icon: "⚫" },
 		{ name: "Luminosité", style: "brightness(1.5)", icon: "💡" },
-		{ name: "Aucune", style: "", icon: "❌" },
+		{ name: "Aucun", style: "", icon: "❌" },
 	];
 
 	// SVG pour les overlays
