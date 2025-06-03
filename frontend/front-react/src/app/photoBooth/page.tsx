@@ -99,7 +99,7 @@ export default function PhotoBooth() {
 		}
 
 		const payload = {
-			photo: photoData, // toujours une image en base64
+			photo: photoData,
 			filter: filter || null,
 			overlay: overlayImage || null,
 			overlaySize: overlayImageSize || 50,
@@ -146,7 +146,6 @@ export default function PhotoBooth() {
 		{ src: "/stickers/hot-air-balloon-svgrepo-com.svg", alt: "Overlay 3" },
 	];
 
-	// 📌 Fonction pour télécharger l'image
 	const downloadPhoto = () => {
 		if (photo) {
 			const link = document.createElement("a");
@@ -156,7 +155,7 @@ export default function PhotoBooth() {
 		}
 	};
 
-	// 📌 Fonction pour partager sur Twitter
+	// Twitter
 	const sharePhoto = () => {
 		if (photo) {
 			const url = `https://twitter.com/intent/tweet?url=${encodeURIComponent(photo)}&text=Check%20out%20my%20photo%20from%20PhotoBooth!`;
@@ -175,8 +174,8 @@ export default function PhotoBooth() {
 
 	return (
 		<div className="flex flex-col md:flex-row min-h-screen bg-gray-900 text-white">
+
 			{/* MAIN SECTION */}
-			{/* <main className="flex-1 flex flex-col md:flex-row items-center justify-center p-4"> */}
 			<main className="flex-1 flex flex-col md:flex-row items-center justify-center p-4 max-h-[38rem] w-full my-auto">
 
 				{/* LEFT SIDEBAR: Filters */}
@@ -233,12 +232,11 @@ export default function PhotoBooth() {
 									height: `${overlayImageSize}%`,
 									left: "50%",
 									top: "50%",
-									// width: "50%",
-									// left: "50%",
-									// top: "50%",
 									transform: "translate(-50%, -50%)",
 									aspectRatio: "1/1",
 									pointerEvents: "none",
+									maxWidth: "100%",
+									maxHeight: "100%"
 								}}
 							>
 								<Image
@@ -253,8 +251,9 @@ export default function PhotoBooth() {
 						)}
 
 					</div>
+
 					<canvas ref={canvasRef} className="hidden"></canvas>
-					{/* ...dans ta section <section className="flex-1 flex flex-col items-center"> ... */}
+
 					{overlayImage && (
 						<div className="w-64 mt-4 flex flex-col items-center">
 							<label htmlFor="overlay-size" className="mb-1 text-sm">
@@ -272,7 +271,7 @@ export default function PhotoBooth() {
 						</div>
 					)}
 
-					{/* Affichage conditionnel des Buttons */}
+					{/* Buttons */}
 					<div className="mt-4 flex space-x-2 flex-wrap">
 						{!stream ? (
 							<div>
@@ -391,6 +390,7 @@ export default function PhotoBooth() {
 										alt={image.filename}
 										width={64}
 										height={64}
+										style={{ width: "100%", height: "100%" }}
 										className="object-contain"
 										unoptimized
 									/>
