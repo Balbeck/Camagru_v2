@@ -96,7 +96,6 @@ export const montageMe = async (userIdString: string, photo: string, filter: str
 
 export const createMontage = async (photo: string, filter: string, overlay: string, overlaySize: number): Promise<string> => {
 	try {
-		console.log(' 🍱 [S]createMontage: Overlay ...');
 		const backgroundImg = await loadImage(photo);
 		const canvas = createCanvas(backgroundImg.width, backgroundImg.height);
 		const ctx = canvas.getContext('2d') as CanvasRenderingContext2D;
@@ -110,6 +109,7 @@ export const createMontage = async (photo: string, filter: string, overlay: stri
 
 		// Ajoute overlay
 		if (overlay) {
+			console.log(' 🍱 [S]createMontage: Overlay ...');
 			// Charger l'overlay SVG (base64 ou string)
 			let svgData = overlay;
 			if (!overlay.startsWith('<svg')) {

@@ -97,10 +97,8 @@ export default function PhotoBooth() {
 		let photoData: string | null = null;
 
 		if (selectedImage) {
-			// Si une image de la galerie est sélectionnée, on l'utilise
 			photoData = selectedImage;
 		} else if (videoRef.current && canvasRef.current) {
-			// Sinon, on capture la frame vidéo
 			const context = canvasRef.current.getContext("2d");
 			if (context) {
 				canvasRef.current.width = videoRef.current.videoWidth;
@@ -140,6 +138,9 @@ export default function PhotoBooth() {
 			if (response.ok) {
 				const data = await response.json();
 				setPhoto(data.processedPhoto);
+				if (data) {
+					setUserImages(prev => [data, ...prev]);
+				}
 			} else {
 				setError("Erreur lors du traitement de la photo en Back");
 			}
@@ -447,9 +448,5 @@ export default function PhotoBooth() {
 
 		</div>
 	);
-
-
-
-
 
 }
