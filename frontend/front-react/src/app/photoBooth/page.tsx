@@ -10,7 +10,7 @@ export default function PhotoBooth() {
 	const [photo, setPhoto] = useState<string | null>(null);
 	const [stream, setStream] = useState<MediaStream | null>(null);
 	const [error, setError] = useState<string | null>(null);
-	const [filter, setFilter] = useState<string>("");
+	const [filter, setFilter] = useState<string | null>(null);
 	const [overlayImage, setOverlayImage] = useState<string | null>(null);
 	const [overlayImageSize, setOverlayImageSize] = useState<number>(50);
 
@@ -100,12 +100,12 @@ export default function PhotoBooth() {
 
 		const payload = {
 			photo: photoData,
-			filter: filter || null,
-			overlay: overlayImage || null,
-			overlaySize: overlayImageSize || 50,
+			filter: filter,
+			overlay: overlayImage,
+			overlaySize: overlayImageSize,
 		};
-		console.log("photoData", photoData);
-		console.log("payload", payload);
+		// console.log("photoData", photoData);
+		// console.log("payload", payload);
 		try {
 			const response = await fetch("http://localhost:3000/image/uploadForMontage", {
 				method: "POST",
@@ -137,6 +137,7 @@ export default function PhotoBooth() {
 		{ name: "Contraste", style: "contrast(2)", icon: "⚫" },
 		{ name: "Luminosité", style: "brightness(1.5)", icon: "💡" },
 		{ name: "Teinte", style: "hue-rotate(91deg)", icon: "🎨" },
+		{ name: "Aucune", style: null, icon: "❌" },
 	];
 
 	// SVG pour les overlays
