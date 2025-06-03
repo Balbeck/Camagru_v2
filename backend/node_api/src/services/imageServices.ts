@@ -77,7 +77,9 @@ export const montageMe = async (userIdString: string, photo: string, filter: str
 		}
 		const userId = new mongoose.Types.ObjectId(userIdString);
 
+		console.log(` 🍱 [S]montageMe -> createMontage ... `);
 		const newMontage = await createMontage(photo, filter, overlay, overlaySize);
+		console.log(` 🍱 [S]montageMe:  [ ✅ ] `);
 		const filename = `montage_${Date.now()}.png`;
 		const contentType = 'image/png';
 		const newImage: IImage = await saveNewImage(userId, filename, contentType, newMontage, 'montage');
@@ -94,6 +96,7 @@ export const montageMe = async (userIdString: string, photo: string, filter: str
 
 export const createMontage = async (photo: string, filter: string, overlay: string, overlaySize: number): Promise<string> => {
 	try {
+		console.log(' 🍱 [S]createMontage: Overlay ...');
 		const backgroundImg = await loadImage(photo);
 		const canvas = createCanvas(backgroundImg.width, backgroundImg.height);
 		const ctx = canvas.getContext('2d') as CanvasRenderingContext2D;

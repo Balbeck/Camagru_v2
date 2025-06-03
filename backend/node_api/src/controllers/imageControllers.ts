@@ -119,16 +119,19 @@ export const uploadForMontage = async (req: Request, res: Response): Promise<voi
 		// Verification Img
 		if (!photo) {
 			res.status(400).json({ message: "Photo (base64) is required!" });
+			console.log(' 🖼️ [C]*uploadMontage ] ❌ !photo ');
 			return;
 		}
-		if (!filter || !overlay || !overlaySize) {
-			res.status(400).json({ message: "Filter, overlay and overlaySize are required!" });
-			return;
-		}
+		// if (!filter || !overlay || !overlaySize) {
+		// 	res.status(400).json({ message: "Filter, overlay and overlaySize are required!" });
+		// 	console.log(' 🖼️ [C]*uploadMontage ] ❌ !filter || !overlay || !overlaySize');
+		// 	return;
+		// }
 		// verif format Img
 		const base64Regex = /^data:image\/(jpeg|jpg|png);base64,/;
 		if (!base64Regex.test(photo)) {
 			res.status(400).json({ message: "Invalid image format. Only Base64 encoded images are allowed." });
+			console.log(' 🖼️ [C]*uploadMontage ] ❌ !base64Regex ');
 			return;
 		}
 		const maxSize = 5 * 1024 * 1024; // 5MB
@@ -136,6 +139,7 @@ export const uploadForMontage = async (req: Request, res: Response): Promise<voi
 		const fileSizeInBytes = (photo.length * 3) / 4 - (photo.endsWith('==') ? 2 : photo.endsWith('=') ? 1 : 0);
 		if (fileSizeInBytes > maxSize) {
 			res.status(400).json({ message: "Image size exceeds the maximum limit of 5MB." });
+			console.log(' 🖼️ [C]*uploadMontage ] ❌  fileSizeInBytes');
 			return;
 		}
 

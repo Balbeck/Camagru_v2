@@ -74,7 +74,24 @@ export default function PhotoBooth() {
 		}
 	};
 
-
+	// const getSvgText = async (svgPath: string) => {
+	// 	const res = await fetch(svgPath);
+	// 	return await res.text();
+	// };
+	async function fetchSvgAsBase64(svgPath: string): Promise<string> {
+		const res = await fetch(svgPath);
+		const svgText = await res.text();
+		const blob = new Blob([svgText], { type: "image/svg+xml" });
+		return await new Promise<string>((resolve, reject) => {
+			const reader = new FileReader();
+			reader.onloadend = () => {
+				if (typeof reader.result === "string") resolve(reader.result);
+				else reject("Failed to convert SVG to base64");
+			};
+			reader.onerror = reject;
+			reader.readAsDataURL(blob);
+		});
+	}
 
 	const takePhoto = async () => {
 		let photoData: string | null = null;
@@ -102,10 +119,13 @@ export default function PhotoBooth() {
 			return;
 		}
 
+		// const svgText = await getSvgText(overlayImage);
+		const svgData = await fetchSvgAsBase64(overlayImage)
+
 		const payload = {
 			photo: photoData,
 			filter: filter,
-			overlayImage: overlayImage,
+			overlayImage: svgData,
 			overlaySize: overlayImageSize,
 		};
 		// console.log("photoData", photoData);
