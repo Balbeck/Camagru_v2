@@ -1,4 +1,3 @@
-# FROM node:22.13.1
 FROM node:19.9.0
 
 WORKDIR /app

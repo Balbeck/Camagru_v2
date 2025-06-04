@@ -3,6 +3,7 @@ import mongoose from "mongoose";
 import { IImage, saveNewImage, getImageById, getImagesByUserId, deleteImageWithCascade } from '../models/imageSchema';
 import { createCanvas, loadImage, CanvasRenderingContext2D } from 'canvas';
 
+
 export const saveImage = async (userIdString: string, filename: string, contentType: string, data: string): Promise<IImage> => {
 	try {
 		if (!mongoose.Types.ObjectId.isValid(userIdString)) {
@@ -50,7 +51,6 @@ export const deleteImage = async (imageIdString: string, userIdString: string): 
 		const imageId = new mongoose.Types.ObjectId(imageIdString);
 		const userId = new mongoose.Types.ObjectId(userIdString);
 
-		// Control if image belongs to userId
 		const img = await getImageById(imageId);
 		console.log(` 🍱 [S]deleteImage: \n ->     userId: ${userId}\n -> img.userId: ${img.userId} `);
 		console.log(` 🍱 [S]deleteImage: \n ->     userIdType: `, typeof userId, `\n -> img.userIdType: `, typeof img.userId);
@@ -112,7 +112,7 @@ export const createMontage = async (photo: string, filter: string, overlay: stri
 		console.log(` 🍱 [S]createMontage:  [ ✅ ] Overlay:  "${overlay}"`);
 		if (overlay) {
 			console.log(' 🍱 [S]createMontage: Overlay ...');
-			// Charger l'overlay SVG (base64 ou string)
+			// Charge overlay SVG (base64 ou string)
 			let svgData = overlay;
 			if (!overlay.startsWith('<svg')) {
 				// Si c'est du base64
@@ -133,7 +133,7 @@ export const createMontage = async (photo: string, filter: string, overlay: stri
 			console.log(' 🍱 [S]createMontage:  [ ✅ ] Overlay applied');
 		}
 
-		// Convertit le canvas en image png base64
+		// Convertit le canvas en png base64
 		const newMontage = canvas.toDataURL('image/png');
 		return newMontage;
 

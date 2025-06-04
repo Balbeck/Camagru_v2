@@ -59,6 +59,7 @@ export const sendConfirmationEmailforChangedPassword = async (userEmail: string)
     }
 };
 
+
 export const confirmUserEmail = async (token: string): Promise<IUser> => {
     try {
         // Verifie si l'id du Jwt de l'Url est connue de la bdd. 
@@ -100,6 +101,7 @@ export const verifyTokenToGetEmail = async (token: string): Promise<IUser> => {
         throw error;
     }
 }
+
 
 export const sendResetPasswordEmail = async (userEmail: string): Promise<IUser> => {
     try {
@@ -171,6 +173,7 @@ export const sendEmailToChangeEmailAdress = async (newEmail: string, userId: str
         throw error;
     }
 };
+
 
 export const updateUserNewEmail = async (userId: string, newEmail: string): Promise<IUser> => {
     try {

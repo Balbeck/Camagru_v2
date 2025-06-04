@@ -1,15 +1,21 @@
 "use client";
 
-import { IImage } from "@/components/Interface";
-import Image from "next/image";
 import { useRef, useState, useEffect } from "react";
+import Image from "next/image";
+import { IImage } from "@/components/Interface";
 
 export default function PhotoBooth() {
+
+	// Refs video canvas
 	const videoRef = useRef<HTMLVideoElement | null>(null);
 	const canvasRef = useRef<HTMLCanvasElement | null>(null);
+
+
 	const [photo, setPhoto] = useState<string | null>(null);
 	const [stream, setStream] = useState<MediaStream | null>(null);
 	const [error, setError] = useState<string | null>(null);
+
+	// Filters - Overlay - Size  vars
 	const [filter, setFilter] = useState<string>("");
 	const [overlayImage, setOverlayImage] = useState<string | null>(null);
 	const [overlayImageSize, setOverlayImageSize] = useState<number>(50);
@@ -74,10 +80,7 @@ export default function PhotoBooth() {
 		}
 	};
 
-	// const getSvgText = async (svgPath: string) => {
-	// 	const res = await fetch(svgPath);
-	// 	return await res.text();
-	// };
+
 	async function fetchSvgAsBase64(svgPath: string): Promise<string> {
 		const res = await fetch(svgPath);
 		const svgText = await res.text();
@@ -118,7 +121,6 @@ export default function PhotoBooth() {
 			return;
 		}
 
-		// const svgText = await getSvgText(overlayImage);
 		const svgData = await fetchSvgAsBase64(overlayImage)
 
 		const payload = {
@@ -129,6 +131,7 @@ export default function PhotoBooth() {
 		};
 		// console.log("photoData", photoData);
 		// console.log("payload", payload);
+
 		try {
 			const response = await fetch("http://localhost:3000/image/uploadForMontage", {
 				method: "POST",
@@ -156,7 +159,7 @@ export default function PhotoBooth() {
 		setOverlayImage(null);
 		setOverlayImageSize(50);
 		if (videoRef.current) {
-			videoRef.current.srcObject = null; // Clear the video stream
+			videoRef.current.srcObject = null; // Clear le stream video
 		}
 		if (canvasRef.current) {
 			const context = canvasRef.current.getContext("2d");
@@ -165,7 +168,7 @@ export default function PhotoBooth() {
 			}
 		}
 		if (stream) {
-			stream.getTracks().forEach((track) => track.stop()); // Stop the camera stream
+			stream.getTracks().forEach((track) => track.stop()); // Stop le Cam stream
 		}
 		setStream(null);
 

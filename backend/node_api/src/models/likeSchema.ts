@@ -1,11 +1,13 @@
 import mongoose, { Schema, Document } from "mongoose";
 
+
 interface ILike extends Document {
 	_id: mongoose.Types.ObjectId;
 	userId: mongoose.Types.ObjectId;
 	postId: mongoose.Types.ObjectId;
 	createdAt: Date;
 }
+
 
 const likeSchema: Schema = new mongoose.Schema({
 	_id: {
@@ -57,8 +59,7 @@ export const removeLike = async (postId: mongoose.Types.ObjectId, userId: mongoo
 
 
 
-// [ Non Used ]
-//
+
 export const getLikeCountPerPost = async (postId: mongoose.Types.ObjectId): Promise<number> => {
 	return await Like.countDocuments({ postId }).exec();
 };
@@ -67,5 +68,3 @@ export const hasUserLikedAPost = async (userId: mongoose.Types.ObjectId, postId:
 	const like = await Like.findOne({ userId, postId }).exec();
 	return !!like; // Retourne true si un like existe, sinon false
 };
-// 
-// // // // // // // //

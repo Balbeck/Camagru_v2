@@ -15,8 +15,8 @@ router.post('/verifyEmailToken', UserController.verifyEmailToken);
 router.post('/resetPassword', UserController.resetPassword);
 router.post('/resetEmail', UserController.resetEmail);
 
+
 // - - [ Securised Routes with Jwt ] - -
-// router.post('/resetPassword', verifyToken, UserController.resetPassword);
 router.post('/sendChangeEmailAdressEmail', verifyToken, UserController.sendEmailToChangeUserEmailAddress);
 router.post('/logout', verifyToken, UserController.logout);
 router.get('/me', verifyToken, UserController.getMe);

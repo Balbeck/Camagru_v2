@@ -55,32 +55,6 @@ export const deletePost = async (req: Request, res: Response): Promise<void> => 
 	}
 };
 
-// export const deletePost = async (req: Request, res: Response): Promise<void> => {
-// 	try {
-// 		console.log(' 🗑️ [C]*deletePost ] ...');
-// 		if (!req.params.id) {
-// 			res.status(404).json({ message: "param id: Manquant " });
-// 		}
-// 		const postId: string = req.params.id;
-// 		console.log(`🗑️ [C]*deletePost ] req.params.id :  ${postId}`);
-
-// 		// const deletedPost = await PostService.deleteAPost(postId);
-// 		// if (!deletedPost) {
-// 		// 	console.log('🗑️ [C]*deletePost ] ❌ Post not found');
-// 		// 	res.status(404).json({ message: "Post not found!" });
-// 		// 	return;
-// 		// }
-// 		await PostService.deletePostAndRelations(postId);
-// 		console.log('🗑️ [C]*deletePost ] ✅ Post deleted');
-// 		res.status(200).json({ message: "Post deleted successfully!" });
-
-// 	} catch (error: any) {
-// 		console.error('🗑️ [C]*deletePost ] ❌ Error:', error.message);
-// 		res.status(500).json({ message: error.message });
-// 	}
-// };
-
-
 
 export const getAllMyPosts = async (req: Request, res: Response): Promise<void> => {
 	try {

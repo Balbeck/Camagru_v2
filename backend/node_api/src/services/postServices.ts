@@ -51,7 +51,7 @@ export const getAllPosts = async (userId_str: string, skip: number, limit: numbe
 			posts,
 			totalPosts,
 			totalPages,
-	};
+		};
 	} catch (error) {
 		console.log(' 📸 [S]*GetAllPosts ] . ❌ . Error');
 		throw error;
@@ -70,7 +70,7 @@ export const getAllPublicPosts = async (skip: number, limit: number): Promise<{ 
 			posts,
 			totalPosts,
 			totalPages,
-	};
+		};
 	} catch (error) {
 		console.log(' 📸 [S]*GetAllPublicPosts ] . ❌ . Error');
 		throw error;
@@ -137,20 +137,6 @@ export const getAPostbyPostId = async (postId_str: string): Promise<IPost | null
 			throw new Error('POST_NOT_FOUND');
 		}
 
-		// // Récupérer les commentaires associés au post
-		// const comments = await Comment.find({ postId: post._id })
-		// 	.populate('userId', 'username') // Inclut le `username` de l'utilisateur pour chaque commentaire
-		// 	.select('comment userId createdAt') // Inclut uniquement les champs nécessaires
-		// 	.exec();
-		// console.log(' 📸 [S]*getAPostbyId ] comments: ', comments);
-
-		// Ajouter les commentaires au post
-		// const enrichedPost = {
-		// 	...post.toObject(),
-		// 	comments: comments
-		// };
-
-		// return enrichedPost;
 		return post
 
 	} catch (error) {

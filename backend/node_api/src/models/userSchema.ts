@@ -1,6 +1,6 @@
 import mongoose, { Schema, Document } from 'mongoose'
 
-// - - - [ Typage @TypeScript ] - - -
+
 interface IUser extends Document {
     _id: mongoose.Types.ObjectId;
     username: string;

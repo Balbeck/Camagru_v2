@@ -1,65 +1,3 @@
-// 'use client';
-
-// import React, { useEffect } from 'react';
-// import { useRouter } from 'next/navigation';
-
-// import Button from '@/components/Button';
-// import LogoutButton from './LogoutButton';
-// import { useAuth } from '@/context/AuthContext';
-
-// export default function Header() {
-//   const { isAuthenticated, login } = useAuth();
-//   const router = useRouter();
-
-//   const [checkedAuth, setCheckedAuth] = React.useState(false); // A verif avec Usage !
-
-//   // 🚀 Redirection automatique si l'utilisateur NON authentifié
-//   useEffect(() => {
-
-//     const fetchCheckAuth = async () => {
-//       if (!isAuthenticated) {
-//         if (!checkedAuth) { // Vérifie si l'auth a déjà été checkée
-//           try {
-//             console.log('🌱 [ Header ] useEffect() - fetch /user/checkAuth');
-//             const response = await fetch("http://localhost:3000/user/checkAuth", {
-//               method: "GET",
-//               credentials: "include",
-//             });
-
-//             if (!response.ok) {
-//               console.log('🌱 [ Header ] ❌ Auth')
-//               router.replace('/');
-//             }
-//             else {
-//               login();
-//               console.log('🌱 [ Header ] ✅ Auth')
-//               // cela veut dire que cest un refresh donc peut eventuellement obtenir 
-//               // import { usePathname } from 'next/navigation'; 
-//               // const pathname = usePathname();
-//               // if (isAuthenticated && pathname !== '/') router.replace('')
-//               // A Voir utilite ...
-
-//             }
-//           } catch {
-//             console.log('🌱 [ Header - catch ] ❌ Auth')
-//             router.replace('/');
-//           } finally {
-//             setCheckedAuth(true); // Évite un nouvel appel API inutile
-//           }
-//         }
-//       };
-
-//       fetchCheckAuth();
-//       // if (!isAuthenticated) {
-//       //   console.log('🌱 [ Header ] redirect to [ Home ] (auth: false !)');
-//       //   // router.push('/');
-//       //   router.replace('/');
-//       // }
-//     }, [isAuthenticated, router, login, checkedAuth]);
-
-
-
-
 'use client';
 
 import React, { useEffect, useState } from 'react';
@@ -139,17 +77,17 @@ export default function Header() {
           <div className="flex space-x-4">
 
             <Button
-              href="/myPosts"
-              className="bg-blue-500 hover:bg-blue-600 text-white rounded-full py-2 px-6 transition-all duration-200"
-            >
-              🧑‍🎨 myPosts
-            </Button>
-
-            <Button
               href="/myGalerie"
               className="bg-blue-500 hover:bg-blue-600 text-white rounded-full py-2 px-6 transition-all duration-200"
             >
               🪆 Galerie
+            </Button>
+
+            <Button
+              href="/myPosts"
+              className="bg-blue-500 hover:bg-blue-600 text-white rounded-full py-2 px-6 transition-all duration-200"
+            >
+              🧑‍🎨 myPosts
             </Button>
 
             <Button

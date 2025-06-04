@@ -144,19 +144,6 @@ export const verifyEmailToken = async (req: Request, res: Response): Promise<voi
     }
 };
 
-// export const resetPassword = async (req: Request, res: Response): Promise<void> => {
-//     try {
-
-//         const { token } = req.params;
-//         console.log(' 🐰 [C]*resetPassword ] req.params-> token!: ', token, '\nreq.body: ', req.body);
-//         const updatedUser = await UserService.updateNewPassword(req.user.id.toString(), req.body.password);
-//         res.status(200)
-
-//     } catch (error) {
-//         res.clearCookie(tokenName);
-//         res.status(500).json({ message: error.message });
-//     }
-// };
 
 export const resetPassword = async (req: Request, res: Response): Promise<void> => {
     const { email, password, token } = req.body;
@@ -169,6 +156,7 @@ export const resetPassword = async (req: Request, res: Response): Promise<void> 
     }
 };
 
+
 export const resetEmail = async (req: Request, res: Response): Promise<void> => {
     const { newEmail, token } = req.body;
     try {
@@ -179,9 +167,10 @@ export const resetEmail = async (req: Request, res: Response): Promise<void> => 
     }
 };
 
+
 export const sendEmailToChangeUserEmailAddress = async (req: Request, res: Response): Promise<void> => {
     try {
-        // [ Verif si l'email est déjà utilisé ]
+        // [ Verif si email deja used ]
         try {
             const user = await UserService.getUserByEmail(req.body.newEmail);
             if (user) {
@@ -207,7 +196,6 @@ export const sendEmailToChangeUserEmailAddress = async (req: Request, res: Respo
         }
     }
 };
-
 
 
 export const logout = async (req: Request, res: Response): Promise<void> => {
@@ -268,6 +256,7 @@ export const deleteUser = async (req: Request, res: Response): Promise<void> => 
         res.status(500).json({ message: error.message });
     }
 };
+
 
 export const updateNotification = async (req: Request, res: Response): Promise<void> => {
     try {

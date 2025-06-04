@@ -1,8 +1,5 @@
 import { Request, Response } from 'express';
 import * as LikeService from '../services/likeServices';
-import { IPost } from 'models/postSchema';
-
-// [ Ajouter Les StatusCode retour 200, 201, 400, 401, 404, 500, ... ]
 
 export const addNewLike = async (req: Request, res: Response): Promise<void> => {
 	try {

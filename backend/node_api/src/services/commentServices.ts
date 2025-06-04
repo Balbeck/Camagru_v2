@@ -43,6 +43,7 @@ export const createComment = async (postId_str: string, userId_str: string, comm
 	}
 };
 
+
 export const getCommentById = async (commentId_str: string): Promise<IComment> => {
 	try {
 		if (!mongoose.Types.ObjectId.isValid(commentId_str)) {
@@ -84,14 +85,14 @@ export const SendEmailToPostOwner = async (userId_str: string, postId_str: strin
 		// si le post appartient PAS au User -> send un Email au Owner du post !
 		if (post.userId.toString() !== userId.toString()) {
 			if (postOwner.isNotificationsEnabled) {
-		    const mailOptions = {
-        	from: process.env.EMAIL,
-        	to: userEmail,
-        	subject: 'Someone commented one of your post on Camagru 42 🪆',
-        	text: `${commentUserName} commented on your post: "${post.title}"\n\nComment: "${comment}"\n\nCheck it out on Camagru 42!`
-   	 		};
-		await transporter.sendMail(mailOptions);
-		console.log('💬 [S] ✅ Email Sent to Post Owner !');
+				const mailOptions = {
+					from: process.env.EMAIL,
+					to: userEmail,
+					subject: 'Someone commented one of your post on Camagru 42 🪆',
+					text: `${commentUserName} commented on your post: "${post.title}"\n\nComment: "${comment}"\n\nCheck it out on Camagru 42!`
+				};
+				await transporter.sendMail(mailOptions);
+				console.log('💬 [S] ✅ Email Sent to Post Owner !');
 			}
 		}
 	} catch (error) {
@@ -99,6 +100,7 @@ export const SendEmailToPostOwner = async (userId_str: string, postId_str: strin
 		throw error;
 	}
 };
+
 
 export const deleteComment = async (commentId_str: string): Promise<IComment> => {
 	try {

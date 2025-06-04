@@ -158,7 +158,6 @@ export const uploadForMontage = async (req: Request, res: Response): Promise<voi
 
 		console.log(' 🖼️ [C]*uploadMontage ] -Montage: ✅ ');
 		res.status(201).json(montage);
-		// res.status(201).json({message: "Montage uploaded successfully!"});
 
 	} catch (error) {
 		console.log(' 🖼️ [C]*uploadMontage ] ❌ ');

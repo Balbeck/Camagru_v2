@@ -16,7 +16,7 @@ const MyGalerie: React.FC = () => {
 
 	const [images, setImages] = useState<IImage[]>([]);
 
-	// 🌀 États pour gérer le carrousel (index de l'image affichée)
+	// State gestion carrousel - index Img
 	const [currentIndex, setCurrentIndex] = useState(0);
 	const nextImage = () => {
 		setCurrentIndex((prevIndex) => (prevIndex + 1) % images.length);
@@ -113,11 +113,11 @@ const MyGalerie: React.FC = () => {
 			if (response.ok) {
 				router.push("/myPosts");
 			}
-			closeCreatePostModal(); // Ferme le pop-up
+			closeCreatePostModal();
 
 		} catch (error) {
 			console.error(' ❌ Error Creating Post: ', error);
-			closeCreatePostModal(); // Ferme le pop-up
+			closeCreatePostModal();
 		}
 	};
 
@@ -161,7 +161,7 @@ const MyGalerie: React.FC = () => {
 						Upload image
 					</Button>
 				</div>
-				{/* Modale UploadImage */}
+				{/* Modal UploadImage */}
 				{isUploadImageModalOpen && (
 					<div
 						className="fixed inset-0 flex justify-center items-center bg-gray-500 bg-opacity-50 z-50"
@@ -211,7 +211,6 @@ const MyGalerie: React.FC = () => {
 			</div>
 
 
-
 			{/* Flèche droite */}
 			<button
 				className="absolute right-8 top-1/2 transform -translate-y-1/2 bg-blue-500 text-white p-5 rounded-full shadow-lg z-20 opacity-90 hover:opacity-100 transition hover:scale-110"
@@ -232,7 +231,7 @@ const MyGalerie: React.FC = () => {
 			{/* Modal CreatePost */}
 			{isCreatePostModalOpen && (
 				<div
-					className="fixed inset-0 flex justify-center items-center bg-gray-500 bg-opacity-50"
+					className="fixed inset-0 flex justify-center items-center bg-gray-500 bg-opacity-50 z-50"
 					onClick={closeCreatePostModal}  // Ferme la fenêtre si on clique à l'extérieur
 				>
 					<div
@@ -267,11 +266,11 @@ const MyGalerie: React.FC = () => {
 			{isUploadImageModalOpen && (
 				<div
 					className="fixed inset-0 flex justify-center items-center bg-gray-500 bg-opacity-50 z-50"
-					onClick={closeUploadImageModal} // Ferme la fenêtre si on clique à l'extérieur
+					onClick={closeUploadImageModal} // Ferme Modal si click outside
 				>
 					<div
 						className="relative bg-white p-6 rounded-lg shadow-lg w-[70vw] max-w-[500px] z-10"
-						onClick={(e) => e.stopPropagation()} // Empêche la fermeture si on clique à l'intérieur
+						onClick={(e) => e.stopPropagation()} // click inside ferme pas la modal
 					>
 
 						{/* Composant UploadImage */}
@@ -298,7 +297,7 @@ const MyGalerie: React.FC = () => {
 			</div>
 
 
-			{/* Modal de confirmation DeleteImage */}
+			{/* confirmation Modal DeleteImage */}
 			{isModalOpen && (
 				<div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
 					<div className="bg-white p-6 rounded-lg shadow-lg max-w-md w-full">

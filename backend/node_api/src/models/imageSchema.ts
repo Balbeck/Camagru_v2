@@ -9,8 +9,8 @@ interface IImage extends Document {
 	_id: mongoose.Types.ObjectId;
 	userId: mongoose.Types.ObjectId;
 	filename: string;
-	contentType: string; // MIME type of Image ex: image/jpeg, image/png, image/svg
-	data: string; //Image stored Base64
+	contentType: string; // MIME de l'Img - image/jpeg, image/png, image/svg
+	data: string; //Img en Base64
 	createdAt: Date;
 	type: string; // "upload" ou "montage"
 
@@ -52,7 +52,6 @@ const imageSchema: Schema = new Schema({
 
 const Image = mongoose.model<IImage>('Image', imageSchema);
 export { Image, IImage };
-
 
 
 
