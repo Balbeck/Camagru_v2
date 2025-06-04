@@ -22,7 +22,6 @@ const LogoutButton = () => {
 				ft_logout();
 				console.log(' 🙋🏼 [ LogOut ] router.replace("/")')
 				router.replace("/");
-				// router.push("/");
 			} else {
 				console.error(' 🙋🏼 [ LogOut ] ❌ Erreur déconnexion');
 			}

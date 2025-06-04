@@ -86,7 +86,6 @@ const MyGalerie: React.FC = () => {
 			if (response.ok) {
 				console.log('Image uploaded successfully');
 				await fetchUserimages()
-				// router.push('/myGalerie');
 				closeUploadImageModal();
 			} else {
 				console.error('Failed to upload image');

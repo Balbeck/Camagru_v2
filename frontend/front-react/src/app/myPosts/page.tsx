@@ -30,7 +30,7 @@ export interface IPostData {
 
 const MyPosts: React.FC = () => {
 
-	// 🌀 États pour gérer le carrousel (index du post affiché)
+	// State pour carousel + index Img
 	const [currentIndex, setCurrentIndex] = useState(0);
 	const nextPost = () => {
 		setCurrentIndex((prevIndex) => (prevIndex + 1) % totalPosts);
@@ -77,7 +77,7 @@ const MyPosts: React.FC = () => {
 		};
 
 		fetchMyPosts();
-		// Récupérer l'ID de l'utilisateur connecté
+
 		const fetchMyUserId = async () => {
 			try {
 				const response = await fetch('http://localhost:3000/user/me', {
@@ -113,7 +113,7 @@ const MyPosts: React.FC = () => {
 			});
 
 			if (response.ok) {
-				// Met à jour les commentaires localement
+				// MaJ locale des coms
 				setPosts((prevPosts) =>
 					prevPosts.map((post) =>
 						post._id === postId
@@ -175,13 +175,12 @@ const MyPosts: React.FC = () => {
 
 
 	const handleClickLike = async (postId: string, currentIndex: number) => {
-		// Copie des posts pour mise à jour locale
+		// MaJ locale
 		const updatedPosts = [...posts];
 		const currentPost = updatedPosts[currentIndex];
-		// Détermine si on ajoute ou supprime un like
 		const add_or_remove = currentPost.likes.didILikeIt ? "remove" : "add";
 
-		// Mise à jour locale du compteur de likes et de didILikeIt
+		// locale Maj compteur like + didILikeIt
 		if (currentPost.likes.didILikeIt) {
 			currentPost.likes.nbr_likes -= 1;
 			currentPost.likes.didILikeIt = false;
@@ -200,14 +199,13 @@ const MyPosts: React.FC = () => {
 
 			if (!response.ok) {
 				console.log('👍 ❌ Erreur lors de la mise à jour des likes sur le backend');
-				// Revenir à l'état précédent en cas d'erreur
+				// si not Ok revient precedent State
 				currentPost.likes.nbr_likes += currentPost.likes.didILikeIt ? -1 : 1;
 				currentPost.likes.didILikeIt = !currentPost.likes.didILikeIt;
 				setPosts(updatedPosts);
 			}
 		} catch (error) {
 			console.log('👍 ❌ Erreur lors de la communication avec le backend :', error);
-			// Revenir à l'état précédent en cas d'erreur
 			currentPost.likes.nbr_likes += currentPost.likes.didILikeIt ? -1 : 1;
 			currentPost.likes.didILikeIt = !currentPost.likes.didILikeIt;
 			setPosts(updatedPosts);
@@ -228,7 +226,6 @@ const MyPosts: React.FC = () => {
 				const updatedPosts = posts.filter((_, index) => index !== currentIndex);
 				setPosts(updatedPosts);
 
-				// Réinitialise l'index si nécessaire
 				if (currentIndex >= updatedPosts.length) {
 					setCurrentIndex(0);
 				}
@@ -263,7 +260,7 @@ const MyPosts: React.FC = () => {
 			{posts.length > 0 ? (
 				<div className="relative w-[70vw] max-w-[350px] flex flex-col items-center bg-white shadow-2xl rounded-xl overflow-hidden my-3">
 
-					{/* Titre au-dessus de la photo */}
+					{/* Titre au dessus de la photo */}
 					<div className="w-full bg-white text-gray-900 font-bold text-lg text-center p-2 border-b">
 						{posts[currentIndex]?.title}
 					</div>
@@ -286,7 +283,7 @@ const MyPosts: React.FC = () => {
 							❤️ {posts[currentIndex].likes.nbr_likes} likes
 						</button>
 
-						{/* username en bas à droite SUR la photo */}
+						{/* username en bas a droite SUR la photo */}
 						<div className="absolute bottom-2 right-2 bg-black/60 text-white px-2 py-1 rounded-md text-sm">
 							{posts[currentIndex].userId.username}
 						</div>
@@ -297,8 +294,8 @@ const MyPosts: React.FC = () => {
 						<form
 							className="flex items-center space-x-2"
 							onSubmit={(e) => {
-								e.preventDefault(); // Empêche le rechargement de la page
-								handleAddComment(posts[currentIndex]._id); // Appelle la fonction pour ajouter un commentaire
+								e.preventDefault(); // evite page rechargement
+								handleAddComment(posts[currentIndex]._id); // Appelle la fonction pour ajouter com
 							}}
 						>
 							<input
@@ -306,7 +303,7 @@ const MyPosts: React.FC = () => {
 								placeholder="Ajouter un commentaire..."
 								className="flex-1 px-3 py-2 border border-blue-400 rounded-full text-xs text-black focus:outline-none focus:ring-2 focus:ring-blue-500"
 								value={newComment}
-								onChange={(e) => setNewComment(e.target.value)} // Met à jour l'état du commentaire
+								onChange={(e) => setNewComment(e.target.value)} // Maj State coms
 								maxLength={200}
 							/>
 							<button
@@ -319,7 +316,7 @@ const MyPosts: React.FC = () => {
 					</div>
 
 
-					{/* Liste des commentaires */}
+					{/* Liste des com */}
 					<div className="w-full p-3 text-left">
 						{posts[currentIndex].comments.map((comment) => (
 							<div key={comment._id} className="relative mb-4">
@@ -333,11 +330,11 @@ const MyPosts: React.FC = () => {
 									</button>
 								)}
 
-								{/* Username du propriétaire du commentaire */}
+								{/* Username du owne du com */}
 								<p className="text-blue-500 text-[10px] italic">
 									{comment.userId.username}
 								</p>
-								{/* Texte du commentaire */}
+								{/* Text du com */}
 								<p className="text-gray-700 text-xs italic">
 									💬 {comment.text}
 								</p>
@@ -360,7 +357,7 @@ const MyPosts: React.FC = () => {
 				<p className="text-gray-500">Aucun post à afficher.</p>
 			)}
 
-			{/* Flèche droite */}
+			{/* Fleche droite */}
 			<button
 				className="absolute right-8 top-1/2 transform -translate-y-1/2 bg-blue-500 text-white p-5 rounded-full shadow-lg z-20 opacity-90 hover:opacity-100 transition hover:scale-110"
 				onClick={nextPost}
@@ -368,7 +365,7 @@ const MyPosts: React.FC = () => {
 				&#8594;
 			</button>
 
-			{/* Modal de confirmation DeletePost */}
+			{/* Modal confirmation DeletePost */}
 			{isModalOpen && (
 				<div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
 					<div className="bg-white p-6 rounded-lg shadow-lg max-w-md w-full">

@@ -9,7 +9,6 @@ import { useAuth } from '@/context/AuthContext';
 export default function SignIn() {
 
   const [username, setUsername] = useState('');
-  // const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const { ft_setAuthTrue, ft_logout } = useAuth();
@@ -27,7 +26,6 @@ export default function SignIn() {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({ username, password }),
-        // body: JSON.stringify({ email, password }),
         credentials: 'include',
       });
 
@@ -70,21 +68,6 @@ export default function SignIn() {
             required
           />
         </div>
-
-        {/* <div className="mb-4">
-          <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="email">
-            Email
-          </label>
-          <input
-            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-            id="email"
-            type="email"
-            placeholder="Email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-          required
-          />
-        </div> */}
 
         <div className="mb-6">
           <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="password">

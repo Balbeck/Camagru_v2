@@ -57,17 +57,9 @@ const ResetPassword = () => {
     }
 
     verifyTokenValidity();
-    // }, [token]);
   }, [token, router]);
-  // }, []);
 
 
-
-  // *[ A Faire ]*
-
-  // *[ Fetch Back pour verifier validity du JWT ]*
-  // *[ Si fetch response.ok -> affichage form de resetPassword ]*
-  // *[ Si fetch !response.ok -> message error -> button reset password pour renvoyer email avec token dans URL ]*
 
   const handleSubmit = async (e: React.FormEvent) => {
 
@@ -88,14 +80,12 @@ const ResetPassword = () => {
         credentials: 'include',
       });
       if (response.ok) {
-        // setMessage('Password successfully reset!');
         console.log(' 🛂 [ resetPass/[token] ] ✅ -> replace(/myGalerie)');
         router.replace('/signin');
       }
 
       else {
         console.log(' 🛂 [ resetPass/[token] ] ❌ -> replace(/)');
-        // setMessage('Password successfully reset!');
         const errorData = await response.json();
         console.log(errorData.message || 'Something went wrong. Try again.');
         router.replace('/');
@@ -111,8 +101,6 @@ const ResetPassword = () => {
   return (
     <div className="max-w-md mx-auto mt-10">
       <h2 className="text-2xl font-bold mb-4 text-center">Reset Password</h2>
-
-      {/* {error && <p className="text-red-500 text-center mb-4">{error}</p>} */}
 
       <form onSubmit={handleSubmit} className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
 

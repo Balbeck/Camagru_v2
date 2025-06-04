@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-// import Image from "next/legacy/image";
 import { useRouter } from "next/navigation";
 import { IUser } from "@/components/Interface";
 
@@ -12,14 +11,11 @@ export default function SettingsPage() {
 	const [isUsernameValid, setIsUsernameValid] = useState(false);
 	const [currentEmail, setCurrentEmail] = useState("");
 	const [bio, setBio] = useState("");
-	// const [profilePicture, setProfilePicture] = useState<File | null>(null);
-
-	// const [preview, setPreview] = useState<string | null>(null);
 	const [error, setError] = useState("");
 
-	const [isModalOpen, setIsModalOpen] = useState(false); // État pour la fenêtre modale
-	const [newEmail, setNewEmail] = useState(""); // État pour l'adresse e-mail
-	const [isEmailValid, setIsEmailValid] = useState(false); // État pour valider l'email
+	const [isModalOpen, setIsModalOpen] = useState(false);
+	const [newEmail, setNewEmail] = useState("");
+	const [isEmailValid, setIsEmailValid] = useState(false);
 
 	const [isNotificationsEnabled, setIsNotificationsEnabled] = useState(false);
 
@@ -47,10 +43,7 @@ export default function SettingsPage() {
 				setCurrentEmail(data.email);
 				setBio(data.bio || "");
 				setIsNotificationsEnabled(data.isNotificationsEnabled);
-				// Vérifier si l'URL de profilePicture est complète ou relative
-				// const profileUrl = data.profilePicture?.startsWith("http")
-				// 	? data.profilePicture : `/${data.profilePicture}`;
-				// setPreview(profileUrl);
+
 
 			} catch {
 				alert('Impossible de charger les données utilisateur');
@@ -62,15 +55,6 @@ export default function SettingsPage() {
 		fetchUserData();
 
 	}, [router]);
-
-
-	// const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-	// 	const file = event.target.files?.[0];
-	// 	if (file) {
-	// 		setProfilePicture(file);
-	// 		// setPreview(URL.createObjectURL(file));
-	// 	}
-	// };
 
 
 	const validateUsername = (username: string): boolean => {
@@ -91,7 +75,6 @@ export default function SettingsPage() {
 		const formData = {
 			username,
 			bio,
-			// profilePicture: profilePicture ? URL.createObjectURL(profilePicture) : null,
 		};
 
 		try {
@@ -190,29 +173,6 @@ export default function SettingsPage() {
 			<h2 className="text-2xl font-bold mb-4 text-gray-900">Modifier le profil</h2>
 
 			<form onSubmit={handleSubmit} className="space-y-4">
-				{/* Preview Image */}
-				{/* <div className="flex flex-col items-center">
-					{preview ? (
-						<Image
-							src={preview}
-							alt="Profile Preview"
-							width={128}
-							height={128}
-							className="rounded-full object-cover border border-gray-300"
-							unoptimized
-						/>
-					) : (
-						<Image
-							src="/default_profile_picture.jpg"
-							alt="Default Profile"
-							width={128}
-							height={128}
-							className="rounded-full object-cover border border-gray-300"
-						/>
-					)}
-					<input type="file" accept="/*" onChange={handleFileChange} className="mt-2" />
-				</div> */}
-
 
 				{/* Username */}
 				<div>
@@ -222,7 +182,6 @@ export default function SettingsPage() {
 						type="text"
 						placeholder="Username"
 						value={username}
-						// onChange={(e) => setUsername(e.target.value)}
 						className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"
 						onChange={handleUsernameChange}
 						required
@@ -237,8 +196,8 @@ export default function SettingsPage() {
 					<label className="block font-semibold text-gray-900">Email</label>
 					<input
 						type="text"
-						value={currentEmail} // L'email à afficher
-						readOnly // Rend le champ non modifiable
+						value={currentEmail}
+						readOnly // Rend champ non modifiable
 						className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline bg-gray-100 cursor-not-allowed"
 					/>
 				</div>
@@ -254,7 +213,6 @@ export default function SettingsPage() {
 
 				{/* Notif Comment Switch Button */}
 				<div>
-					{/* <label className="block font-semibold text-gray-900">Email notification on new coms</label> */}
 					<div className="flex items-center space-x-3">
 						<label className="block font-semibold text-gray-900">Email Notification</label>
 						<div
@@ -296,11 +254,11 @@ export default function SettingsPage() {
 				</div>
 			</form>
 
-			{/* Fenêtre modale */}
+			{/* Modal */}
 			{isModalOpen && (
 				<div className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50">
 					<div className="bg-white rounded-2xl shadow-2xl w-[90%] max-w-md p-6 relative">
-						{/* Bouton de fermeture */}
+						{/* Bouton close */}
 						<button
 							onClick={() => setIsModalOpen(false)}
 							className="absolute top-3 right-3 text-gray-500 hover:text-gray-800 transition"

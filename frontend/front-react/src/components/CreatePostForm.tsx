@@ -36,7 +36,7 @@ const CreatePost: React.FC<ICreatePost> = ({ data, imageId, onPublish }) => {
 				<Image
 					src={data}
 					alt="Prévisualisation du post"
-					layout="responsive" // Cela va rendre l'image responsive en utilisant un ratio
+					layout="responsive"
 					width={350}  // Largeur du ratio
 					height={200} // Hauteur du ratio
 					className="object-cover w-full h-full rounded-md"

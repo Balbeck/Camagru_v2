@@ -35,7 +35,7 @@ const UploadImage: React.FC<UploadImageProps> = ({ onUpload }) => {
 				setSelectedImage(file);
 				setPreviewUrl(URL.createObjectURL(file));
 
-				// Convertir l'image en base64
+				// Convertir Img en base64
 				const reader = new FileReader();
 				reader.onloadend = () => {
 					setBase64Image(reader.result as string);

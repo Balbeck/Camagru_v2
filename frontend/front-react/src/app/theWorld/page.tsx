@@ -28,94 +28,95 @@ export interface IPostData {
 	}[];
 };
 
+
 const TheWorld: React.FC = () => {
 
 
 	const fetchMyUserId = async () => {
-			try {
-				const response = await fetch('http://localhost:3000/user/me', {
-					method: 'GET',
-					credentials: 'include',
-				});
+		try {
+			const response = await fetch('http://localhost:3000/user/me', {
+				method: 'GET',
+				credentials: 'include',
+			});
 
-				if (response.ok) {
-					const data = await response.json();
-					setMyUserId(data._id);
-					setMyUsername(data.username);
-					console.log('🌏 [ AllPosts ] fetchMyUserId - userId: ', data._id);
-				} else {
-					console.error('Failed to fetch user ID');
-				}
-			} catch (error) {
-				console.error('Error fetching user ID:', error);
+			if (response.ok) {
+				const data = await response.json();
+				setMyUserId(data._id);
+				setMyUsername(data.username);
+				console.log('🌏 [ AllPosts ] fetchMyUserId - userId: ', data._id);
+			} else {
+				console.error('Failed to fetch user ID');
 			}
+		} catch (error) {
+			console.error('Error fetching user ID:', error);
+		}
 	};
 
-    const fetchPosts = async (page: number) => {
+	const fetchPosts = async (page: number) => {
 
-        try {
-            const response = await fetch(`http://localhost:3000/post/getAll?page=${page}`, {
-                method: 'GET',
-                credentials: 'include',
-            });
+		try {
+			const response = await fetch(`http://localhost:3000/post/getAll?page=${page}`, {
+				method: 'GET',
+				credentials: 'include',
+			});
 
-            if (response.ok) {
-                const data = await response.json();
-                setPosts((prevPosts) => [...prevPosts, ...data.posts]);
-                setTotalPages(data.totalPages);
-                setCurrentPage(data.currentPage);
-                console.log('🌏 [ AllPosts ] fetchPosts - postsData: \n', data);
-            } else {
-                console.error('Failed to fetch posts');
-            }
-        } catch (error) {
-            console.error('Error fetching posts:', error);
-        }
-    };
+			if (response.ok) {
+				const data = await response.json();
+				setPosts((prevPosts) => [...prevPosts, ...data.posts]);
+				setTotalPages(data.totalPages);
+				setCurrentPage(data.currentPage);
+				console.log('🌏 [ AllPosts ] fetchPosts - postsData: \n', data);
+			} else {
+				console.error('Failed to fetch posts');
+			}
+		} catch (error) {
+			console.error('Error fetching posts:', error);
+		}
+	};
 
-	
+
 	const [newComment, setNewComment] = useState<string>("");
 	const [myUserId, setMyUserId] = useState<string>("");
 	const [myUsername, setMyUsername] = useState<string>("");
 
 	const [posts, setPosts] = useState<IPostData[]>([]);
-    const [currentIndex, setCurrentIndex] = useState(0);
-    const [currentPage, setCurrentPage] = useState(1);
-    const [totalPages, setTotalPages] = useState(0);
+	const [currentIndex, setCurrentIndex] = useState(0);
+	const [currentPage, setCurrentPage] = useState(1);
+	const [totalPages, setTotalPages] = useState(0);
 
- 
 
-    useEffect(() => {
-        fetchPosts(currentPage);
+
+	useEffect(() => {
+		fetchPosts(currentPage);
 		fetchMyUserId();
-    },[] );
+	}, []);
 
 
 	const nextPost = () => {
-        const nextIndex = currentIndex + 1;
+		const nextIndex = currentIndex + 1;
 
-        // Charge nextPosts sur affichage dde l'avant dernier
-        if (nextIndex === posts.length - 2 && currentPage < totalPages) {
-            fetchPosts(currentPage + 1);
-        }
+		// Charge nextPosts sur affichage dde l'avant dernier
+		if (nextIndex === posts.length - 2 && currentPage < totalPages) {
+			fetchPosts(currentPage + 1);
+		}
 
-    
-        if (nextIndex >= posts.length) {
-            setCurrentIndex(0); //infinite carousel 
-        } else {
-            setCurrentIndex(nextIndex);
-        }
-    };
 
-    const prevPost = () => {
-        const prevIndex = currentIndex - 1;
+		if (nextIndex >= posts.length) {
+			setCurrentIndex(0); //infinite carousel 
+		} else {
+			setCurrentIndex(nextIndex);
+		}
+	};
 
-        if (prevIndex < 0) {
-            setCurrentIndex(posts.length - 1); // infinite carrousel
-        } else {
-            setCurrentIndex(prevIndex);
-        }
-    };
+	const prevPost = () => {
+		const prevIndex = currentIndex - 1;
+
+		if (prevIndex < 0) {
+			setCurrentIndex(posts.length - 1); // infinite carrousel
+		} else {
+			setCurrentIndex(prevIndex);
+		}
+	};
 
 
 
@@ -173,7 +174,7 @@ const TheWorld: React.FC = () => {
 				setPosts((prevPosts) =>
 					prevPosts.map((post) =>
 						post._id === postId
-							? { ...post, comments: [...post.comments, formatedCeatedComment] } // Ajoute le nouveau commentaire
+							? { ...post, comments: [...post.comments, formatedCeatedComment] } // Ajout Local du new com
 							: post
 					)
 				);
@@ -192,7 +193,6 @@ const TheWorld: React.FC = () => {
 		// Copie des posts pour Maj locale
 		const updatedPosts = [...posts];
 		const currentPost = updatedPosts[currentIndex];
-		// Détermine si on ajoute ou supprime un like
 		const add_or_remove = currentPost.likes.didILikeIt ? "remove" : "add";
 
 		// MaJ locale des likes et de didILikeIt
@@ -214,14 +214,13 @@ const TheWorld: React.FC = () => {
 
 			if (!response.ok) {
 				console.log('👍 ❌ Erreur lors de la mise à jour des likes sur le backend');
-				// Revenir à l'état précédent en cas d'erreur
+				// revien precedent state si error
 				currentPost.likes.nbr_likes += currentPost.likes.didILikeIt ? -1 : 1;
 				currentPost.likes.didILikeIt = !currentPost.likes.didILikeIt;
 				setPosts(updatedPosts);
 			}
 		} catch (error) {
 			console.log('👍 ❌ Erreur lors de la communication avec le backend :', error);
-			// Revenir à l'état précédent en cas d'erreur
 			currentPost.likes.nbr_likes += currentPost.likes.didILikeIt ? -1 : 1;
 			currentPost.likes.didILikeIt = !currentPost.likes.didILikeIt;
 			setPosts(updatedPosts);
@@ -235,14 +234,14 @@ const TheWorld: React.FC = () => {
 			<h1 className="text-2xl font-bold mb-4 text-white-800">The W🌏rld !</h1>
 
 
-			{/* Flèche gauche - Ne 'affiche au 1er post que si l'ensemble des post ont ete load !*/}
+			{/* Fleche gauche - Ne 'affiche au 1er post que si l'ensemble des post ont ete load !*/}
 			{!(currentIndex === 0 && currentPage < totalPages) && (
-			    <button
-			        className="absolute left-8 top-1/2 transform -translate-y-1/2 bg-blue-500 text-white p-5 rounded-full shadow-lg z-20 opacity-90 hover:opacity-100 transition hover:scale-110"
-			        onClick={prevPost}
-			    >
-			        &#8592;
-			    </button>
+				<button
+					className="absolute left-8 top-1/2 transform -translate-y-1/2 bg-blue-500 text-white p-5 rounded-full shadow-lg z-20 opacity-90 hover:opacity-100 transition hover:scale-110"
+					onClick={prevPost}
+				>
+					&#8592;
+				</button>
 			)}
 
 
@@ -251,7 +250,7 @@ const TheWorld: React.FC = () => {
 			{posts.length > 0 ? (
 				<div className="relative w-[70vw] max-w-[350px] flex flex-col items-center bg-white shadow-2xl rounded-xl overflow-hidden my-3">
 
-					{/* Titre au-dessus de la photo */}
+					{/* Titre au dessus photo */}
 					<div className="w-full bg-white text-gray-900 font-bold text-lg text-center p-2 border-b">
 						{posts[currentIndex]?.title}
 					</div>
@@ -274,19 +273,19 @@ const TheWorld: React.FC = () => {
 							❤️ {posts[currentIndex].likes.nbr_likes} likes
 						</button>
 
-						{/* username en bas à droite SUR la photo */}
+						{/* username en bas droite SUR la photo */}
 						<div className="absolute bottom-2 right-2 bg-black/60 text-white px-2 py-1 rounded-md text-sm">
 							{posts[currentIndex].userId.username}
 						</div>
 					</div>
 
-					{/* Ajouter un commentaire */}
+					{/* Ajouter un com */}
 					<div className="w-full p-3 border-t border-gray-200">
 						<form
 							className="flex items-center space-x-2"
 							onSubmit={(e) => {
-								e.preventDefault(); // Empêche le rechargement de la page
-								handleAddComment(posts[currentIndex]._id); // Appelle la fonction pour ajouter un commentaire
+								e.preventDefault(); // evite rechargement page
+								handleAddComment(posts[currentIndex]._id); // Appelle fct pour add un com
 							}}
 						>
 							<input
@@ -294,7 +293,7 @@ const TheWorld: React.FC = () => {
 								placeholder="Ajouter un commentaire..."
 								className="flex-1 px-3 py-2 border border-blue-400 rounded-full text-xs text-black focus:outline-none focus:ring-2 focus:ring-blue-500"
 								value={newComment}
-								onChange={(e) => setNewComment(e.target.value)} // Met à jour l'état du commentaire
+								onChange={(e) => setNewComment(e.target.value)} // Maj State du com
 								maxLength={200}
 							/>
 							<button
@@ -307,7 +306,7 @@ const TheWorld: React.FC = () => {
 					</div>
 
 
-					{/* Liste des commentaires */}
+					{/* Liste des com */}
 					<div className="w-full p-3 text-left">
 						{posts[currentIndex].comments.map((comment) => (
 							<div key={comment._id} className="relative mb-4">
@@ -321,11 +320,11 @@ const TheWorld: React.FC = () => {
 									</button>
 								)}
 
-								{/* Username du propriétaire du commentaire */}
+								{/* Username owner du com */}
 								<p className="text-blue-500 text-[10px] italic">
 									{comment.userId.username}
 								</p>
-								{/* Texte du commentaire */}
+								{/* Texte du com */}
 								<p className="text-gray-700 text-xs italic">
 									💬 {comment.text}
 								</p>
@@ -341,7 +340,7 @@ const TheWorld: React.FC = () => {
 				<p className="text-gray-500">Aucun post à afficher.</p>
 			)}
 
-			{/* Flèche droite */}
+			{/* Fleche droite */}
 			<button
 				className="absolute right-8 top-1/2 transform -translate-y-1/2 bg-blue-500 text-white p-5 rounded-full shadow-lg z-20 opacity-90 hover:opacity-100 transition hover:scale-110"
 				onClick={nextPost}

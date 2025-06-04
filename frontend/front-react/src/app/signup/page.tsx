@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
 import Button from '@/components/Button';
 
+
 export default function SignUp() {
 
   const [username, setUsername] = useState('');
@@ -155,5 +156,5 @@ export default function SignUp() {
       </form>
 
     </div>
-  );
+  )
 }
