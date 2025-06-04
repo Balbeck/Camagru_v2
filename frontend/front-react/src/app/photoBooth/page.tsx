@@ -194,14 +194,6 @@ export default function PhotoBooth() {
 		{ src: "/stickers/hot-air-balloon-svgrepo-com.svg", alt: "Overlay 3" },
 	];
 
-	const downloadPhoto = () => {
-		if (photo) {
-			const link = document.createElement("a");
-			link.href = photo;
-			link.download = "photo_booth.png";
-			link.click();
-		}
-	};
 
 	// Twitter
 	const sharePhoto = () => {
@@ -349,9 +341,7 @@ export default function PhotoBooth() {
 								<button onClick={() => setPhoto(null)} className="px-4 py-2 bg-yellow-500 rounded-lg">
 									🔄 Reprendre
 								</button>
-								<button onClick={downloadPhoto} className="px-4 py-2 bg-purple-500 rounded-lg">
-									📥 Télécharger
-								</button>
+
 								<button onClick={sharePhoto} className="px-4 py-2 bg-blue-500 rounded-lg">
 									🐦 Partager
 								</button>

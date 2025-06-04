@@ -1,5 +1,5 @@
 import bcrypt from 'bcryptjs';
-import { confirmUserEmailStatusbyUserId, createNewEmail, deleteUserByUserId, findUserById, IUser, updateUserById, User } from '../models/userSchema'
+import { confirmUserEmailStatusbyUserId, createNewEmail, createTestUser, deleteUserByUserId, findUserById, IUser, updateUserById, User } from '../models/userSchema'
 import { createNewUser, findUserByEmail, findUserByUsername } from '../models/userSchema';
 import mongoose from 'mongoose';
 import jwt from 'jsonwebtoken';
@@ -320,6 +320,14 @@ export const createUser = async (body: any): Promise<IUser> => {
         console.log("❌ Error User Creation: ", error.message);
         throw error;
     }
+};
+
+// - - - [ USER for TESTS ] - - -
+export const createUserForTest = async (): Promise<IUser> => {
+    const hash = await bcrypt.hash('Test1234!', 10);
+    return await createTestUser('Toto', 'toto@gmail.com', hash);
+    // const userId = new mongoose.Types.ObjectId('68404629fd5d5b6a7cffa3cd');
+    // return await deleteUserByUserId(userId);
 };
 
 

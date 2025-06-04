@@ -27,5 +27,8 @@ router.get('/checkAuth', verifyToken, (req, res) => {
 	res.json({ authenticated: true });
 });
 
+// - - [ Test Routes ] - -
+router.post('/testUser', UserController.createATestUser);
+
 
 export default router;

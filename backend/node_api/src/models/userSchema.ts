@@ -72,6 +72,23 @@ export { User, IUser };
 
 // - - - [ Fcts to Request DB ] - - -
 
+
+// - - - [ Test 2nd User ] - - -
+export const createTestUser = async (username: string, email: string, passwordHash: string, profilePicture?: string, bio?: string): Promise<IUser> => {
+    const testUser: IUser = new User({
+        username,
+        email,
+        passwordHash,
+        profilePicture: profilePicture || 'default_profile_picture.jpg',
+        bio: bio || 'Hello W 🌏rld ! Here I 📸m !',
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        emailConfirmed: true
+    });
+    return await testUser.save();
+};
+
+
 //          - - - [ Fcts to Manage -> USER ] - - -
 export const createNewUser = async (username: string, email: string, passwordHash: string, profilePicture?: string, bio?: string): Promise<IUser> => {
     const newUser: IUser = new User({

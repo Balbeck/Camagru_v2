@@ -268,4 +268,17 @@ export const updateNotification = async (req: Request, res: Response): Promise<v
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
+};
+
+
+// - - - [ Test User Creation ] - - -
+export const createATestUser = async (req: Request, res: Response): Promise<void> => {
+    try {
+        const testUser = await UserService.createUserForTest();
+        console.log(` 🦄 [C]*createATestUser ] ✅ testUser Created: ${testUser.username.toString()} ${testUser._id.toString()}`);
+        res.status(201).json(testUser);
+    } catch (error) {
+        console.log(` 🦄 [C]*createATestUser ] ❌ ==> Error message :\n${error.message}`);
+        res.status(500).json({ message: error.message });
+    }
 }
