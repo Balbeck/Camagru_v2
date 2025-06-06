@@ -8,6 +8,7 @@ import Button from '@/components/Button';
 import CreatePost from '@/components/CreatePostForm';
 import { IImage, IPostData } from '@/components/Interface';
 import UploadImage from '@/components/UploadImage';
+import CreateGif from '@/components/CreateGif';
 
 
 const MyGalerie: React.FC = () => {
@@ -39,6 +40,11 @@ const MyGalerie: React.FC = () => {
 	const [isModalOpen, setModalOpen] = useState(false);
 	const openDeleteImageModal = () => { setModalOpen(true); };
 	const closeDeleteImageModal = () => { setModalOpen(false); };
+
+	// Modal pour GifCreation
+	const [isGifCreationModalOpen, setGifCreationModalOpen] = useState(false);
+	const openGifCreationModal = () => { setGifCreationModalOpen(true); };
+	const closeGifCreationModal = () => { setGifCreationModalOpen(false); };
 
 
 	const fetchUserimages = async () => {
@@ -145,6 +151,35 @@ const MyGalerie: React.FC = () => {
 	};
 
 
+	const handleCreateGif = async (selectedGifimagesStr: string[]) => {
+		try {
+			console.log('🌴 [MyGalerie]handleCreateGif - selectedGifimages: ', selectedGifimagesStr);
+			const response = await fetch('http://localhost:3000/image/uploadForGif', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				body: JSON.stringify({ imageIdsString: selectedGifimagesStr }),
+				credentials: 'include',
+			});
+			const responseData = await response.json();
+
+			if (response.ok) {
+				console.log('Gif created successfully');
+				if (responseData) {
+					await fetchUserimages();
+					setCurrentIndex(0);
+				}
+				closeGifCreationModal();
+			} else {
+				alert(`Failed to create Gif -> ${responseData.message}`);
+				console.error('Failed to create Gif');
+			}
+		} catch (error) {
+			console.error('Error creating Gif:', error);
+		}
+	};
+
 
 	if (images.length === 0) {
 		return (
@@ -225,6 +260,12 @@ const MyGalerie: React.FC = () => {
 					onClick={openCreatePostModal}
 				>
 					Create Post
+				</Button>
+				<Button
+					className="bg-green-500 hover:bg-green-600 text-white rounded-full py-2 px-4 text-sm transition-all duration-200"
+					onClick={openGifCreationModal}
+				>
+					Gif Creator
 				</Button>
 			</div>
 			{/* Modal CreatePost */}
@@ -323,6 +364,46 @@ const MyGalerie: React.FC = () => {
 					</div>
 				</div>
 			)}
+
+			{/* Gif Creator Nodal */}
+			{isGifCreationModalOpen && (
+				<div
+					className="fixed inset-0 flex justify-center items-center bg-gray-500 bg-opacity-50 z-50"
+					onClick={closeGifCreationModal}  // Ferme la fenêtre si on clique à l'extérieur
+				>
+					<div
+						className="relative bg-white p-6 rounded-lg shadow-lg w-[70vw] max-w-[500px] z-10"
+						onClick={(e) => e.stopPropagation()}  // Empêche la fermeture si on clique à l'intérieur
+					>
+						<CreateGif
+							images={images}
+							onCreateGif={handleCreateGif}
+						/>
+					</div>
+				</div>
+			)}
+
+
+
+			{isCreatePostModalOpen && (
+				<div
+					className="fixed inset-0 flex justify-center items-center bg-gray-500 bg-opacity-50 z-50"
+					onClick={closeCreatePostModal}  // Ferme la fenêtre si on clique à l'extérieur
+				>
+					<div
+						className="relative bg-white p-6 rounded-lg shadow-lg w-[70vw] max-w-[500px] z-10"
+						onClick={(e) => e.stopPropagation()}  // Empêche la fermeture si on clique à l'intérieur
+					>
+						<CreatePost
+							data={images[currentIndex].data}
+							imageId={images[currentIndex]._id}
+							onPublish={handleCreatePost}
+						/>
+					</div>
+				</div>
+			)}
+
+
 
 
 		</div >

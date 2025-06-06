@@ -2,6 +2,8 @@ import mongoose from "mongoose";
 
 import { IImage, saveNewImage, getImageById, getImagesByUserId, deleteImageWithCascade } from '../models/imageSchema';
 import { createCanvas, loadImage, CanvasRenderingContext2D } from 'canvas';
+import { convert } from 'imagemagick';
+import fs from 'fs';
 
 
 export const saveImage = async (userIdString: string, filename: string, contentType: string, data: string): Promise<IImage> => {
@@ -207,3 +209,87 @@ export const filterMap: { [key: string]: (ctx: CanvasRenderingContext2D, canvas:
 		ctx.putImageData(imageData, 0, 0);
 	},
 };
+
+
+export const createGif = async (userIdString: string, imageIdsString: string[]): Promise<any> => {
+	try {
+		if (!mongoose.Types.ObjectId.isValid(userIdString)) {
+			throw new Error('INVALID_USER_ID');
+		}
+		const userId = new mongoose.Types.ObjectId(userIdString);
+
+		// Verif images sont valides --> moongoose.Types.ObjectId
+		if (!Array.isArray(imageIdsString) || imageIdsString.length === 0) {
+			throw new Error('INVALID_IMAGES_ARRAY');
+		}
+		for (const img of imageIdsString) {
+			if (!mongoose.Types.ObjectId.isValid(img)) {
+				throw new Error('INVALID_IMAGE_ID');
+			}
+		}
+
+		const tmpFiles: string[] = [];
+		let originalWidth = 400;
+		let originalHeight = 400;
+
+		for (let i = 0; i < imageIdsString.length; i++) {
+			const imgId = imageIdsString[i];
+			const img = await getImageById(new mongoose.Types.ObjectId(imgId));
+			if (img.type === 'gif') throw new Error('GIF_INVALID_IMAGE_TYPE');
+			const imgDataBase64 = img.data.replace(/^data:image\/\w+;base64,/, '');
+			const imgBuffer = Buffer.from(imgDataBase64, 'base64');
+			const loadedImg = await loadImage(imgBuffer);
+
+			const canvas = createCanvas(originalWidth, originalHeight);
+			const ctx = canvas.getContext('2d');
+			ctx.drawImage(loadedImg, 0, 0, originalWidth, originalHeight);
+
+			const outBuffer = canvas.toBuffer('image/png');
+			const tmpFileName = `tmp_${imgId}_${Date.now()}.png`;
+			fs.writeFileSync(tmpFileName, outBuffer);
+			tmpFiles.push(tmpFileName);
+		}
+
+		console.log(` 🍱 [S]createGif ... `);
+		const filename = `gif_${userIdString}_${Date.now()}.gif`;
+		const contentType = 'image/gif';
+
+		await new Promise<void>((resolve, reject) => {
+			const args = [
+				'-delay', '50',
+				'-loop', '0',
+				...tmpFiles,
+				'-layers', 'Optimize',
+				filename
+			];
+			convert(args, (err: Error) => {
+				if (err) {
+					console.error('🍱 [S]createGif:  ❌ ', err);
+					reject(new Error('GIF_CREATION_FAILED'));
+				} else {
+					resolve();
+					console.log(' 🍱 [S]createGif:  [ ✅ ] GIF created successfully');
+				}
+			});
+		});
+
+		const gifBuffer = fs.readFileSync(filename);
+		const gifBase64 = `data:image/gif;base64,${gifBuffer.toString('base64')}`;
+		const newGif: IImage = await saveNewImage(userId, filename, contentType, gifBase64, 'gif');
+		console.log(' 🍱 [S]saveGif:  [ ✅ ]');
+
+		// Clean tmpFiles
+		for (const file of [...tmpFiles, filename]) {
+			if (fs.existsSync(file)) {
+				fs.unlinkSync(file);
+				console.log(` 🍱 [S]createGif:  [ ✅ ] Deleted tmp file: ${file}`);
+			}
+		}
+
+		return newGif;
+
+	} catch (error) {
+		console.log(' 🍱 [S]saveGif:  [ ❌ ]: ', error);
+		throw error;
+	}
+}

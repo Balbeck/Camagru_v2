@@ -11,6 +11,7 @@ router.get('/all', verifyToken, ImageController.getAllImagesByUserId);
 router.delete('/delete/:imageId', verifyToken, ImageController.deleteImage);
 
 router.post('/uploadForMontage', verifyToken, ImageController.uploadForMontage);
+router.post('/uploadForGif', verifyToken, ImageController.uploadForGifCreation);
 
 
 export default router;

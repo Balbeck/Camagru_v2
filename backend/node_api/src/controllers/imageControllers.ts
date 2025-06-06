@@ -147,7 +147,7 @@ export const uploadForMontage = async (req: Request, res: Response): Promise<voi
 		}
 
 
-		// Tente d'effectuer le Montage
+		// Tente le Montage
 		const montage: IImage = await ImageService.montageMe(
 			req.user.id,
 			photo,
@@ -172,3 +172,39 @@ export const uploadForMontage = async (req: Request, res: Response): Promise<voi
 		}
 	}
 };
+
+
+export const uploadForGifCreation = async (req: Request, res: Response): Promise<void> => {
+	try {
+		const { imageIdsString } = req.body;
+		console.log(' 🖼️ [C]*gifCreation ] 🖼️ ', req.body);
+		if (!req.user.id) {
+			res.status(404).json({ message: "User ID is missing!" });
+			return;
+		}
+		if (!imageIdsString || !Array.isArray(imageIdsString) || imageIdsString.length === 0 || imageIdsString.length > 4) {
+			res.status(400).json({ message: "Images array is required!" });
+			return;
+		}
+		if (imageIdsString.length === 0 || imageIdsString.length > 4) {
+			res.status(400).json({ message: "Nbr of images could go from 1 up to 4" });
+			return;
+		}
+
+		const gif = await ImageService.createGif(req.user.id, imageIdsString);
+		console.log(' 🖼️ [C]*gifCreation ] -GIF: ✅ ');
+		res.status(201).json(gif);
+
+	} catch (error) {
+		console.log(' 🖼️ [C]*gifCreation ] ❌ ');
+		if (error.message == 'INVALID_USER_ID') {
+			res.status(404).json({ message: error.message });
+		} else if (error.message == 'GIF_CREATION_FAILED') {
+			res.status(400).json({ message: error.message });
+		} else if (error.message == 'GIF_INVALID_IMAGE_TYPE') {
+			res.status(400).json({ message: 'You cannot use a Gif to Create a gif Bro !' });
+		} else {
+			res.status(500).json({ message: error.message });
+		}
+	}
+}

@@ -45,7 +45,7 @@ const imageSchema: Schema = new Schema({
 	},
 	type: {
 		type: String,
-		enum: ["upload", "montage"],
+		enum: ["upload", "montage", "gif"],
 		default: "upload"
 	},
 });
