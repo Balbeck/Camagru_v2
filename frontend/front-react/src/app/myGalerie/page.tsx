@@ -175,6 +175,26 @@ const MyGalerie: React.FC = () => {
 	};
 
 
+	// const handlePublishOnTwitter = async () => {
+	// 	try {
+	// 		const imageId = images[currentIndex]._id;
+	// 		const response = await fetch(`http://localhost:3000/image/publishOnTwitter/${imageId}`, {
+	// 			method: 'POST',
+	// 			credentials: 'include',
+	// 		});
+	// 		if (response.ok) {
+	// 			const data = await response.json();
+	// 			alert(`Post published on Twitter: ${data.message}`);
+	// 		} else {
+	// 			const errorData = await response.json();
+	// 			alert(`Failed to publish on Twitter: ${errorData.message}`);
+	// 		}
+	// 	} catch (error) {
+	// 		alert(`Error publishing on Twitter: ${error}`);
+	// 	}
+	// };
+
+
 	if (images.length === 0) {
 		return (
 			<div className="flex flex-col items-center justify-center min-h-[80vh] text-center">
@@ -238,6 +258,15 @@ const MyGalerie: React.FC = () => {
 				</div>
 			</div>
 
+			{/* <div>
+				<button
+					onClick={handlePublishOnTwitter}
+					className="flex items-center gap-2 px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-full shadow transition-all duration-200 mt-2"
+					title="Publish on Twitter"
+				>
+					🐦
+				</button>
+			</div> */}
 
 			{/* Fleche droite */}
 			<button

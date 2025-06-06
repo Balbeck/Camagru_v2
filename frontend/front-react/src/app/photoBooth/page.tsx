@@ -193,21 +193,13 @@ export default function PhotoBooth() {
 	];
 
 
-	// Twitter
-	const sharePhoto = () => {
-		if (photo) {
-			const url = `https://twitter.com/intent/tweet?url=${encodeURIComponent(photo)}&text=Check%20out%20my%20photo%20from%20PhotoBooth!`;
-			window.open(url, "_blank");
-		}
-	};
-
-
 	useEffect(() => {
 		fetchUserimages();
 		return () => {
 			stopCamera();
 		};
 	}, []);
+
 
 
 	return (
@@ -334,19 +326,7 @@ export default function PhotoBooth() {
 								</button>
 							</div>
 						)}
-						{photo && (
-							<div>
 
-								<button onClick={() => setPhoto(null)} className="px-4 py-2 bg-yellow-500 rounded-lg">
-									🔄 Reprendre
-								</button>
-
-								<button onClick={sharePhoto} className="px-4 py-2 bg-blue-500 rounded-lg">
-									🐦 Partager
-								</button>
-
-							</div>
-						)}
 					</div>
 					{error && <p className="text-red-500 mt-2">{error}</p>}
 				</section>

@@ -208,3 +208,34 @@ export const uploadForGifCreation = async (req: Request, res: Response): Promise
 		}
 	}
 }
+
+
+// export const publishOnTwitter = async (req: Request, res: Response): Promise<void> => {
+// 	try {
+// 		const imageId: string = req.params.imageId;
+// 		if (!req.user.id) {
+// 			res.status(404).json({ message: "User ID is missing!" });
+// 			return;
+// 		}
+// 		if (!imageId) {
+// 			res.status(400).json({ message: "Image ID is required!" });
+// 			return;
+// 		}
+
+// 		const tweet = await ImageService.publishImageOnTwitter(req.user.id, imageId);
+// 		// console.log(' 🐦 [C]*publishOnTwitter ] -Tweet: ✅ ');
+// 		res.status(201).json(tweet);
+
+// 	} catch (error) {
+// 		// console.log(' 🐦 [C]*publishOnTwitter ] ❌ ');
+// 		if (error.message == 'INVALID_USER_ID') {
+// 			res.status(404).json({ message: error.message });
+// 		} else if (error.message == 'IMAGE_NOT_FOUND') {
+// 			res.status(404).json({ message: error.message });
+// 		} else if (error.message == 'TWITTER_API_ERROR') {
+// 			res.status(500).json({ message: error.message });
+// 		} else {
+// 			res.status(500).json({ message: error.message });
+// 		}
+// 	}
+// };

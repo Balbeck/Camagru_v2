@@ -4,6 +4,7 @@ import { IImage, saveNewImage, getImageById, getImagesByUserId, deleteImageWithC
 import { createCanvas, loadImage, CanvasRenderingContext2D } from 'canvas';
 import { convert } from 'imagemagick';
 import fs from 'fs';
+import { TwitterApi } from 'twitter-api-v2';
 
 
 export const saveImage = async (userIdString: string, filename: string, contentType: string, data: string): Promise<IImage> => {
@@ -293,3 +294,49 @@ export const createGif = async (userIdString: string, imageIdsString: string[]):
 		throw error;
 	}
 }
+
+
+// export const publishImageOnTwitter = async (userIdString: string, imageIdString: string): Promise<any> => {
+// 	try {
+// 		if (!mongoose.Types.ObjectId.isValid(userIdString)) {
+// 			throw new Error('INVALID_USER_ID');
+// 		}
+// 		if (!mongoose.Types.ObjectId.isValid(imageIdString)) {
+// 			throw new Error('INVALID_IMAGE_ID');
+// 		}
+
+// 		const imageId = new mongoose.Types.ObjectId(imageIdString);
+// 		const userId = new mongoose.Types.ObjectId(userIdString);
+
+// 		const img = await getImageById(imageId);
+// 		if (!img) throw new Error('IMAGE_NOT_FOUND');
+// 		if (userId.toString() !== img.userId.toString()) {
+// 			throw new Error('INVALID_USER_ID');
+// 		}
+
+// 		// On suppose que img.data est en base64 avec préfixe data URI
+// 		const base64Data = img.data.replace(/^data:image\/\w+;base64,/, '');
+// 		const buffer = Buffer.from(base64Data, 'base64');
+
+// 		// --- Twitter API (exemple avec twitter-api-v2) ---
+// 		const client = new TwitterApi({
+// 			appKey: process.env.TWITTER_API_KEY!,
+// 			appSecret: process.env.TWITTER_API_SECRET!,
+// 			accessToken: process.env.TWITTER_ACCESS_TOKEN!,
+// 			accessSecret: process.env.TWITTER_ACCESS_SECRET!,
+// 		});
+
+// 		// Upload media
+// 		const mediaId = await client.v1.uploadMedia(buffer, { mimeType: img.contentType });
+
+// 		// Publie le tweet
+// 		const tweet = await client.v1.tweet('Voici mon image !', { media_ids: mediaId });
+
+// 		return tweet;
+
+// 	} catch (error) {
+// 		if (error.message === 'IMAGE_NOT_FOUND') throw error;
+// 		if (error.message === 'INVALID_USER_ID') throw error;
+// 		throw new Error('TWITTER_API_ERROR');
+// 	}
+// };

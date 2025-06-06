@@ -12,6 +12,6 @@ router.delete('/delete/:imageId', verifyToken, ImageController.deleteImage);
 
 router.post('/uploadForMontage', verifyToken, ImageController.uploadForMontage);
 router.post('/uploadForGif', verifyToken, ImageController.uploadForGifCreation);
-
+// router.post('/publishOnTwitter/:imageId', verifyToken, ImageController.publishOnTwitter);
 
 export default router;
