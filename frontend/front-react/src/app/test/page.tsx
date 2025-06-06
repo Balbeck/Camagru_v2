@@ -19,16 +19,14 @@ const CreateTotoButton = () => {
             if (res.ok) {
                 console.log(' 🙋🏼 [ New Toto testUser Created ] ')
                 router.replace("/");
-            } else {
-                console.error(' 🙋🏼 [ New Toto testUser  ] ❌ Error');
             }
         } catch (error) {
-            console.error(' 🙋🏼 [ LogOut ] ❌ Error: ', error);
+            console.log(' 🙋🏼 [ LogOut ] ❌ Error: ', error);
         }
     };
 
     useEffect(() => {
-        console.log(' 🙋🏼 [ CreateTotoButton Component Mounted ] ');
+        // console.log(' 🙋🏼 [ CreateTotoButton Component Mounted ] ');
         handleCreateTestUser();
     }, []);
 

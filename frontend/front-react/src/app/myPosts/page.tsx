@@ -67,12 +67,10 @@ const MyPosts: React.FC = () => {
 				if (response.ok) {
 					const data: IPostData[] = await response.json();
 					setPosts(data);
-					console.log('🌳 [ MyPosts ] fetchMyPosts - postsData: ', data);
-				} else {
-					console.error('Failed to fetch user posts');
+					// console.log('🌳 [ MyPosts ] fetchMyPosts - postsData: ', data);
 				}
 			} catch (error) {
-				console.error('Error fetching user posts:', error);
+				console.log('Error fetching user posts:', error);
 			}
 		};
 
@@ -89,12 +87,10 @@ const MyPosts: React.FC = () => {
 					const data = await response.json();
 					setMyUserId(data._id);
 					setMyUsername(data.username);
-					console.log('🌳 [ MyPosts ] fetchMyUserId - userId: ', data._id);
-				} else {
-					console.error('Failed to fetch user ID');
+					// console.log('🌳 [ MyPosts ] fetchMyUserId - userId: ', data._id);
 				}
 			} catch (error) {
-				console.error('Error fetching user ID:', error);
+				console.log('Error fetching user ID:', error);
 			}
 		}
 		fetchMyUserId();
@@ -121,12 +117,10 @@ const MyPosts: React.FC = () => {
 							: post
 					)
 				);
-				console.log("Commentaire supprimé avec succès !");
-			} else {
-				console.error("Erreur lors de la suppression du commentaire");
+				// console.log("Commentaire supprimé avec succès !");
 			}
 		} catch (error) {
-			console.error("Erreur lors de la suppression du commentaire :", error);
+			console.log("Erreur lors de la suppression du commentaire :", error);
 		}
 	};
 
@@ -154,7 +148,7 @@ const MyPosts: React.FC = () => {
 						'username': myUsername
 					}
 				};
-				console.log('🌳 [ MyPosts ] handleAddComment - createdComment: ', formatedCeatedComment);
+				// console.log('🌳 [ MyPosts ] handleAddComment - createdComment: ', formatedCeatedComment);
 				setPosts((prevPosts) =>
 					prevPosts.map((post) =>
 						post._id === postId
@@ -164,11 +158,9 @@ const MyPosts: React.FC = () => {
 				);
 				setNewComment('');
 
-			} else {
-				console.error("Failed to add comment");
 			}
 		} catch (error) {
-			console.error("Error adding comment:", error);
+			console.log("Error adding comment:", error);
 		}
 	};
 
@@ -198,7 +190,7 @@ const MyPosts: React.FC = () => {
 			});
 
 			if (!response.ok) {
-				console.log('👍 ❌ Erreur lors de la mise à jour des likes sur le backend');
+				// console.log('👍 ❌ Erreur lors de la mise à jour des likes sur le backend');
 				// si not Ok revient precedent State
 				currentPost.likes.nbr_likes += currentPost.likes.didILikeIt ? -1 : 1;
 				currentPost.likes.didILikeIt = !currentPost.likes.didILikeIt;
@@ -229,14 +221,12 @@ const MyPosts: React.FC = () => {
 				if (currentIndex >= updatedPosts.length) {
 					setCurrentIndex(0);
 				}
-				console.log('Post supprimé avec succès');
+				// console.log('Post supprimé avec succès');
 
-			} else {
-				console.error('Erreur lors de la suppression du post');
 			}
 
 		} catch (error) {
-			console.error('Erreur lors de la suppression du post :', error);
+			console.log('Erreur lors de la suppression du post :', error);
 		} finally {
 			closeDeleteModal();
 		}

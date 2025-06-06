@@ -15,7 +15,7 @@ const ResetPassword = () => {
 
   const pathname = usePathname();
   const token = pathname.split("/").pop();
-  console.log(' 🔐 [ ResetPassword ]Token: ', token);
+  // console.log(' 🔐 [ ResetPassword ]Token: ', token);
 
   const validatePassword = (password: string): boolean => {
     const passwordRegex = /^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
@@ -27,9 +27,9 @@ const ResetPassword = () => {
 
     const verifyTokenValidity = async () => {
 
-      console.log(' 🛂 [ResetPass] token?: ', token)
+      // console.log(' 🛂 [ResetPass] token?: ', token)
       if (!token) {
-        console.log(' 🛂 [ResetPass] ❌ token?: ', token)
+        // console.log(' 🛂 [ResetPass] ❌ token?: ', token)
         router.replace('/');
       }
 
@@ -44,14 +44,14 @@ const ResetPassword = () => {
 
         if (response.ok) {
           const data = await response.json();
-          console.log('email du user: ', data.email);
+          // console.log('email du user: ', data.email);
           setEmail(data.email); // Récupère l'email depuis la réponse du backend
           // setIsTokenValid(true);
         } else {
           router.replace('/');
         }
       } catch (error) {
-        console.error('Erreur lors de la vérification du token:', error);
+        console.log('Erreur lors de la vérification du token:', error);
         router.replace('/');
       }
     }
@@ -66,7 +66,7 @@ const ResetPassword = () => {
     e.preventDefault();
 
     if (password !== confirmPassword) {
-      console.log('Passwords do not match.');
+      // console.log('Passwords do not match.');
       return;
     }
 
@@ -80,20 +80,20 @@ const ResetPassword = () => {
         credentials: 'include',
       });
       if (response.ok) {
-        console.log(' 🛂 [ resetPass/[token] ] ✅ -> replace(/myGalerie)');
+        // console.log(' 🛂 [ resetPass/[token] ] ✅ -> replace(/myGalerie)');
         router.replace('/signin');
       }
 
       else {
-        console.log(' 🛂 [ resetPass/[token] ] ❌ -> replace(/)');
+        // console.log(' 🛂 [ resetPass/[token] ] ❌ -> replace(/)');
         const errorData = await response.json();
-        console.log(errorData.message || 'Something went wrong. Try again.');
+        // console.log(errorData.message || 'Something went wrong. Try again.');
         router.replace('/');
       }
 
     } catch (error) {
       console.log(' 🛂 [ resetPass/[token] ] ❌ -> replace(/home): ', error);
-      console.log('Error occurred while resetting password.');
+      // console.log('Error occurred while resetting password.');
       router.replace('/');
     }
   };

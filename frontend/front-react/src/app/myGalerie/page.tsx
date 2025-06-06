@@ -57,11 +57,9 @@ const MyGalerie: React.FC = () => {
 			if (response.ok) {
 				const data = await response.json();
 				setImages(data);
-			} else {
-				console.error('Failed to fetch user images');
 			}
 		} catch (error) {
-			console.error('Error fetching user images:', error);
+			console.log('Error fetching user images:', error);
 		}
 	};
 
@@ -75,7 +73,7 @@ const MyGalerie: React.FC = () => {
 
 	const handleUploadImage = async (file: File, base64Image: string) => {
 		try {
-			console.log('🌴 [MyGalerie]handleUpload - data: ', base64Image);
+			// console.log('🌴 [MyGalerie]handleUpload - data: ', base64Image);
 			const response = await fetch('http://localhost:3000/image/upload', {
 				method: 'POST',
 				headers: {
@@ -90,14 +88,12 @@ const MyGalerie: React.FC = () => {
 			});
 
 			if (response.ok) {
-				console.log('Image uploaded successfully');
+				// console.log('Image uploaded successfully');
 				await fetchUserimages()
 				closeUploadImageModal();
-			} else {
-				console.error('Failed to upload image');
 			}
 		} catch (error) {
-			console.error('Error uploading image:', error);
+			console.log('Error uploading image:', error);
 		}
 	};
 
@@ -105,7 +101,7 @@ const MyGalerie: React.FC = () => {
 
 	const handleCreatePost = async (dataFromCreatePostForm: IPostData) => {
 		try {
-			console.log(' 🌴 [myGaleriePage]handleCreatePost - data: ', dataFromCreatePostForm);
+			// console.log(' 🌴 [myGaleriePage]handleCreatePost - data: ', dataFromCreatePostForm);
 			const response = await fetch(`http://localhost:3000/post/createPost`, {
 				method: 'POST',
 				headers: {
@@ -121,7 +117,7 @@ const MyGalerie: React.FC = () => {
 			closeCreatePostModal();
 
 		} catch (error) {
-			console.error(' ❌ Error Creating Post: ', error);
+			console.log(' ❌ Error Creating Post: ', error);
 			closeCreatePostModal();
 		}
 	};
@@ -137,23 +133,21 @@ const MyGalerie: React.FC = () => {
 			});
 
 			if (response.ok) {
-				console.log('Image deleted successfully');
+				// console.log('Image deleted successfully');
 				router.replace('/myGalerie')
 				setImages((previmages) => previmages.filter((image) => image._id !== imageId));
 				closeDeleteImageModal();
 
-			} else {
-				console.error('Failed to delete Image');
 			}
 		} catch (error) {
-			console.error('Error deleting Image:', error);
+			console.log('Error deleting Image:', error);
 		}
 	};
 
 
 	const handleCreateGif = async (selectedGifimagesStr: string[]) => {
 		try {
-			console.log('🌴 [MyGalerie]handleCreateGif - selectedGifimages: ', selectedGifimagesStr);
+			// console.log('🌴 [MyGalerie]handleCreateGif - selectedGifimages: ', selectedGifimagesStr);
 			const response = await fetch('http://localhost:3000/image/uploadForGif', {
 				method: 'POST',
 				headers: {
@@ -165,7 +159,7 @@ const MyGalerie: React.FC = () => {
 			const responseData = await response.json();
 
 			if (response.ok) {
-				console.log('Gif created successfully');
+				// console.log('Gif created successfully');
 				if (responseData) {
 					await fetchUserimages();
 					setCurrentIndex(0);
@@ -173,10 +167,10 @@ const MyGalerie: React.FC = () => {
 				closeGifCreationModal();
 			} else {
 				alert(`Failed to create Gif -> ${responseData.message}`);
-				console.error('Failed to create Gif');
+				// console.log('Failed to create Gif');
 			}
 		} catch (error) {
-			console.error('Error creating Gif:', error);
+			console.log('Error creating Gif:', error);
 		}
 	};
 

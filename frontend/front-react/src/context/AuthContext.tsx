@@ -41,7 +41,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 	useEffect(() => {
 
 		if (pathName.startsWith('/resetPassword')) {
-			console.log(' 🙋🏼‍♂️ AuthProvider -> Reject Page /resetPassword ');
+			// console.log(' 🙋🏼‍♂️ AuthProvider -> Reject Page /resetPassword ');
 			return;
 		}
 
@@ -54,15 +54,15 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 				});
 
 				if (response.ok) {
-					console.log(' 🌞 [ AuthContext ] - response.ok ✅ ')
+					// console.log(' 🌞 [ AuthContext ] - response.ok ✅ ')
 					setIsAuthenticated(true);
 				} else {
-					console.log(' 🌞 [ AuthContext ] - response ❌')
+					// console.log(' 🌞 [ AuthContext ] - response ❌')
 					setIsAuthenticated(false);
 				}
 
 			} catch (error) {
-				console.error(' 🌞 [ AuthContext ] ❌ fetch(/user/checkAuth) -> Error: ', error);
+				console.log(' 🌞 [ AuthContext ] ❌ fetch(/user/checkAuth) -> Error: ', error);
 				setIsAuthenticated(false);
 			}
 		};
@@ -79,7 +79,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
 
 	const ft_logout = async () => {
-		console.log(' 🌞 [ AuthContext ] 🙋🏼‍♂️ ft_logout: Cokies.remove, setAuth:false');
+		// console.log(' 🌞 [ AuthContext ] 🙋🏼‍♂️ ft_logout: Cokies.remove, setAuth:false');
 		Cookies.remove(tokenName);
 		setIsAuthenticated(false);
 	};
@@ -94,4 +94,3 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 	);
 
 };
-

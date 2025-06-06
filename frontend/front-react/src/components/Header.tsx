@@ -35,7 +35,7 @@ export default function Header() {
         }
 
         try {
-          console.log('🌱 [ Header... ] Fetch Auth');
+          // console.log('🌱 [ Header... ] Fetch Auth');
           const response = await fetch("http://localhost:3000/user/checkAuth", {
             method: "GET",
             credentials: "include",
@@ -43,14 +43,14 @@ export default function Header() {
 
           if (response.ok) {
             ft_setAuthTrue();
-            console.log('🌱 [ Header ] ✅ Auth');
+            // console.log('🌱 [ Header ] ✅ Auth');
           } else {
-            console.log('🌱 [ Header ] ❌ Auth, replace( / )');
+            // console.log('🌱 [ Header ] ❌ Auth, replace( / )');
             router.replace('/');
           }
 
         } catch (error) {
-          console.error('🌱 [ Header ] ❌  Auth(500) Error: ', error);
+          console.log('🌱 [ Header ] ❌  Auth(500) Error: ', error);
           router.replace('/');
 
         } finally {

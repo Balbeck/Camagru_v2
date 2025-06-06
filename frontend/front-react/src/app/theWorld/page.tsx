@@ -43,12 +43,10 @@ const TheWorld: React.FC = () => {
 				const data = await response.json();
 				setMyUserId(data._id);
 				setMyUsername(data.username);
-				console.log('🌏 [ AllPosts ] fetchMyUserId - userId: ', data._id);
-			} else {
-				console.error('Failed to fetch user ID');
+				// console.log('🌏 [ AllPosts ] fetchMyUserId - userId: ', data._id);
 			}
 		} catch (error) {
-			console.error('Error fetching user ID:', error);
+			console.log('Error fetching user ID:', error);
 		}
 	};
 
@@ -65,12 +63,10 @@ const TheWorld: React.FC = () => {
 				setPosts((prevPosts) => [...prevPosts, ...data.posts]);
 				setTotalPages(data.totalPages);
 				setCurrentPage(data.currentPage);
-				console.log('🌏 [ AllPosts ] fetchPosts - postsData: \n', data);
-			} else {
-				console.error('Failed to fetch posts');
+				// console.log('🌏 [ AllPosts ] fetchPosts - postsData: \n', data);
 			}
 		} catch (error) {
-			console.error('Error fetching posts:', error);
+			console.log('Error fetching posts:', error);
 		}
 	};
 
@@ -137,12 +133,10 @@ const TheWorld: React.FC = () => {
 							: post
 					)
 				);
-				console.log("Commentaire supprimé avec succès !");
-			} else {
-				console.error("Erreur lors de la suppression du commentaire");
+				// console.log("Commentaire supprimé avec succès !");
 			}
 		} catch (error) {
-			console.error("Erreur lors de la suppression du commentaire :", error);
+			console.log("Erreur lors de la suppression du commentaire :", error);
 		}
 	};
 
@@ -170,7 +164,7 @@ const TheWorld: React.FC = () => {
 						'username': myUsername
 					}
 				};
-				console.log('🌳 [ MyPosts ] handleAddComment - createdComment: ', formatedCeatedComment);
+				// console.log('🌳 [ MyPosts ] handleAddComment - createdComment: ', formatedCeatedComment);
 				setPosts((prevPosts) =>
 					prevPosts.map((post) =>
 						post._id === postId
@@ -180,11 +174,9 @@ const TheWorld: React.FC = () => {
 				);
 				setNewComment('');
 
-			} else {
-				console.error("Failed to add comment");
 			}
 		} catch (error) {
-			console.error("Error adding comment:", error);
+			console.log("Error adding comment:", error);
 		}
 	};
 
@@ -213,7 +205,7 @@ const TheWorld: React.FC = () => {
 			});
 
 			if (!response.ok) {
-				console.log('👍 ❌ Erreur lors de la mise à jour des likes sur le backend');
+				// console.log('👍 ❌ Erreur lors de la mise à jour des likes sur le backend');
 				// revien precedent state si error
 				currentPost.likes.nbr_likes += currentPost.likes.didILikeIt ? -1 : 1;
 				currentPost.likes.didILikeIt = !currentPost.likes.didILikeIt;

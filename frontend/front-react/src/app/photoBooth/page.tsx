@@ -36,11 +36,9 @@ export default function PhotoBooth() {
 			if (response.ok) {
 				const data = await response.json();
 				setUserImages(data);
-			} else {
-				console.error('Failed to fetch user images');
 			}
 		} catch (error) {
-			console.error('Error fetching user images:', error);
+			console.log('Error fetching user images:', error);
 		}
 	};
 
@@ -99,7 +97,7 @@ export default function PhotoBooth() {
 	const takePhoto = async () => {
 		let photoData: string | null = null;
 
-		console.log("selectedImage", selectedImage);
+		// console.log("selectedImage", selectedImage);
 		if (selectedImage) {
 			photoData = selectedImage;
 		} else if (videoRef.current && canvasRef.current) {
@@ -111,7 +109,7 @@ export default function PhotoBooth() {
 				photoData = canvasRef.current.toDataURL("image/png");
 			}
 		}
-		console.log("photoData", photoData);
+		// console.log("photoData", photoData);
 		if (!photoData) {
 			setError("Aucune image à traiter.");
 			return;
@@ -338,6 +336,7 @@ export default function PhotoBooth() {
 						)}
 						{photo && (
 							<div>
+
 								<button onClick={() => setPhoto(null)} className="px-4 py-2 bg-yellow-500 rounded-lg">
 									🔄 Reprendre
 								</button>
@@ -345,6 +344,7 @@ export default function PhotoBooth() {
 								<button onClick={sharePhoto} className="px-4 py-2 bg-blue-500 rounded-lg">
 									🐦 Partager
 								</button>
+
 							</div>
 						)}
 					</div>

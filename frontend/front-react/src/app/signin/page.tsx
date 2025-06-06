@@ -31,17 +31,17 @@ export default function SignIn() {
 
       if (response.ok) {
         ft_setAuthTrue();
-        console.log('🦧 [ SignInPage ] - fetch(login ✅) redir -> /theGallery ');
+        // console.log('🦧 [ SignInPage ] - fetch(login ✅) redir -> /theGallery ');
         router.push('/theWorld');
       } else {
         ft_logout();
         const data = await response.json();
-        console.log('🦧 [ SignInPage ] fetch(/user/login) ❌ ');
+        // console.log('🦧 [ SignInPage ] fetch(/user/login) ❌ ');
         setError(data.message || 'An error occurred during sign in');
       }
 
     } catch (error) {
-      console.error('Error during sign in:u ', error);
+      console.log('Error during sign in: ', error);
       setError('Network error. Please try again.');
     }
   };

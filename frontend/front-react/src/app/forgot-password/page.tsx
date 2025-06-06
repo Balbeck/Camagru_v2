@@ -33,8 +33,8 @@ export default function ForgotPassword() {
 				setError(data.message || 'An error occurred while processing your request');
 			}
 		} catch (error) {
-			console.error('Error during password reset:', error);
-			setError('Network error. Please try again.');
+			// console.log('Error during password reset:', error);
+			setError(`Network error. Please try again. ${error}`);
 		}
 	};
 

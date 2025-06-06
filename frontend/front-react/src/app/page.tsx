@@ -42,12 +42,10 @@ const Home: React.FC = () => {
 				setPosts((prevPosts) => [...prevPosts, ...data.posts]);
 				setTotalPages(data.totalPages);
 				setCurrentPage(data.currentPage);
-				console.log('🌏 [ AllPosts ] fetchPosts - postsData: \n', data);
-			} else {
-				console.error('Failed to fetch posts');
+				// console.log('🌏 [ AllPosts ] fetchPosts - postsData: \n', data);
 			}
 		} catch (error) {
-			console.error('Error fetching posts:', error);
+			console.log('Error fetching posts:', error);
 		}
 	};
 

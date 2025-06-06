@@ -58,14 +58,14 @@ export default function SignUp() {
 
       if (response.ok) {
         ft_setAuthTrue();
-        console.log('🥝 [ SignUp ] redirect to [ theGallery ] - (register ✅ !)');
+        // console.log('🥝 [ SignUp ] redirect to [ theGallery ] - (register ✅ !)');
         router.push('/theWorld');
       } else {
         ft_logout();
         setError(data.message || 'An error occurred during sign up');
       }
     } catch (error: unknown) {
-      console.error('Error during sign up:', error);
+      console.log('Error during sign up:', error);
       setError('Network error. Please try again.');
     }
   };

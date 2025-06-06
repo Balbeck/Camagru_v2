@@ -27,17 +27,17 @@ export default function SettingsPage() {
 		const fetchUserData = async () => {
 
 			try {
-				console.log('🗂️ [ Settings ] useEffect() - fetch /user/me');
+				// console.log('🗂️ [ Settings ] useEffect() - fetch /user/me');
 				const response = await fetch("http://localhost:3000/user/me", {
 					method: "GET",
 					credentials: "include",
 				});
 				if (!response.ok) {
-					console.log('🗂️ [ Settings ] - fetch /user/me ❌');
+					// console.log('🗂️ [ Settings ] - fetch /user/me ❌');
 					throw new Error("Erreur lors du chargement des infos");
 				}
 
-				console.log('🗂️ [ Settings ] - fetch /user/me ✅');
+				// console.log('🗂️ [ Settings ] - fetch /user/me ✅');
 				const data: IUser = await response.json();
 				setUsername(data.username);
 				setCurrentEmail(data.email);
@@ -47,7 +47,7 @@ export default function SettingsPage() {
 
 			} catch {
 				alert('Impossible de charger les données utilisateur');
-				console.log('🗂️ [ Settings ] catch - redirect to [ Home ]')
+				// console.log('🗂️ [ Settings ] catch - redirect to [ Home ]')
 				router.push("/");
 			}
 		};
@@ -129,7 +129,7 @@ export default function SettingsPage() {
 				body: JSON.stringify({ newEmail }),
 			});
 			if (response.status === 409) {
-				console.log(' 🛂 [ resetEmail/[token] ] ❌ -> Conflict (409)');
+				// console.log(' 🛂 [ resetEmail/[token] ] ❌ -> Conflict (409)');
 				alert('This email is already in use. Please try another one.');
 				setNewEmail("");
 

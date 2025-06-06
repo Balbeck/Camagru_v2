@@ -20,13 +20,11 @@ const LogoutButton = () => {
 
 			if (res.ok) {
 				ft_logout();
-				console.log(' 🙋🏼 [ LogOut ] router.replace("/")')
+				// console.log(' 🙋🏼 [ LogOut ] router.replace("/")')
 				router.replace("/");
-			} else {
-				console.error(' 🙋🏼 [ LogOut ] ❌ Erreur déconnexion');
 			}
 		} catch (error) {
-			console.error(' 🙋🏼 [ LogOut ] ❌ Error: ', error);
+			console.log(' 🙋🏼 [ LogOut ] ❌ Error: ', error);
 		}
 	};
 

@@ -13,15 +13,15 @@ const ResetEmail = () => {
 	const router = useRouter();
 	const pathname = usePathname();
 	const token = pathname.split("/").pop();
-	console.log(' 🔐 [ ResetEmail ]Token: ', token);
+	// console.log(' 🔐 [ ResetEmail ]Token: ', token);
 
 
 	useEffect(() => {
 
 		const verifyTokenValidity = async () => {
-			console.log(' 🛂 [ResetEmail] token?: ', token)
+			// console.log(' 🛂 [ResetEmail] token?: ', token)
 			if (!token) {
-				console.log(' 🛂 [ResetEmail] ❌ token?: ', token)
+				// console.log(' 🛂 [ResetEmail] ❌ token?: ', token)
 				router.replace('/');
 			}
 			try {
@@ -37,7 +37,7 @@ const ResetEmail = () => {
 					router.replace('/');
 				}
 			} catch (error) {
-				console.error('Erreur lors de la vérification du token:', error);
+				console.log('Erreur lors de la vérification du token:', error);
 				router.replace('/');
 			}
 		}
@@ -60,7 +60,7 @@ const ResetEmail = () => {
 		e.preventDefault();
 
 		if (newEmail !== confirmNewEmail) {
-			console.log('Emails do not match.');
+			// console.log('Emails do not match.');
 			return;
 		}
 
@@ -74,20 +74,20 @@ const ResetEmail = () => {
 				credentials: 'include',
 			});
 			if (response.ok) {
-				console.log(' 🛂 [ resetEmail/[token] ] ✅ -> replace(/myGalerie)');
+				// console.log(' 🛂 [ resetEmail/[token] ] ✅ -> replace(/myGalerie)');
 				router.replace('/settings');
 
 			} else {
-				console.log(' 🛂 [ resetEmail/[token] ] ❌ -> replace(/)');
+				// console.log(' 🛂 [ resetEmail/[token] ] ❌ -> replace(/)');
 				const errorData = await response.json();
-				console.log(errorData.message || 'Something went wrong. Try again.');
+				// console.log(errorData.message || 'Something went wrong. Try again.');
 				alert('Email adress does not match Bro, sry...');
 				router.replace('/');
 			}
 
 		} catch (error) {
 			console.log(' 🛂 [ resetEmail/[token] ] ❌ -> replace(/home): ', error);
-			console.log('Error occurred while resetting Email.');
+			// console.log('Error occurred while resetting Email.');
 			router.replace('/');
 		}
 	};
