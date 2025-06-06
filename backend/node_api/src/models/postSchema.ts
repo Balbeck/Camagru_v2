@@ -103,7 +103,7 @@ export const getUserPosts = async (userId: mongoose.Types.ObjectId): Promise<IPo
             return [];
         }
 
-        // Formater chaque post
+        // Formate chaque post
         const formattedPosts = await Promise.all(
             posts.map(async (post) => {
                 const postId_str = post._id.toString();
@@ -116,11 +116,11 @@ export const getUserPosts = async (userId: mongoose.Types.ObjectId): Promise<IPo
 
                 const nbr_likes = await Like.countDocuments({ postId: postId }).exec();
                 const didILikeIt = !!(await Like.exists({ postId: postId, userId: userId }).exec()); // double negation '!!' pour transformer en bool
-                console.log(' 🌅 [M]*getUserPosts ] nbr_likes: ', nbr_likes, '  -  didILikeIt: ', didILikeIt);
+                // console.log(' 🌅 [M]*getUserPosts ] nbr_likes: ', nbr_likes, '  -  didILikeIt: ', didILikeIt);
 
 
 
-                // Formater les commentaires
+                // Formate les coms
                 const formattedComments = comments.map((comment) => (
                     {
                         _id: comment._id.toString(),
@@ -133,7 +133,7 @@ export const getUserPosts = async (userId: mongoose.Types.ObjectId): Promise<IPo
                     }
                 ));
 
-                // Retourner le post formaté
+                // Return Formated Post
                 return (
                     {
                         _id: post._id.toString(),
@@ -158,7 +158,7 @@ export const getUserPosts = async (userId: mongoose.Types.ObjectId): Promise<IPo
 
         return formattedPosts;
     } catch (error) {
-        console.error(' 📸 [M]*getUserPosts ] ❌ Error: ', error)
+        // console.log(' 📸 [M]*getUserPosts ] ❌ Error: ', error)
         throw error;
     }
 };
@@ -172,7 +172,7 @@ export const getAllThePostsPerPage = async (userId: mongoose.Types.ObjectId, ski
         .populate<{ userId: IUser }>('userId', 'username')
         .populate<{ imageId: IImage }>('imageId', 'data')
         .exec();
-    console.log(` 📸 [M]*getAllThePosts ] *** posts -> [ ${posts.length} ]***`);
+    // console.log(` 📸 [M]*getAllThePosts ] *** posts -> [ ${posts.length} ]***`);
     if (!posts || posts.length === 0) {
         return [];
     }
@@ -190,11 +190,11 @@ export const getAllThePostsPerPage = async (userId: mongoose.Types.ObjectId, ski
 
             const nbr_likes = await Like.countDocuments({ postId: postId }).exec();
             const didILikeIt = !!(await Like.exists({ postId: postId, userId: userId }).exec()); // double negation '!!' pour transformer en bool
-            console.log(' 🌅 [M]*getUserPosts ] nbr_likes: ', nbr_likes, '  -  didILikeIt: ', didILikeIt);
+            // console.log(' 🌅 [M]*getUserPosts ] nbr_likes: ', nbr_likes, '  -  didILikeIt: ', didILikeIt);
 
 
 
-            // Formater les commentaires
+            // Formater les coms
             const formattedComments = comments.map((comment) => (
                 {
                     _id: comment._id.toString(),
@@ -207,7 +207,7 @@ export const getAllThePostsPerPage = async (userId: mongoose.Types.ObjectId, ski
                 }
             ));
 
-            // Retourner le post formaté
+            // Return Post au good format
             return (
                 {
                     _id: post._id.toString(),

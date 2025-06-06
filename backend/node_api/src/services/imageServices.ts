@@ -14,11 +14,11 @@ export const saveImage = async (userIdString: string, filename: string, contentT
 		const userId = new mongoose.Types.ObjectId(userIdString);
 		const newImage: IImage = await saveNewImage(userId, filename, contentType, data, 'upload');
 
-		console.log(' 🍱 [S]saveImage:  [ ✅ ]');
+		// console.log(' 🍱 [S]saveImage:  [ ✅ ]');
 		return newImage;
 
 	} catch (error) {
-		console.log(' 🍱 [S]saveImage:  [ ❌ ]');
+		// console.log(' 🍱 [S]saveImage:  [ ❌ ]');
 		throw error;
 	}
 };
@@ -32,11 +32,11 @@ export const getAllImages = async (userIdString: string): Promise<IImage[]> => {
 		const userId = new mongoose.Types.ObjectId(userIdString);
 
 		const allImages: IImage[] = await getImagesByUserId(userId);
-		console.log(' 🍱 [S]AllImage:  [ ✅ ]');
+		// console.log(' 🍱 [S]AllImage:  [ ✅ ]');
 		return allImages;
 
 	} catch (error) {
-		console.log(' 🍱 [S]AllImage:  [ ❌ ]');
+		// console.log(' 🍱 [S]AllImage:  [ ❌ ]');
 		throw error;
 	}
 };
@@ -54,18 +54,18 @@ export const deleteImage = async (imageIdString: string, userIdString: string): 
 		const userId = new mongoose.Types.ObjectId(userIdString);
 
 		const img = await getImageById(imageId);
-		console.log(` 🍱 [S]deleteImage: \n ->     userId: ${userId}\n -> img.userId: ${img.userId} `);
-		console.log(` 🍱 [S]deleteImage: \n ->     userIdType: `, typeof userId, `\n -> img.userIdType: `, typeof img.userId);
+		// console.log(` 🍱 [S]deleteImage: \n ->     userId: ${userId}\n -> img.userId: ${img.userId} `);
+		// console.log(` 🍱 [S]deleteImage: \n ->     userIdType: `, typeof userId, `\n -> img.userIdType: `, typeof img.userId);
 		if (userId.toString() !== img.userId.toString()) {
-			console.log(' 🍱 [S]deleteImage:  ❌ [ userIds Doesnt Match ! ] ');
+			// console.log(' 🍱 [S]deleteImage:  ❌ [ userIds Doesnt Match ! ] ');
 			throw new Error('INVALID_USER_ID');
 		}
 
 		await deleteImageWithCascade(imageId);
-		console.log(' 🍱 [S]deleteImage:  [ ✅ ]');
+		// console.log(' 🍱 [S]deleteImage:  [ ✅ ]');
 
 	} catch (error) {
-		console.log(' 🍱 [S]deleteImage:  [ ❌ ]');
+		// console.log(' 🍱 [S]deleteImage:  [ ❌ ]');
 		throw error;
 	}
 };
@@ -79,18 +79,18 @@ export const montageMe = async (userIdString: string, photo: string, filter: str
 		}
 		const userId = new mongoose.Types.ObjectId(userIdString);
 
-		console.log(` 🍱 [S]montageMe -> createMontage ... `);
+		// console.log(` 🍱 [S]montageMe -> createMontage ... `);
 		const newMontage = await createMontage(photo, filter, overlay, overlaySize);
-		console.log(` 🍱 [S]montageMe:  [ ✅ ] `);
+		// console.log(` 🍱 [S]montageMe:  [ ✅ ] `);
 		const filename = `montage_${Date.now()}.png`;
 		const contentType = 'image/png';
 		const newImage: IImage = await saveNewImage(userId, filename, contentType, newMontage, 'montage');
 
-		console.log(' 🍱 [S]saveMontage:  [ ✅ ]');
+		// console.log(' 🍱 [S]saveMontage:  [ ✅ ]');
 		return newImage;
 
 	} catch (error) {
-		console.log(' 🍱 [S]saveMontage:  [ ❌ ]');
+		// console.log(' 🍱 [S]saveMontage:  [ ❌ ]');
 		throw error;
 	}
 };
@@ -106,18 +106,18 @@ export const createMontage = async (photo: string, filter: string, overlay: stri
 		// Ajoute filtre
 		if (filter !== "" && filterMap[filter]) {
 			filterMap[filter](ctx, canvas);
-			console.log(` 🍱 [S]createMontage:  [ ✅ ] Filter:  "${filter}" applied`);
+			// console.log(` 🍱 [S]createMontage:  [ ✅ ] Filter:  "${filter}" applied`);
 		}
 
 
 		// Ajoute overlay
-		console.log(` 🍱 [S]createMontage:  [ ✅ ] Overlay:  "${overlay}"`);
+		// console.log(` 🍱 [S]createMontage:  [ ✅ ] Overlay:  "${overlay}"`);
 		if (overlay) {
-			console.log(' 🍱 [S]createMontage: Overlay ...');
+			// console.log(' 🍱 [S]createMontage: Overlay ...');
 			// Charge overlay SVG (base64 ou string)
 			let svgData = overlay;
 			if (!overlay.startsWith('<svg')) {
-				// Si c'est du base64
+				// Si est du base64
 				svgData = Buffer.from(
 					overlay.replace(/^data:image\/svg\+xml;base64,/, ''),
 					'base64'
@@ -132,7 +132,7 @@ export const createMontage = async (photo: string, filter: string, overlay: stri
 			const y = (backgroundImg.height - size) / 2;
 
 			ctx.drawImage(svgImg, x, y, size, size);
-			console.log(' 🍱 [S]createMontage:  [ ✅ ] Overlay applied');
+			// console.log(' 🍱 [S]createMontage:  [ ✅ ] Overlay applied');
 		}
 
 		// Convertit le canvas en png base64
@@ -141,7 +141,7 @@ export const createMontage = async (photo: string, filter: string, overlay: stri
 
 
 	} catch (error) {
-		console.error('Error creating montage:', error);
+		// console.log('🍱 [S]createMontage: [ ❌ ] ', error);
 		throw new Error('MONTAGE_CREATION_FAILED');
 	}
 };
@@ -250,7 +250,7 @@ export const createGif = async (userIdString: string, imageIdsString: string[]):
 			tmpFiles.push(tmpFileName);
 		}
 
-		console.log(` 🍱 [S]createGif ... `);
+		// console.log(` 🍱 [S]createGif ... `);
 		const filename = `gif_${userIdString}_${Date.now()}.gif`;
 		const contentType = 'image/gif';
 
@@ -264,11 +264,11 @@ export const createGif = async (userIdString: string, imageIdsString: string[]):
 			];
 			convert(args, (err: Error) => {
 				if (err) {
-					console.error('🍱 [S]createGif:  ❌ ', err);
+					// console.log('🍱 [S]createGif:  ❌ ', err);
 					reject(new Error('GIF_CREATION_FAILED'));
 				} else {
 					resolve();
-					console.log(' 🍱 [S]createGif:  [ ✅ ] GIF created successfully');
+					// console.log(' 🍱 [S]createGif:  [ ✅ ] GIF created successfully');
 				}
 			});
 		});
@@ -276,20 +276,20 @@ export const createGif = async (userIdString: string, imageIdsString: string[]):
 		const gifBuffer = fs.readFileSync(filename);
 		const gifBase64 = `data:image/gif;base64,${gifBuffer.toString('base64')}`;
 		const newGif: IImage = await saveNewImage(userId, filename, contentType, gifBase64, 'gif');
-		console.log(' 🍱 [S]saveGif:  [ ✅ ]');
+		// console.log(' 🍱 [S]saveGif:  [ ✅ ]');
 
 		// Clean tmpFiles
 		for (const file of [...tmpFiles, filename]) {
 			if (fs.existsSync(file)) {
 				fs.unlinkSync(file);
-				console.log(` 🍱 [S]createGif:  [ ✅ ] Deleted tmp file: ${file}`);
+				// console.log(` 🍱 [S]createGif:  [ ✅ ] Deleted tmp file: ${file}`);
 			}
 		}
 
 		return newGif;
 
 	} catch (error) {
-		console.log(' 🍱 [S]saveGif:  [ ❌ ]: ', error);
+		// console.log(' 🍱 [S]saveGif:  [ ❌ ]: ', error);
 		throw error;
 	}
 }

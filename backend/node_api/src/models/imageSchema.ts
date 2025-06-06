@@ -103,10 +103,10 @@ export const deleteImageWithCascade = async (imageId: mongoose.Types.ObjectId): 
 
 		await Post.deleteMany({ imageId }).exec();
 		await Image.findByIdAndDelete(imageId).exec();
-		console.log(` ✅ 🗑️ Image et ses dépendances supprimées avec succès : ${imageId}`);
+		// console.log(` ✅ 🗑️ Image et ses dépendances supprimées avec succès : ${imageId}`);
 
 	} catch (error) {
-		console.error('❌ 🗑️ Erreur lors de la suppression en cascade :', error);
+		// console.log('❌ 🗑️ Erreur lors de la suppression en cascade :', error);
 		throw error;
 	}
 };

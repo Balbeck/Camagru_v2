@@ -17,15 +17,15 @@ interface CreateGifProps {
 const CreateGif: React.FC<CreateGifProps> = ({ images, onCreateGif }) => {
     const [selected, setSelected] = useState<string[]>([]);
 
-    // Sélection/désélection
+    // Selection imgs
     const toggleSelect = (id: string) => {
         setSelected(sel =>
             sel.includes(id) ? sel.filter(i => i !== id) : [...sel, id]
         );
     };
 
-    // Monter une image
-    const moveUp = (idx: number) => {
+    // Inverse ordre imgs -> deplace de 1 vers 1er place
+    const moveLeft = (idx: number) => {
         if (idx === 0) return;
         setSelected(sel => {
             const arr = [...sel];
@@ -34,8 +34,7 @@ const CreateGif: React.FC<CreateGifProps> = ({ images, onCreateGif }) => {
         });
     };
 
-    // Descendre une image
-    const moveDown = (idx: number) => {
+    const moveRight = (idx: number) => {
         if (idx === selected.length - 1) return;
         setSelected(sel => {
             const arr = [...sel];
@@ -82,7 +81,7 @@ const CreateGif: React.FC<CreateGifProps> = ({ images, onCreateGif }) => {
                 ))}
             </div>
 
-            {/* Réordonner */}
+            {/* Display + ordre imgs */}
             {selected.length > 0 && (
                 <div className="mb-4 w-full">
                     <h3 className="text-sm font-semibold mb-1">Ordre du GIF :</h3>
@@ -103,12 +102,12 @@ const CreateGif: React.FC<CreateGifProps> = ({ images, onCreateGif }) => {
                                     />
                                     <div className="flex gap-1 mt-1">
                                         <button
-                                            onClick={() => moveUp(idx)}
+                                            onClick={() => moveLeft(idx)}
                                             disabled={idx === 0}
                                             className="text-xs px-1 py-0.5 bg-gray-200 rounded disabled:opacity-50"
                                         >↑</button>
                                         <button
-                                            onClick={() => moveDown(idx)}
+                                            onClick={() => moveRight(idx)}
                                             disabled={idx === selected.length - 1}
                                             className="text-xs px-1 py-0.5 bg-gray-200 rounded disabled:opacity-50"
                                         >↓</button>

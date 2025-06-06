@@ -19,7 +19,7 @@ export const register = async (req: Request, res: Response): Promise<void> => {
         }
         // console.log(' 🦄 [C]*register ] req.body: ', req.body);
         const newUser = await UserService.createUser(req.body);
-        console.log(` 🦄 [C]*register ] ✅ newUser Created: ${newUser.username.toString()} ${newUser._id.toString()}`)
+        // console.log(` 🦄 [C]*register ] ✅ newUser Created: ${newUser.username.toString()} ${newUser._id.toString()}`)
 
         const email: string = req.body.email;
 
@@ -29,7 +29,7 @@ export const register = async (req: Request, res: Response): Promise<void> => {
         res.status(400).json({ message: 'User registered. Please check your email for confirmation.' });
 
     } catch (error: any) {
-        console.log(` 🦄 [C]*register ] ❌ ==> Error message :\n${error.message}`);
+        // console.log(` 🦄 [C]*register ] ❌ ==> Error message :\n${error.message}`);
         if (error.message === 'EMAIL_ALREADY_EXISTS') {
             res.status(400).json({ message: 'Email already in use' });
         }
@@ -57,10 +57,10 @@ export const register = async (req: Request, res: Response): Promise<void> => {
 // --> [ endpoint for link in Registration Email ] --> send Cookie
 export const confirmRegisterEmail = async (req: Request, res: Response): Promise<void> => {
     try {
-        console.log(' ✉️ [C]*confirmEmail ] req.params: ', req.params);
+        // console.log(' ✉️ [C]*confirmEmail ] req.params: ', req.params);
         const { token } = req.params;
         const confirmedUser = await UserService.confirmUserEmail(token);
-        console.log(' ✉️ [C]*confirmEmail ] ✅ confirmedUser: \n', confirmedUser);
+        // console.log(' ✉️ [C]*confirmEmail ] ✅ confirmedUser: \n', confirmedUser);
 
         res.cookie(tokenName, token, {
             httpOnly: true,
@@ -72,7 +72,7 @@ export const confirmRegisterEmail = async (req: Request, res: Response): Promise
         res.redirect(301, frontUrl);
 
     } catch (error) {
-        console.log(' ✉️ [C]*confirmEmail ❌ ');
+        // console.log(' ✉️ [C]*confirmEmail ❌ ');
         if (error.message === 'USER_NOT_FOUND') {
             res.status(404).json({ message: 'User not found' });
         } else {
@@ -84,9 +84,9 @@ export const confirmRegisterEmail = async (req: Request, res: Response): Promise
 
 export const login = async (req: Request, res: Response): Promise<void> => {
     try {
-        console.log(' 🦄 [C]*Login ] req.body: ', req.body);
+        // console.log(' 🦄 [C]*Login ] req.body: ', req.body);
         const user = await UserService.logInUser(req.body);
-        console.log(` 🦄 [C]*Login ] User Found: ${user.username.toString()} ${user._id.toString()}`);
+        // console.log(` 🦄 [C]*Login ] User Found: ${user.username.toString()} ${user._id.toString()}`);
         if (user.emailConfirmed === false) {
             throw new Error('UNCONFIRMED_EMAIL');
         }
@@ -107,7 +107,7 @@ export const login = async (req: Request, res: Response): Promise<void> => {
         } else if (error.message === 'UNCONFIRMED_EMAIL') {
             res.status(404).json({ message: 'unconfirmed email' });
         } else {
-            console.log(' 🦄 [C]*Login ] error: ', error);
+            // console.log(' 🦄 [C]*Login ] error: ', error);
             res.status(500).json({ message: error.message });
         }
     }
@@ -117,7 +117,7 @@ export const login = async (req: Request, res: Response): Promise<void> => {
 export const forgottenPassword = async (req: Request, res: Response): Promise<void> => {
     try {
 
-        console.log(' 🐰 [C]*forgottenPassword ] req.body: ', req.body);
+        // console.log(' 🐰 [C]*forgottenPassword ] req.body: ', req.body);
         await UserService.sendResetPasswordEmail(req.body.email);
         res.status(200).json({ message: ' ✉ ⚙ [From Back]  Password reset instructions have been sent to your email.' });
 
@@ -136,10 +136,10 @@ export const verifyEmailToken = async (req: Request, res: Response): Promise<voi
     try {
         const user = await UserService.verifyTokenToGetEmail(token);
         const email = user.email;
-        console.log(' [Ctrl verifyEmailToken]  email: ', email);
+        // console.log(' [Ctrl verifyEmailToken]  email: ', email);
         res.json({ email: email });
     } catch (error) {
-        console.log('[Ctrl verifyEmailToken] -> ERROR: ', error.message)
+        // console.log('[Ctrl verifyEmailToken] -> ERROR: ', error.message)
         res.status(401).json({ message: "Invalid Token" });
     }
 };
@@ -179,7 +179,7 @@ export const sendEmailToChangeUserEmailAddress = async (req: Request, res: Respo
             }
         } catch (error) {
             if (error.message === 'USER_NOT_FOUND') {
-                console.log(' 🐰 [C]*sendEmailToChangeUserEmailAddress ] ✅ Email not found can be USed !: ', req.body.newEmail);
+                // console.log(' 🐰 [C]*sendEmailToChangeUserEmailAddress ] ✅ Email not found can be USed !: ', req.body.newEmail);
             }
         }
 
@@ -206,9 +206,9 @@ export const logout = async (req: Request, res: Response): Promise<void> => {
 
 export const getMe = async (req: Request, res: Response): Promise<void> => {
     try {
-        console.log(' 🪆 [C]*getMe ] req.user: ', req.user);
+        // console.log(' 🪆 [C]*getMe ] req.user: ', req.user);
         const foundUser = await UserService.getUserById(req.user.id);
-        console.log(' 🪆 [C]*getMe ] foundUser: ', foundUser);
+        // console.log(' 🪆 [C]*getMe ] foundUser: ', foundUser);
         if (!foundUser) {
             res.status(404).json({ message: "Utilisateur non trouvé" });
         }
@@ -234,9 +234,9 @@ export const updateUser = async (req: Request, res: Response): Promise<void> => 
                 return;
             }
         }
-        console.log(' 🌱 [C]*updateUser ] req.body: ', req.body);
+        // console.log(' 🌱 [C]*updateUser ] req.body: ', req.body);
         const updatedUser = await UserService.updateUser(req.user.id, req.body);
-        console.log(' 🌱 [C]*updateUser ] updatedUser: ', updatedUser);
+        // console.log(' 🌱 [C]*updateUser ] updatedUser: ', updatedUser);
         res.status(200).json(updatedUser);
 
     } catch (error) {
@@ -247,9 +247,9 @@ export const updateUser = async (req: Request, res: Response): Promise<void> => 
 
 export const deleteUser = async (req: Request, res: Response): Promise<void> => {
     try {
-        console.log(' 🪄 [C]*deleteUser ] req.user: ', req.user);
+        // console.log(' 🪄 [C]*deleteUser ] req.user: ', req.user);
         const deletedUser = await UserService.deleteUser(req.user.id);
-        console.log(' 🪄 [C]*deleteUser ] deletedUser: ', deletedUser);
+        // console.log(' 🪄 [C]*deleteUser ] deletedUser: ', deletedUser);
         res.status(200).json({ message: 'User successfully deleted' });
 
     } catch (error) {
@@ -260,9 +260,9 @@ export const deleteUser = async (req: Request, res: Response): Promise<void> => 
 
 export const updateNotification = async (req: Request, res: Response): Promise<void> => {
     try {
-        console.log(' 🪄 [C]*updateNotification ] req.body: ', req.body);
+        // console.log(' 🪄 [C]*updateNotification ] req.body: ', req.body);
         const updatedUser = await UserService.updateCommentNotification(req.user.id, req.body.isNotificationsEnabled);
-        console.log(' 🪄 [C]*updateNotification ] updatedUser: ', updatedUser);
+        // console.log(' 🪄 [C]*updateNotification ] updatedUser: ', updatedUser);
         res.status(200);
 
     } catch (error) {
@@ -275,10 +275,10 @@ export const updateNotification = async (req: Request, res: Response): Promise<v
 export const createATestUser = async (req: Request, res: Response): Promise<void> => {
     try {
         const testUser = await UserService.createUserForTest();
-        console.log(` 🦄 [C]*createATestUser ] ✅ testUser Created: ${testUser.username.toString()} ${testUser._id.toString()}`);
+        // console.log(` 🦄 [C]*createATestUser ] ✅ testUser Created: ${testUser.username.toString()} ${testUser._id.toString()}`);
         res.status(201).json(testUser);
     } catch (error) {
-        console.log(` 🦄 [C]*createATestUser ] ❌ ==> Error message :\n${error.message}`);
+        // console.log(` 🦄 [C]*createATestUser ] ❌ ==> Error message :\n${error.message}`);
         res.status(500).json({ message: error.message });
     }
 }

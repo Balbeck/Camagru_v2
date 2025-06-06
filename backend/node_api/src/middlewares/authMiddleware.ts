@@ -26,7 +26,7 @@ export const verifyToken = (req: Request, res: Response, next: NextFunction): vo
     const token = req.cookies?.Cama || req.headers.authorization?.split(" ")[1];
     // console.log(' 🎫 [ Auth - *Jwt* ] token: ', token);
     if (!token) {
-        console.log(' 🎫 [ Auth - *Jwt* ] No Token ❌ ');
+        // console.log(' 🎫 [ Auth - *Jwt* ] No Token ❌ ');
         res.status(401).json({ message: "Access Denied, No Token !" });
         return;
     }
@@ -35,11 +35,11 @@ export const verifyToken = (req: Request, res: Response, next: NextFunction): vo
         const decoded = jwt.verify(token, JWT_SECRET) as { id: string };
         // * -  assign and set token to  [ req.user ]  - *
         req.user = decoded;
-        console.log(` 🎫 [ Auth - *Jwt* ]  ✅  -  User[ ${req.user} ]`);
+        // console.log(` 🎫 [ Auth - *Jwt* ]  ✅  -  User[ ${req.user} ]`);
         next();
 
     } catch (error) {
-        console.log(' 🎫 [ Auth - *Jwt* ]  ❌  -  Invalid Credentials !');
+        // console.log(' 🎫 [ Auth - *Jwt* ]  ❌  -  Invalid Credentials !');
         res.status(401).json({ message: "Invalid Credentials !" });
     }
 };

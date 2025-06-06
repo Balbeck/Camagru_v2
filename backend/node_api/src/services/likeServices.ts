@@ -13,11 +13,11 @@ export const likeAPost = async (postId_str: string, userId_str: string): Promise
 		const postId = new mongoose.Types.ObjectId(postId_str);
 		const userId = new mongoose.Types.ObjectId(userId_str);
 
-		console.log(' 👍 [S]*addNewLike ] ✅ postId: ', postId_str);
+		// console.log(' 👍 [S]*addNewLike ] ✅ postId: ', postId_str);
 		await addLike(postId, userId);
 
 	} catch (error) {
-		console.log(' 👍 [S]*addNewLike ] ❌ Error: ', error.message);
+		// console.log(' 👍 [S]*addNewLike ] ❌ Error: ', error.message);
 		throw error;
 	}
 };
@@ -35,10 +35,10 @@ export const removeALike = async (postId_str: string, userId_str: string): Promi
 		const userId = new mongoose.Types.ObjectId(userId_str);
 
 		await removeLike(postId, userId);
-		console.log(' 👍 [S]*removeALike ] ✅ postId: ', postId_str);
+		// console.log(' 👍 [S]*removeALike ] ✅ postId: ', postId_str);
 
 	} catch (error) {
-		console.log(' 👍 [S]*removeALike ] ❌ Error: ', error.message);
+		// console.log(' 👍 [S]*removeALike ] ❌ Error: ', error.message);
 		throw error;
 	}
 };
@@ -62,11 +62,11 @@ export const getLikeCountObject = async (postId_str: string, userId_str: string)
 			likedByMe: didILikeIt
 		};
 
-		console.log(' 👍 [S]*getLikeCount ] ✅ countAndMe: ', countAndMe);
+		// console.log(' 👍 [S]*getLikeCount ] ✅ countAndMe: ', countAndMe);
 		return countAndMe;
 
 	} catch (error) {
-		console.log(' 👍 [S]*getLikeCount ] ❌ Error: ', error.message);
+		// console.log(' 👍 [S]*getLikeCount ] ❌ Error: ', error.message);
 		throw error;
 	}
 };

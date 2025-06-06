@@ -33,12 +33,12 @@ export const createComment = async (postId_str: string, userId_str: string, comm
 		const postId = new mongoose.Types.ObjectId(postId_str);
 		const userId = new mongoose.Types.ObjectId(userId_str);
 		const newComment = await createNewComment(userId, postId, comment);
-		console.log('💬 [S] ✅ New Comment Created !');
+		// console.log('💬 [S] ✅ New Comment Created !');
 
 		return newComment;
 
 	} catch (error) {
-		console.log('💬 [S] createComment ❌ Error: \n', error);
+		// console.log('💬 [S] createComment ❌ Error: \n', error);
 		throw error;
 	}
 };
@@ -56,7 +56,7 @@ export const getCommentById = async (commentId_str: string): Promise<IComment> =
 		}
 		return comment;
 	} catch (error) {
-		console.log('💬 [S] getCommentById ❌ Error: \n', error);
+		// console.log('💬 [S] getCommentById ❌ Error: \n', error);
 		throw error;
 	}
 };
@@ -92,11 +92,11 @@ export const SendEmailToPostOwner = async (userId_str: string, postId_str: strin
 					text: `${commentUserName} commented on your post: "${post.title}"\n\nComment: "${comment}"\n\nCheck it out on Camagru 42!`
 				};
 				await transporter.sendMail(mailOptions);
-				console.log('💬 [S] ✅ Email Sent to Post Owner !');
+				// console.log('💬 [S] ✅ Email Sent to Post Owner !');
 			}
 		}
 	} catch (error) {
-		console.log('💬 [S] SendEmailToPostOwner ❌ Error: \n', error);
+		// console.log('💬 [S] SendEmailToPostOwner ❌ Error: \n', error);
 		throw error;
 	}
 };
@@ -109,12 +109,12 @@ export const deleteComment = async (commentId_str: string): Promise<IComment> =>
 		}
 		const commentId = new mongoose.Types.ObjectId(commentId_str);
 		const deletedComment = await deleteCommentByCommentId(commentId);
-		console.log('💬 [S] ✅ Comment Deleted !');
+		// console.log('💬 [S] ✅ Comment Deleted !');
 
 		return deletedComment;
 
 	} catch (error) {
-		console.log('💬 [S]deleteComment ❌ Error: \n', error);
+		// console.log('💬 [S]deleteComment ❌ Error: \n', error);
 		throw error;
 	}
 };
@@ -131,11 +131,11 @@ export const getAllCommentsByPostId = async (postId_str: string): Promise<IComme
 		if (!comments || comments.length === 0) {
 			throw new Error('NO_COMMENTS_FOUND');
 		}
-		console.log(`💬 [S]getAllCommentsByPostId ✅ [ ${comments.length} ] comments for post ${postId}`);
+		// console.log(`💬 [S]getAllCommentsByPostId ✅ [ ${comments.length} ] comments for post ${postId}`);
 		return comments;
 
 	} catch (error) {
-		console.log('💬 [S]getCommentsByPostId ❌ Error: \n', error);
+		// console.log('💬 [S]getCommentsByPostId ❌ Error: \n', error);
 		throw error;
 	}
 }
@@ -152,11 +152,11 @@ export const getLastCommentByPostId = async (postId_str: string): Promise<IComme
 		if (!comment) {
 			throw new Error('NO_COMMENTS_FOUND');
 		}
-		console.log(`💬 [S]getLastCommentByPostId ✅ last comment: [ ${comment} ]`);
+		// console.log(`💬 [S]getLastCommentByPostId ✅ last comment: [ ${comment} ]`);
 		return comment;
 
 	} catch (error) {
-		console.log('💬 [S]getLastCommentByPostId ❌ Error: \n', error);
+		// console.log('💬 [S]getLastCommentByPostId ❌ Error: \n', error);
 		throw error;
 	}
 }

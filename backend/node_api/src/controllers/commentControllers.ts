@@ -11,7 +11,7 @@ export const createComment = async (req: Request, res: Response): Promise<void> 
 		const { postId } = req.params;
 		const userId = req.user.id;
 		const comment = req.body.comment;
-		console.log(' 💬 [C]*newComment ] req.params: ', req.params, '\nreq.user.id: ', req.user.id, '\ncomment: [ ', comment, ' ]');
+		// console.log(' 💬 [C]*newComment ] req.params: ', req.params, '\nreq.user.id: ', req.user.id, '\ncomment: [ ', comment, ' ]');
 		if (!postId) {
 			res.status(400).json({ error: "Missing required field: postId" });
 			return;
@@ -46,23 +46,23 @@ export const deleteComment = async (req: Request, res: Response): Promise<void> 
 			res.status(400).json({ error: "Missing required field: commentId" });
 			return;
 		}
-		console.log(' 💬 [C]*deleteComment ] commentId: ', req.params, '\nreq.user.id: ', req.user.id);
+		// console.log(' 💬 [C]*deleteComment ] commentId: ', req.params, '\nreq.user.id: ', req.user.id);
 		// verifie que Comment appartient au USer
 		const comment: IComment = await CommentService.getCommentById(commentId);
 		if (!comment) {
-			console.log(' 💬 [C]*deleteComment ] ❌ Comment not found');
+			// console.log(' 💬 [C]*deleteComment ] ❌ Comment not found');
 			res.status(404).json({ message: "Comment not found!" });
 			return;
 		}
 		const userId = req.user.id;
 		const user = await UserService.getUserById(userId);
 		if (!user) {
-			console.log(' 💬 [C]*deleteComment ] ❌ User not found');
+			// console.log(' 💬 [C]*deleteComment ] ❌ User not found');
 			res.status(404).json({ message: "User not found!" });
 			return;
 		}
 		if (comment.userId._id.toString() !== user._id.toString()) {
-			console.log(' 💬 [C]*deleteComment ] ❌ Unauthorized');
+			// console.log(' 💬 [C]*deleteComment ] ❌ Unauthorized');
 			res.status(403).json({ message: "Unauthorized" });
 			return;
 		}

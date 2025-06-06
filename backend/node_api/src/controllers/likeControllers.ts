@@ -5,7 +5,7 @@ export const addNewLike = async (req: Request, res: Response): Promise<void> => 
 	try {
 		const { postId } = req.params;
 		const userId = req.user.id;
-		console.log(' 👍 [C]*addNewLike ] req.params-> {postId}: ', postId, '\nreq.user.id: ', req.user.id);
+		// console.log(' 👍 [C]*addNewLike ] req.params-> {postId}: ', postId, '\nreq.user.id: ', req.user.id);
 		await LikeService.likeAPost(postId, userId);
 
 	} catch (error) {
@@ -18,7 +18,7 @@ export const removeALike = async (req: Request, res: Response): Promise<void> =>
 	try {
 		const { postId } = req.params;
 		const userId = req.user.id;
-		console.log(' 👍 [C]*removeALike ] req.params-> {postId}: ', postId, '\nreq.user.id: ', req.user.id);
+		// console.log(' 👍 [C]*removeALike ] req.params-> {postId}: ', postId, '\nreq.user.id: ', req.user.id);
 		await LikeService.removeALike(postId, userId);
 
 	} catch (error: any) {
@@ -31,7 +31,7 @@ export const getLikesCountAndMe = async (req: Request, res: Response): Promise<v
 	try {
 		const { postId } = req.params;
 		const userId = req.user.id;
-		console.log(' 👍 [C]*getLikesCountAndMe ] req.params-> {postId}: ', postId, '\nreq.user.id: ', req.user.id);
+		// console.log(' 👍 [C]*getLikesCountAndMe ] req.params-> {postId}: ', postId, '\nreq.user.id: ', req.user.id);
 		const countAndMe = await LikeService.getLikeCountObject(postId, userId);
 		res.status(200).json(countAndMe);
 

@@ -47,11 +47,11 @@ export const uploadImage = async (req: Request, res: Response): Promise<void> =>
 				req.body.data
 			);
 
-		console.log(' 🖼️ [C]*uploadImg ] ✅ ');
+		// console.log(' 🖼️ [C]*uploadImg ] ✅ ');
 		res.status(201).json(uploadImage);
 
 	} catch (error) {
-		console.log(' 🖼️ [C]*uploadImg ] ❌ ');
+		// console.log(' 🖼️ [C]*uploadImg ] ❌ ');
 		if (error.message == 'INVALID_USER_ID') {
 			res.status(404).json({ message: error.message });
 		}
@@ -66,11 +66,11 @@ export const getAllImagesByUserId = async (req: Request, res: Response): Promise
 	try {
 		const allImages = await ImageService.getAllImages(req.user.id);
 
-		console.log(' 🖼️ [C]*AllImg ] ✅ ');
+		// console.log(' 🖼️ [C]*AllImg ] ✅ ');
 		res.status(201).json(allImages);
 
 	} catch (error) {
-		console.log(' 🖼️ [C]*AllImg ] ❌ ');
+		// console.log(' 🖼️ [C]*AllImg ] ❌ ');
 		if (error.message == 'INVALID_USER_ID') {
 			res.status(404).json({ message: error.message });
 		}
@@ -90,11 +90,11 @@ export const deleteImage = async (req: Request, res: Response): Promise<void> =>
 		const userId: string = req.user.id;
 		const deletedImage = await ImageService.deleteImage(imageId, req.user.id);
 
-		console.log('🗑️ [C]*deleteImage ] ✅ ');
+		// console.log('🗑️ [C]*deleteImage ] ✅ ');
 		res.status(201).json({ message: "Image and dependenses deleted successfully!" });
 
 	} catch (error) {
-		console.log('🗑️ [C]*deleteImage ] ❌ ');
+		// console.log('🗑️ [C]*deleteImage ] ❌ ');
 		if (error.message == 'INVALID_IMAGE_ID') {
 			res.status(404).json({ message: error.message });
 		}
@@ -111,7 +111,7 @@ export const deleteImage = async (req: Request, res: Response): Promise<void> =>
 export const uploadForMontage = async (req: Request, res: Response): Promise<void> => {
 	try {
 		const { photo, filter, overlayImage, overlaySize } = req.body;
-		console.log(' 🖼️ [C]*uploadMontage ] 🖼️ ', req.body);
+		// console.log(' 🖼️ [C]*uploadMontage ] 🖼️ ', req.body);
 		if (!req.user.id) {
 			res.status(404).json({ message: "User ID is missing!" });
 			return;
@@ -119,22 +119,22 @@ export const uploadForMontage = async (req: Request, res: Response): Promise<voi
 		// Verification Img
 		if (!photo) {
 			res.status(400).json({ message: "Photo (base64) is required!" });
-			console.log(' 🖼️ [C]*uploadMontage ] ❌ !photo ');
+			// console.log(' 🖼️ [C]*uploadMontage ] ❌ !photo ');
 			return;
 		}
-		console.log(` 🖼️ [C]*uploadMontage ] filter: ${filter},`, filter);
-		console.log(` 🖼️ [C]*uploadMontage ] overlayImage: ${overlayImage} `);
-		console.log(` 🖼️ [C]*uploadMontage ] overlaySize: ${overlaySize} `);
+		// console.log(` 🖼️ [C]*uploadMontage ] filter: ${filter},`, filter);
+		// console.log(` 🖼️ [C]*uploadMontage ] overlayImage: ${overlayImage} `);
+		// console.log(` 🖼️ [C]*uploadMontage ] overlaySize: ${overlaySize} `);
 		if (!overlayImage || !overlaySize) {
 			res.status(400).json({ message: "Filter, overlayImage and overlaySize are required!" });
-			console.log(' 🖼️ [C]*uploadMontage ] ❌ !filter || !overlayImage || !overlaySize');
+			// console.log(' 🖼️ [C]*uploadMontage ] ❌ !filter || !overlayImage || !overlaySize');
 			return;
 		}
 		// verif format Img
 		const base64Regex = /^data:image\/(jpeg|jpg|png);base64,/;
 		if (!base64Regex.test(photo)) {
 			res.status(400).json({ message: "Invalid image format. Only Base64 encoded images are allowed." });
-			console.log(' 🖼️ [C]*uploadMontage ] ❌ !base64Regex ');
+			// console.log(' 🖼️ [C]*uploadMontage ] ❌ !base64Regex ');
 			return;
 		}
 		const maxSize = 5 * 1024 * 1024; // 5MB
@@ -142,7 +142,7 @@ export const uploadForMontage = async (req: Request, res: Response): Promise<voi
 		const fileSizeInBytes = (photo.length * 3) / 4 - (photo.endsWith('==') ? 2 : photo.endsWith('=') ? 1 : 0);
 		if (fileSizeInBytes > maxSize) {
 			res.status(400).json({ message: "Image size exceeds the maximum limit of 5MB." });
-			console.log(' 🖼️ [C]*uploadMontage ] ❌  fileSizeInBytes');
+			// console.log(' 🖼️ [C]*uploadMontage ] ❌  fileSizeInBytes');
 			return;
 		}
 
@@ -156,11 +156,11 @@ export const uploadForMontage = async (req: Request, res: Response): Promise<voi
 			overlaySize
 		);
 
-		console.log(' 🖼️ [C]*uploadMontage ] -Montage: ✅ ');
+		// console.log(' 🖼️ [C]*uploadMontage ] -Montage: ✅ ');
 		res.status(201).json(montage);
 
 	} catch (error) {
-		console.log(' 🖼️ [C]*uploadMontage ] ❌ ');
+		// console.log(' 🖼️ [C]*uploadMontage ] ❌ ');
 		if (error.message == 'INVALID_USER_ID') {
 			res.status(404).json({ message: error.message });
 		} else if (error.message == 'INVALID_IMAGE_DATA') {
@@ -177,7 +177,7 @@ export const uploadForMontage = async (req: Request, res: Response): Promise<voi
 export const uploadForGifCreation = async (req: Request, res: Response): Promise<void> => {
 	try {
 		const { imageIdsString } = req.body;
-		console.log(' 🖼️ [C]*gifCreation ] 🖼️ ', req.body);
+		// console.log(' 🖼️ [C]*gifCreation ] 🖼️ ', req.body);
 		if (!req.user.id) {
 			res.status(404).json({ message: "User ID is missing!" });
 			return;
@@ -192,11 +192,11 @@ export const uploadForGifCreation = async (req: Request, res: Response): Promise
 		}
 
 		const gif = await ImageService.createGif(req.user.id, imageIdsString);
-		console.log(' 🖼️ [C]*gifCreation ] -GIF: ✅ ');
+		// console.log(' 🖼️ [C]*gifCreation ] -GIF: ✅ ');
 		res.status(201).json(gif);
 
 	} catch (error) {
-		console.log(' 🖼️ [C]*gifCreation ] ❌ ');
+		// console.log(' 🖼️ [C]*gifCreation ] ❌ ');
 		if (error.message == 'INVALID_USER_ID') {
 			res.status(404).json({ message: error.message });
 		} else if (error.message == 'GIF_CREATION_FAILED') {

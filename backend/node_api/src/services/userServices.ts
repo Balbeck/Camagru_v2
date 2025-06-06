@@ -30,10 +30,10 @@ export const sendRegisterEmail = async (userEmail: string, token: string) => {
 
     try {
         await transporter.sendMail(mailOptions);
-        console.log(' ✉️ [S]registerEmail: ✅ Email sent ');
+        // console.log(' ✉️ [S]registerEmail: ✅ Email sent ');
 
     } catch (error) {
-        console.log(' ✉️ [S]registerEmail: ❌ ERROR Email sent ');
+        // console.log(' ✉️ [S]registerEmail: ❌ ERROR Email sent ');
         throw new Error('EMAIL_SERVICE_ERROR');
     }
 };
@@ -51,10 +51,10 @@ export const sendConfirmationEmailforChangedPassword = async (userEmail: string)
 
     try {
         await transporter.sendMail(mailOptions);
-        console.log(' ✉️ [S]sendConfirmationEmailforChangedPassword: ✅ Email sent ');
+        // console.log(' ✉️ [S]sendConfirmationEmailforChangedPassword: ✅ Email sent ');
 
     } catch (error) {
-        console.log(' ✉️ [S]sendConfirmationEmailforChangedPassword: ❌ ERROR Email sent ');
+        // console.log(' ✉️ [S]sendConfirmationEmailforChangedPassword: ❌ ERROR Email sent ');
         throw new Error('EMAIL_SERVICE_ERROR');
     }
 };
@@ -64,7 +64,7 @@ export const confirmUserEmail = async (token: string): Promise<IUser> => {
     try {
         // Verifie si l'id du Jwt de l'Url est connue de la bdd. 
         const decoded = jwt.verify(token, process.env.JWT_SECRET) as { id: string };
-        console.log(' ✉️ [S]confirmEmail ] decoded: ', decoded);
+        // console.log(' ✉️ [S]confirmEmail ] decoded: ', decoded);
         if (!mongoose.Types.ObjectId.isValid(decoded.id)) {
             throw new Error('INVALID_USER_ID');
         }
@@ -74,11 +74,11 @@ export const confirmUserEmail = async (token: string): Promise<IUser> => {
             throw new Error('USER_NOT_FOUND');
         }
 
-        console.log(' ✉️ [S]confirmEmail ] ✅ ');
+        // console.log(' ✉️ [S]confirmEmail ] ✅ ');
         return await confirmUserEmailStatusbyUserId(user._id);
 
     } catch (error) {
-        console.log(' ✉️ [S]confirmEmail ] ❌ Error: ', error);
+        // console.log(' ✉️ [S]confirmEmail ] ❌ Error: ', error);
         throw error;
     }
 };
@@ -97,7 +97,7 @@ export const verifyTokenToGetEmail = async (token: string): Promise<IUser> => {
         }
         return user;
     } catch (error) {
-        console.log(' ✉️ [S]verifyTokenToGetEmail ] ❌ Error: ', error);
+        // console.log(' ✉️ [S]verifyTokenToGetEmail ] ❌ Error: ', error);
         throw error;
     }
 }
@@ -122,9 +122,9 @@ export const sendResetPasswordEmail = async (userEmail: string): Promise<IUser> 
 
         try {
             await transporter.sendMail(mailOptions);
-            console.log(' ✉️ [S]forgottenPassword: ✅ Email sent successfully');
+            // console.log(' ✉️ [S]forgottenPassword: ✅ Email sent successfully');
         } catch (error) {
-            console.log(' ✉️ [S]forgottenPassword: ❌ ERROR Email sent ');
+            // console.log(' ✉️ [S]forgottenPassword: ❌ ERROR Email sent ');
             throw new Error('EMAIL_SERVICE_ERROR');
         }
 
@@ -147,7 +147,7 @@ export const sendEmailToChangeEmailAdress = async (newEmail: string, userId: str
         if (!user) {
             throw new Error('USER_NOT_FOUND');
         }
-        console.log(` 📗 [S]*sendEmailToChangeEmailAdress ] userFound ✅\n - >  email - newEmail: [${user.email}] - [${user.newEmail}] `);
+        // console.log(` 📗 [S]*sendEmailToChangeEmailAdress ] userFound ✅\n - >  email - newEmail: [${user.email}] - [${user.newEmail}] `);
 
         const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '1h' });
         const front_url = process.env.FRONT_URL;
@@ -161,9 +161,9 @@ export const sendEmailToChangeEmailAdress = async (newEmail: string, userId: str
 
         try {
             await transporter.sendMail(mailOptions);
-            console.log(' ✉️ [S]sendEmailToChangeEmailAdress: ✅ Email sent successfully');
+            // console.log(' ✉️ [S]sendEmailToChangeEmailAdress: ✅ Email sent successfully');
         } catch (error) {
-            console.log(' ✉️ [S]sendEmailToChangeEmailAdress: ❌ ERROR Email sent ');
+            // console.log(' ✉️ [S]sendEmailToChangeEmailAdress: ❌ ERROR Email sent ');
             throw new Error('EMAIL_SERVICE_ERROR');
         }
 
@@ -185,10 +185,10 @@ export const updateUserNewEmail = async (userId: string, newEmail: string): Prom
         if (!user) {
             throw new Error('USER_NOT_FOUND');
         }
-        console.log(` 📗 [S]*updateUserNewEmail ] userFound ✅\n - >  email - newEmail: [${user.email}] - [${user.newEmail}] `);
+        // console.log(` 📗 [S]*updateUserNewEmail ] userFound ✅\n - >  email - newEmail: [${user.email}] - [${user.newEmail}] `);
         return user;
     } catch (error) {
-        console.log(' ❌ [S]*updateUserNewEmail ] userId_string: ', userId);
+        // console.log(' ❌ [S]*updateUserNewEmail ] userId_string: ', userId);
         throw error;
     }
 };
@@ -210,7 +210,7 @@ const validateEmail = (email: string): boolean => {
 
 export const verifyUpdateNewPassword = async (email: string, newPassword: string, token: string): Promise<IUser> => {
     try {
-        console.log(` [ verifyUpdateNewPassword ] email: ${email}, newPassword: ${newPassword}, token: ${token} `);
+        // console.log(` [ verifyUpdateNewPassword ] email: ${email}, newPassword: ${newPassword}, token: ${token} `);
         // 1 - Verifie token et si User exist !
         const decoded = jwt.verify(token, process.env.JWT_SECRET) as { id: string };
         if (!mongoose.Types.ObjectId.isValid(decoded.id)) {
@@ -223,23 +223,23 @@ export const verifyUpdateNewPassword = async (email: string, newPassword: string
         }
         // 2 - verif si Email correspondent 
         if (user.email.toLowerCase() !== email.toLowerCase()) {
-            console.log(`INVALID_EMAIL: ${user.email} [vs] ${email}`);
+            // console.log(`INVALID_EMAIL: ${user.email} [vs] ${email}`);
             throw new Error('INVALID_EMAIL');
         }
-        console.log(`EMAIL ✅ : ${user.email} [vs] ${email}`);
+        // console.log(`EMAIL ✅ : ${user.email} [vs] ${email}`);
 
         // 3 - hash newPassword et update Bdd
         const hashedPassword = await bcrypt.hash(newPassword, 10);
         const updatedUser = await User.findByIdAndUpdate(userId, { passwordHash: hashedPassword }, { new: true });
         // console.log('  ✅ updatedUser: ', updatedUser);
-        console.log(' [ verifyUpdateNewPassword ] ✅ ');
+        // console.log(' [ verifyUpdateNewPassword ] ✅ ');
 
         // 4 - Send Confirmation Email that the password Changed
         await sendConfirmationEmailforChangedPassword(user.email);
         return updatedUser;
 
     } catch (error) {
-        console.log(' ✉️ [S]verifyTokenToGetEmail ] ❌ Error: ', error);
+        // console.log(' ✉️ [S]verifyTokenToGetEmail ] ❌ Error: ', error);
         throw error;
     }
 
@@ -248,7 +248,7 @@ export const verifyUpdateNewPassword = async (email: string, newPassword: string
 
 export const verifyUpdateNewEmail = async (newEmail: string, token: string): Promise<IUser> => {
     try {
-        console.log(` [ verifyUpdateNewEmail ] newEmail: ${newEmail}, token: ${token} `);
+        // console.log(` [ verifyUpdateNewEmail ] newEmail: ${newEmail}, token: ${token} `);
         // 1 - Verifie token et si User exist !
         const decoded = jwt.verify(token, process.env.JWT_SECRET) as { id: string };
         if (!mongoose.Types.ObjectId.isValid(decoded.id)) {
@@ -262,19 +262,19 @@ export const verifyUpdateNewEmail = async (newEmail: string, token: string): Pro
 
         // 2 - verif si Email correspondent
         if (user.newEmail.toLowerCase() !== newEmail.toLowerCase()) {
-            console.log(`INVALID_EMAIL: ${user.newEmail} [vs] ${newEmail}`);
+            // console.log(`INVALID_EMAIL: ${user.newEmail} [vs] ${newEmail}`);
             throw new Error('INVALID_EMAIL');
         }
-        console.log(`EMAIL ✅ : ${user.newEmail} [vs] ${newEmail}`);
+        // console.log(`EMAIL ✅ : ${user.newEmail} [vs] ${newEmail}`);
 
         // 3 - Update Bdd
         const updatedUser = await User.findByIdAndUpdate(userId, { email: newEmail, newEmail: null }, { new: true });
-        console.log('  ✅ updatedUser: ', updatedUser);
+        // console.log('  ✅ updatedUser: ', updatedUser);
 
         return updatedUser;
 
     } catch (error) {
-        console.log(' ✉️ [S]verifyTokenToGetEmail ] ❌ Error: ', error);
+        // console.log(' ✉️ [S]verifyTokenToGetEmail ] ❌ Error: ', error);
         throw error;
     }
 }
@@ -293,14 +293,14 @@ export const createUser = async (body: any): Promise<IUser> => {
             throw new Error('USERNAME_ALREADY_EXISTS');
         }
 
-        console.log(` 🥝 [S]*createU ] User: ${body.username}, ${body.email}:  [ Doesn't already exist! ]`);
+        // console.log(` 🥝 [S]*createU ] User: ${body.username}, ${body.email}:  [ Doesn't already exist! ]`);
 
         // - -[ * Password * Verification ]- -
         const pass: string = body.password;
         if (!validatePassword(pass)) {
             throw new Error('INVALID_PASSWORD');
         }
-        console.log(` 🥝 [S]*createU ] body.password: ${pass}`);
+        // console.log(` 🥝 [S]*createU ] body.password: ${pass}`);
 
         // - -[ * Email * Verification ]- -
         if (!validateEmail(body.email)) {
@@ -312,12 +312,12 @@ export const createUser = async (body: any): Promise<IUser> => {
 
         // - -[ * User * Creation ]- -
         const newUser = await createNewUser(body.username, body.email, hashedPassword);
-        console.log(" 🥝 [S]*createU ] ✅ User created successfully: ", newUser);
+        // console.log(" 🥝 [S]*createU ] ✅ User created successfully: ", newUser);
 
         return newUser;
 
     } catch (error: any) {
-        console.log("❌ Error User Creation: ", error.message);
+        // console.log("❌ Error User Creation: ", error.message);
         throw error;
     }
 };
@@ -338,20 +338,20 @@ export const logInUser = async (body: any): Promise<IUser> => {
         if (!existingUserByUsername) {
             throw new Error('USER_NOT_FOUND')
         }
-        console.log(` 🚀 [S]*logInU ] UserFound: ${existingUserByUsername.username}`);
+        // console.log(` 🚀 [S]*logInU ] UserFound: ${existingUserByUsername.username}`);
 
         // - -[ * Hash * Comparison ]- -
         const hashComparison = await bcrypt.compare(body.password, existingUserByUsername.passwordHash);
         if (!hashComparison) {
-            console.log(` 🚀 [S]*logInU ] Hash Comparison ❌ `);
+            // console.log(` 🚀 [S]*logInU ] Hash Comparison ❌ `);
             throw new Error('INVALID_PASSWORD');
         }
-        console.log(` 🚀 [S]*logInU ] Hash Comparison ✅ `);
+        // console.log(` 🚀 [S]*logInU ] Hash Comparison ✅ `);
 
         return existingUserByUsername;
 
     } catch (error) {
-        console.log("❌ Error LogIn User: ", error.message);
+        // console.log("❌ Error LogIn User: ", error.message);
         throw error;
     }
 };
@@ -359,7 +359,7 @@ export const logInUser = async (body: any): Promise<IUser> => {
 
 export const getUserById = async (userId_string: string): Promise<IUser> => {
     try {
-        console.log(' 📗 [S]*getUserById ] userId_string: ', userId_string);
+        // console.log(' 📗 [S]*getUserById ] userId_string: ', userId_string);
         // Vérifier si l'ID est valide
         if (!mongoose.Types.ObjectId.isValid(userId_string)) {
             throw new Error('INVALID_USER_ID');
@@ -367,12 +367,12 @@ export const getUserById = async (userId_string: string): Promise<IUser> => {
 
         const userId = new mongoose.Types.ObjectId(userId_string);
         const user: IUser = await findUserById(userId);
-        console.log(' 📗 [S]*getUserById ] userFound ✅ id: ', user._id);
+        // console.log(' 📗 [S]*getUserById ] userFound ✅ id: ', user._id);
 
         return user;
 
     } catch (error) {
-        console.log(' ❌ [S]*getUserById ] userId_string: ', userId_string);
+        // console.log(' ❌ [S]*getUserById ] userId_string: ', userId_string);
         throw error;
     }
 };
@@ -380,15 +380,14 @@ export const getUserById = async (userId_string: string): Promise<IUser> => {
 
 export const getUserByEmail = async (userEmail: string): Promise<IUser> => {
     try {
-        console.log(' 📗 [S]*getUserById ] userEmail_string: ', userEmail);
-        // const user: IUser = await findUserByEmail(userEmail);
+        // console.log(' 📗 [S]*getUserById ] userEmail_string: ', userEmail);
         const user: IUser = await User.findOne({ email: userEmail }).exec();
-        console.log(' 📗 [S]*getUserByEmail ] userFound ✅ id: ', user._id);
+        // console.log(' 📗 [S]*getUserByEmail ] userFound ✅ id: ', user._id);
 
         return user;
 
     } catch (error) {
-        console.log(' ❌ [S]*getUserByEmail ] userEmail: ', userEmail);
+        // console.log(' ❌ [S]*getUserByEmail ] userEmail: ', userEmail);
         throw new Error('USER_NOT_FOUND')
     }
 };
@@ -402,7 +401,7 @@ export const updateUser = async (userId_string: string, updates: Partial<IUser>)
 
         const userId = new mongoose.Types.ObjectId(userId_string);
         const updatedUser = await updateUserById(userId, updates);
-        console.log(' 📗 [S]*updateUser ] updatedUser: ', updatedUser);
+        // console.log(' 📗 [S]*updateUser ] updatedUser: ', updatedUser);
 
         return updatedUser;
 
@@ -436,7 +435,7 @@ export const updateCommentNotification = async (userId_string: string, isNotific
 
         const userId = new mongoose.Types.ObjectId(userId_string);
         const updatedUser = await User.findByIdAndUpdate(userId, { isNotificationsEnabled }, { new: true });
-        console.log(' 📗 [S]*updateNotification ] updatedUser: ', updatedUser);
+        // console.log(' 📗 [S]*updateNotification ] updatedUser: ', updatedUser);
 
         return updatedUser;
 

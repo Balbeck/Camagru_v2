@@ -199,11 +199,11 @@ const MyGalerie: React.FC = () => {
 				{isUploadImageModalOpen && (
 					<div
 						className="fixed inset-0 flex justify-center items-center bg-gray-500 bg-opacity-50 z-50"
-						onClick={closeUploadImageModal} // Ferme la fenêtre si on clique à l'extérieur
+						onClick={closeUploadImageModal}
 					>
 						<div
 							className="relative bg-white p-6 rounded-lg shadow-lg w-[70vw] max-w-[500px] z-10"
-							onClick={(e) => e.stopPropagation()} // Empêche la fermeture si on clique à l'intérieur
+							onClick={(e) => e.stopPropagation()} // click inside ferme pas la modal
 						>
 
 							{/* Composant UploadImage */}
@@ -221,7 +221,7 @@ const MyGalerie: React.FC = () => {
 		<div className="flex flex-col items-center justify-center min-h-[80vh] relative">
 			<h1 className="text-2xl font-bold mb-4 text-white-800">My Galerie</h1>
 
-			{/* Flèche gauche */}
+			{/* Fleche gauche */}
 			<button
 				className="absolute left-8 top-1/2 transform -translate-y-1/2 bg-blue-500 text-white p-5 rounded-full shadow-lg z-20 opacity-90 hover:opacity-100 transition hover:scale-110"
 				onClick={prevImage}
@@ -230,7 +230,7 @@ const MyGalerie: React.FC = () => {
 			</button>
 
 
-			{/* Conteneur du Display de l'Image */}
+			{/* Conteneur du Display Img */}
 			<div className="relative w-[40vw] max-w-[250px] aspect-square flex flex-col items-center bg-white shadow-2xl rounded-xl overflow-hidden my-3">
 				{/* Image */}
 				<div className="relative w-full h-full">
@@ -245,7 +245,7 @@ const MyGalerie: React.FC = () => {
 			</div>
 
 
-			{/* Flèche droite */}
+			{/* Fleche droite */}
 			<button
 				className="absolute right-8 top-1/2 transform -translate-y-1/2 bg-blue-500 text-white p-5 rounded-full shadow-lg z-20 opacity-90 hover:opacity-100 transition hover:scale-110"
 				onClick={nextImage}
@@ -272,11 +272,11 @@ const MyGalerie: React.FC = () => {
 			{isCreatePostModalOpen && (
 				<div
 					className="fixed inset-0 flex justify-center items-center bg-gray-500 bg-opacity-50 z-50"
-					onClick={closeCreatePostModal}  // Ferme la fenêtre si on clique à l'extérieur
+					onClick={closeCreatePostModal}
 				>
 					<div
 						className="relative bg-white p-6 rounded-lg shadow-lg w-[70vw] max-w-[500px] z-10"
-						onClick={(e) => e.stopPropagation()}  // Empêche la fermeture si on clique à l'intérieur
+						onClick={(e) => e.stopPropagation()} // click inside ferme pas la modal
 					>
 						<CreatePost
 							data={images[currentIndex].data}
@@ -295,7 +295,6 @@ const MyGalerie: React.FC = () => {
 				</Button>
 				<Button
 					className="bg-red-500 hover:bg-red-600 text-white rounded-full py-2 px-4 text-sm transition-all duration-200"
-					// onClick={() => handleDelete(images[currentIndex]._id)}
 					onClick={openDeleteImageModal}
 				>
 					Delete image
@@ -306,7 +305,7 @@ const MyGalerie: React.FC = () => {
 			{isUploadImageModalOpen && (
 				<div
 					className="fixed inset-0 flex justify-center items-center bg-gray-500 bg-opacity-50 z-50"
-					onClick={closeUploadImageModal} // Ferme Modal si click outside
+					onClick={closeUploadImageModal}
 				>
 					<div
 						className="relative bg-white p-6 rounded-lg shadow-lg w-[70vw] max-w-[500px] z-10"
@@ -369,11 +368,11 @@ const MyGalerie: React.FC = () => {
 			{isGifCreationModalOpen && (
 				<div
 					className="fixed inset-0 flex justify-center items-center bg-gray-500 bg-opacity-50 z-50"
-					onClick={closeGifCreationModal}  // Ferme la fenêtre si on clique à l'extérieur
+					onClick={closeGifCreationModal}
 				>
 					<div
 						className="relative bg-white p-6 rounded-lg shadow-lg w-[70vw] max-w-[500px] z-10"
-						onClick={(e) => e.stopPropagation()}  // Empêche la fermeture si on clique à l'intérieur
+						onClick={(e) => e.stopPropagation()} //empeche fermeture si click dans Modal
 					>
 						<CreateGif
 							images={images}
@@ -388,11 +387,11 @@ const MyGalerie: React.FC = () => {
 			{isCreatePostModalOpen && (
 				<div
 					className="fixed inset-0 flex justify-center items-center bg-gray-500 bg-opacity-50 z-50"
-					onClick={closeCreatePostModal}  // Ferme la fenêtre si on clique à l'extérieur
+					onClick={closeCreatePostModal}
 				>
 					<div
 						className="relative bg-white p-6 rounded-lg shadow-lg w-[70vw] max-w-[500px] z-10"
-						onClick={(e) => e.stopPropagation()}  // Empêche la fermeture si on clique à l'intérieur
+						onClick={(e) => e.stopPropagation()} //empeche fermeture si click dans Modal
 					>
 						<CreatePost
 							data={images[currentIndex].data}

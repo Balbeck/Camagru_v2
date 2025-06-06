@@ -50,5 +50,5 @@ const startServer = async (): Promise<void> => {
 };
 
 startServer().catch((err) => {
-    console.error(' [ ❌ ] Erreur lors du démarrage du serveur: -> \n', err);
+    console.log(' [ ❌ ] Erreur lors du démarrage du serveur: -> \n', err);
 });
