@@ -7,8 +7,8 @@ services:
     container_name: back_server
     build: ./backend/node_api/
     env_file: .env
-    volumes:
-      - ./backend/node_api:/app
+    # volumes:
+    #   - ./backend/node_api:/app
     ports:
       - ${SERVER_PORT}:3000
     networks:
