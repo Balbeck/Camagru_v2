@@ -80,7 +80,7 @@ const ResetEmail = () => {
 			} else {
 				// console.log(' 🛂 [ resetEmail/[token] ] ❌ -> replace(/)');
 				const errorData = await response.json();
-				// console.log(errorData.message || 'Something went wrong. Try again.');
+				console.log(errorData.message || 'Something went wrong. Try again.');
 				alert('Email adress does not match Bro, sry...');
 				router.replace('/');
 			}

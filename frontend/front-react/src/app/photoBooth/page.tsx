@@ -198,6 +198,7 @@ export default function PhotoBooth() {
 		return () => {
 			stopCamera();
 		};
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
 

@@ -85,6 +85,7 @@ const TheWorld: React.FC = () => {
 	useEffect(() => {
 		fetchPosts(currentPage);
 		fetchMyUserId();
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
 

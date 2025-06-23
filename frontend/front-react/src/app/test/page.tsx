@@ -28,6 +28,7 @@ const CreateTotoButton = () => {
     useEffect(() => {
         // console.log(' 🙋🏼 [ CreateTotoButton Component Mounted ] ');
         handleCreateTestUser();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     return (

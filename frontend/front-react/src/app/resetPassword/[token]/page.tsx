@@ -87,7 +87,7 @@ const ResetPassword = () => {
       else {
         // console.log(' 🛂 [ resetPass/[token] ] ❌ -> replace(/)');
         const errorData = await response.json();
-        // console.log(errorData.message || 'Something went wrong. Try again.');
+        console.log(errorData.message || 'Something went wrong. Try again.');
         router.replace('/');
       }
 
